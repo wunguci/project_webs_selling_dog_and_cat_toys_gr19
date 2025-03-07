@@ -1,7 +1,11 @@
+import MainLayout from "../layout/mainLayout";
+
 const Login = () => {
   return (
-    <div>Login</div>
-  )
-}
+    <MainLayout>
+      <div className="text-red-500">Login</div>
+    </MainLayout>
+  );
+};
 
-export default Login
+export default Login;
