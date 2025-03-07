@@ -114,7 +114,7 @@ const Header = () => {
         <div className="flex justify-end mt-2">
           <button
             onClick={() => setMenuOpen(false)}
-            className="text-gray-700 text-xl focus:outline-none"
+            className="text-gray-700 text-xl focus:outline-none cursor-pointer"
           >
             <IoIosClose className="text-4xl" />
           </button>
