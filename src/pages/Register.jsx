@@ -1,7 +1,11 @@
+import MainLayout from "../layout/mainLayout";
+
 const Register = () => {
   return (
-    <div>Register</div>
-  )
-}
+    <MainLayout>
+      <div className="text-red-500">Resister</div>
+    </MainLayout>
+  );
+};
 
-export default Register
+export default Register;

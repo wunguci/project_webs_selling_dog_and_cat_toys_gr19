@@ -1,0 +1,76 @@
+.bg-brown {
+    background: #C49A6C;
+}
+
+.text-brown {
+    color: #C49A6C;
+}
+
+.text-brown-hover:hover {
+    color: #c4925c;
+}
+
+.border-brown {
+    border: 2px solid #C49A6C;
+}
+
+
+// Menu hidden 
+.hidden-menu {
+    position: fixed;
+    top: 0;
+    right: -100%; /* bắt đầu ẩn bên ngoài màn hình */
+    width: 75%;
+    max-width: 300px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: right 0.3s ease-in-out;
+    z-index: 50;
+}
+  
+.hidden-menu.open {
+    right: 0; /* khi mở menu, hiển thị từ phải sang */
+}
+  
+.hidden-menu ul {
+    padding: 16px;
+}
+  
+.hidden-menu li {
+    margin-bottom: 16px;
+}
+  
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 40;
+}
+
+.bg-333 {
+    background: #333;
+}
+
+.perspective {
+    perspective: 1000px;
+}
+
+.transform-style {
+    transform-style: preserve-3d;
+}
+
+.backface-hidden {
+    backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+    transform: rotateY(180deg);
+}
+
+.text-red {
+    color: rgb(185, 0, 0);
+}
