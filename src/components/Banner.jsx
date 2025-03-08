@@ -7,10 +7,7 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
 const categories = [
   "https://theme.hstatic.net/200000521195/1000872898/14/slider_1.jpg?v=259",
-  "https://theme.hstatic.net/200000521195/1000872898/14/slider_1.jpg?v=259",
-  "https://theme.hstatic.net/200000521195/1000872898/14/slider_1.jpg?v=259",
-  "https://theme.hstatic.net/200000521195/1000872898/14/slider_1.jpg?v=259",
-  "https://theme.hstatic.net/200000521195/1000872898/14/slider_1.jpg?v=259"
+  "https://theme.hstatic.net/200000521195/1000872898/14/slider_2.jpg?v=259"
 ];
 
 export default function Banner() {
