@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Breadcrumb from "../components/Breadcrumb";
 import { FcGoogle } from "react-icons/fc";
@@ -6,8 +6,9 @@ import { FaFacebook } from "react-icons/fa";
 import logo from "/pet.png";
 import Header from "../components/Header";
 import ScrollToTopButton from "../components/ScrollToTopButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./page.scss";
+import { ToastContainer, toast } from "react-toastify";
 
 const Login = () => {
   const links = [{ label: "Trang chủ", link: "/" }, { label: "Đăng nhập" }];
@@ -15,6 +16,21 @@ const Login = () => {
     phone: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
+  const [success, setSuccess] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        navigate("/");
+        setErrors({});
+        setSuccess(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [success, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,6 +38,74 @@ const Login = () => {
       ...prevData,
       [name]: value,
     }));
+    setErrors((preErros) => ({
+      ...preErros,
+      [name]: null, // xóa lỗi khi người dùng bắt đầu nhập lại
+    }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.phone) {
+      newErrors.phone = "Số điện thoại không được để trống.";
+    } else if (!formData.phone.match(/^\d{10}$/)) {
+      newErrors.phone = "Số điện thoại không hợp lệ.";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Mật khẩu không được để trống.";
+    } else if (!formData.password.match(/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/)) {
+      newErrors.password =
+        "Mật khẩu phải tối thiểu 6 ký tự, có ít nhất 1 chữ và 1 số.";
+    }
+
+    return newErrors;
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setErrors({});
+    setSuccess(false);
+
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    try {
+      const res = await axios.get(
+        "https://67c83d630acf98d070858e78.mockapi.io/Pet/users"
+      );
+
+      // search for user with phone and password
+      const user = res.data.find(
+        (u) => u.phone === formData.phone && u.password === formData.password
+      );
+
+      if (!user) {
+        setErrors({
+          general: "Số điện thoại hoặc mật khẩu không chính xác.",
+        });
+        return;
+      }
+
+      localStorage.setItem("user", JSON.stringify(user));
+
+      setSuccess(true);
+      toast.success("Đăng nhập thành công!");
+      setFormData({
+        phone: "",
+        password: "",
+      });
+    } catch (err) {
+      console.error("API Error:", err.response?.data || err.message);
+      setErrors({
+        general:
+          err.response?.data?.messsage || "Đã có lỗi xảy ra. Vui lòng thử lại.",
+      });
+    }
   };
 
   return (
@@ -53,7 +137,7 @@ const Login = () => {
             <hr className="flex-grow border-gray-300" />
           </div>
           {/* form */}
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="space-y-6">
               <div className="input-container">
                 <input
@@ -63,12 +147,11 @@ const Login = () => {
                   className="w-full"
                   value={formData.phone}
                   onChange={handleChange}
-                  required
                 />
                 <label>Nhập số điện thoại</label>
-                <span className="error-message">
-                  Số điện thoại không hợp lệ.
-                </span>
+                {errors.phone && (
+                  <span className="error-message">{errors.phone}</span>
+                )}
               </div>
               <div className="input-container">
                 <input
@@ -78,12 +161,11 @@ const Login = () => {
                   className="w-full"
                   value={formData.password}
                   onChange={handleChange}
-                  required
                 />
                 <label>Nhập mật khẩu</label>
-                <span className="error-message">
-                  Mật khẩu phải tối thiểu 6 ký tự, có ít nhất 1 chữ và 1 số.
-                </span>
+                {errors.password && (
+                  <span className="error-message">{errors.password}</span>
+                )}
               </div>
               <small className="text-gray-500 italic mx-2">
                 (*) Mật khẩu tối thiểu 6 ký tự, có ít nhất 1 chữ và 1 số. (VD:
@@ -106,7 +188,18 @@ const Login = () => {
           </p>
         </div>
       </div>
-
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <ScrollToTopButton />
     </>
   );

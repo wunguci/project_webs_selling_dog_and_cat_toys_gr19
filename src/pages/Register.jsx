@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Breadcrumb from "../components/Breadcrumb";
 import { FcGoogle } from "react-icons/fc";
@@ -6,11 +6,14 @@ import { FaFacebook } from "react-icons/fa";
 import logo from "/pet.png";
 import Header from "../components/Header";
 import ScrollToTopButton from "../components/ScrollToTopButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./page.scss";
+import { ToastContainer, toast } from "react-toastify";
 
 const Register = () => {
   const links = [{ label: "Trang chủ", link: "/" }, { label: "Đăng ký" }];
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -20,12 +23,125 @@ const Register = () => {
     confirmPassword: "",
   });
 
+  const [errors, setErrors] = useState({});
+  const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        navigate("/login");
+        setErrors({});
+        setSuccess(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [success, navigate]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+    setErrors((preErros) => ({
+      ...preErros,
+      [name]: null, // xóa lỗi khi người dùng bắt đầu nhập lại
+    }));
+  };
+
+  const validateForm = () => {
+    const { fullName, phone, email, birthDate, password, confirmPassword } =
+      formData;
+
+    const newErrors = {};
+
+    if (!fullName.trim()) newErrors.fullName = "Họ và tên không được để trống.";
+    if (!phone.match(/^\d{10}$/))
+      newErrors.phone = "Số điện thoại không hợp lệ.";
+    if (
+      email &&
+      !email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+    )
+      newErrors.email = "Email không hợp lệ.";
+    if (!birthDate) newErrors.birthDate = "Ngày sinh không được để trống.";
+    if (!password.match(/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/))
+      newErrors.password =
+        "Mật khẩu phải tối thiểu 6 ký tự, có ít nhất 1 chữ và 1 số.";
+    if (password !== confirmPassword)
+      newErrors.confirmPassword = "Mật khẩu không khớp.";
+    return newErrors;
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setErrors({});
+    setSuccess(false);
+
+    const validationError = validateForm();
+    if (Object.keys(validationError).length > 0) {
+      setErrors(validationError);
+      return;
+    }
+
+    try {
+      // check trùng
+      const { phone, email } = formData;
+      const existingUsers = await axios.get(
+        "https://67c83d630acf98d070858e78.mockapi.io/Pet/users"
+      );
+
+      const duplicateEmail = existingUsers.data.find(
+        (user) => user.email === email
+      );
+
+      const duplicatePhone = existingUsers.data.find(
+        (user) => user.phone === phone
+      );
+
+      if (duplicateEmail || duplicatePhone) {
+        setErrors({
+          ...(duplicateEmail && { email: "Email đã tồn tại." }),
+          ...(duplicatePhone && { phone: "Số điện thoại đã tồn tại." }),
+        });
+        toast.error("Thông tin đã tồn tại!");
+        return;
+      }
+
+      // create user nếu không trùng
+      const userData = {
+        fullName: formData.fullName,
+        phone: formData.phone,
+        email: formData.email,
+        birthDate: formData.birthDate,
+        password: formData.password,
+        role: "user",
+        avatar: "/avatar.png",
+      };
+
+      const res = await axios.post(
+        "https://67c83d630acf98d070858e78.mockapi.io/Pet/users",
+        userData
+      );
+
+      if (res.status === 201) {
+        setSuccess(true);
+        toast.success("Đăng ký thành công. Đến trang đăng nhập.");
+        setFormData({
+          fullName: "",
+          phone: "",
+          email: "",
+          birthDate: "",
+          password: "",
+          confirmPassword: "",
+        });
+      }
+    } catch (err) {
+      console.error("API Error:", err.response?.data || err.message);
+      setErrors({
+        general:
+          err.response?.data?.messsage || "Đã có lỗi xảy ra. Vui lòng thử lại.",
+      });
+    }
   };
 
   return (
@@ -57,53 +173,57 @@ const Register = () => {
             <hr className="flex-grow border-gray-300" />
           </div>
           {/* form */}
-          <form>
+          <form onSubmit={handleRegister}>
+            {errors.general && (
+              <span className="error-message">{errors.general}</span>
+            )}
             <div className="space-y-6">
               <div className="input-container">
                 <input
                   type="text"
                   name="fullName"
                   placeholder=" "
-                  className="w-full"
+                  className="w-full mb-2"
                   value={formData.fullName}
                   onChange={handleChange}
-                  required
                 />
                 <label>Nhập họ và tên</label>
-                <span className="error-message">
-                  Họ và tên không được để trống.
-                </span>
+                {errors.fullName && (
+                  <span className="error-message">{errors.fullName}</span>
+                )}
               </div>
+
               <div className="input-container">
                 <input
-                  type="tel"
+                  type="text"
                   name="phone"
                   placeholder=" "
-                  className="w-full"
+                  className="w-full mb-2"
                   value={formData.phone}
                   onChange={handleChange}
-                  required
                 />
                 <label>Nhập số điện thoại</label>
-                <span className="error-message">
-                  Số điện thoại không hợp lệ.
-                </span>
+                {errors.phone && (
+                  <span className="error-message">{errors.phone}</span>
+                )}
               </div>
+
               <div className="input-container">
                 <input
-                  type="email"
+                  type="text"
                   name="email"
                   placeholder=" "
-                  className="w-full"
+                  className="w-full mb-2"
                   value={formData.email}
                   onChange={handleChange}
                 />
-                <label>Nhập email (không bắt buộc)</label>
+                <label>Nhập email</label>
+                {errors.email && (
+                  <span className="error-message">{errors.email}</span>
+                )}
               </div>
-              <small className="text-gray-500 italic mx-2">
-                Hóa đơn VAT khi mua hàng sẽ được gửi qua email này
-              </small>
-              <div className="input-container mt-4">
+
+              <div className="input-container">
                 <input
                   type="date"
                   name="birthDate"
@@ -111,49 +231,48 @@ const Register = () => {
                   className="w-full"
                   value={formData.birthDate}
                   onChange={handleChange}
-                  required
                 />
                 <label>Chọn ngày sinh</label>
-                <span className="error-message">
-                  Ngày sinh không được để trống.
-                </span>
+                {errors.birthDate && (
+                  <span className="error-message">{errors.birthDate}</span>
+                )}
               </div>
+
               <div className="input-container">
                 <input
                   type="password"
                   name="password"
                   placeholder=" "
-                  className="w-full"
+                  className="w-full mb-2"
                   value={formData.password}
                   onChange={handleChange}
-                  required
                 />
                 <label>Nhập mật khẩu</label>
-                <span className="error-message">
-                  Mật khẩu phải tối thiểu 6 ký tự, có ít nhất 1 chữ và 1 số.
-                </span>
+                {errors.password && (
+                  <span className="error-message">{errors.password}</span>
+                )}
               </div>
-              <small className="text-gray-500 italic mx-2">
-                (*) Mật khẩu tối thiểu 6 ký tự, có ít nhất 1 chữ và 1 số. (VD:
-                12345a)
-              </small>
-              <div className="input-container mt-4">
+
+              <div className="input-container">
                 <input
                   type="password"
                   name="confirmPassword"
                   placeholder=" "
-                  className="w-full"
+                  className="w-full mb-2"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  required
                 />
-                <label>Nhập lại mật khẩu</label>
-                <span className="error-message">Mật khẩu không khớp.</span>
+                <label>Xác nhận mật khẩu</label>
+                {errors.confirmPassword && (
+                  <span className="error-message">
+                    {errors.confirmPassword}
+                  </span>
+                )}
               </div>
             </div>
             <button
               type="submit"
-              className="w-full bg-brown text-white py-3 rounded-md mt-6 font-semibold hover:shadow-lg cursor-pointer"
+              className="w-full bg-brown text-white py-3 rounded-md mt-2 font-semibold hover:shadow-lg cursor-pointer"
             >
               Đăng ký
             </button>
@@ -169,6 +288,18 @@ const Register = () => {
       </div>
 
       <ScrollToTopButton />
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   );
 };
