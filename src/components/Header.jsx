@@ -12,8 +12,8 @@ const Header = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({
-    name: "Trần Vũ",
-    avatar: "/avatar.jpg",
+    name: "",
+    avatar: "/avatar.png",
   });
 
   useEffect(() => {
@@ -25,6 +25,30 @@ const Header = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    console.log(userData);
+
+    if (userData) {
+      setLoggedIn(true);
+      const user = JSON.parse(userData);
+      setUser({
+        name: user.fullName,
+        avatar: user.avatar,
+      });
+    }
+  }, []);
+
+  // const handleLogout = () => {
+  //   localStorage.removeItem("authToken");
+  //   localStorage.removeItem("user");
+  //   setLoggedIn(false);
+  //   setUser({
+  //     name: "",
+  //     avatar: "/avatar.png",
+  //   });
+  // };
 
   return (
     <header className="bg-white shadow-md">
