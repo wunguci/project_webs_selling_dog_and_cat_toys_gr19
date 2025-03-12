@@ -10,6 +10,11 @@ import { Link } from "react-router-dom";
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState({
+    name: "",
+    avatar: "/avatar.png",
+  });
 
   useEffect(() => {
     const handleResize = () => {
@@ -20,6 +25,30 @@ const Header = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    console.log(userData);
+
+    if (userData) {
+      setLoggedIn(true);
+      const user = JSON.parse(userData);
+      setUser({
+        name: user.fullName,
+        avatar: user.avatar,
+      });
+    }
+  }, []);
+
+  // const handleLogout = () => {
+  //   localStorage.removeItem("authToken");
+  //   localStorage.removeItem("user");
+  //   setLoggedIn(false);
+  //   setUser({
+  //     name: "",
+  //     avatar: "/avatar.png",
+  //   });
+  // };
 
   return (
     <header className="bg-white shadow-md">
@@ -76,21 +105,38 @@ const Header = () => {
               </button>
             </div>
 
-            {/* đăng ký, đăng nhập  */}
-            <div className="flex items-center space-x-4">
-              <Link
-                to="/register"
-                className="text-gray-700 text-sm text-brown-hover"
-              >
-                ĐĂNG KÝ
-              </Link>
-              <span className="text-brown mb-1">|</span>
-              <Link
-                to="/login"
-                className="text-gray-700 text-sm text-brown-hover"
-              >
-                ĐĂNG NHẬP
-              </Link>
+            {/* user */}
+            <div className="flex items-center space-x-4 cursor-pointer">
+              {loggedIn ? (
+                <div className="flex items-center space-x-2 cursor-pointer">
+                  <img
+                    src={user.avatar}
+                    alt="User avatar"
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <span className="text-gray-700 text-sm font-medium text-brown-hover text-xl">
+                    {user.name}
+                  </span>
+                </div>
+              ) : (
+                <>
+                  {/* đăng ký, đăng nhập  */}
+                  <Link
+                    to="/register"
+                    className="text-gray-700 text-sm text-brown-hover"
+                  >
+                    ĐĂNG KÝ
+                  </Link>
+                  <span className="text-brown mb-1">|</span>
+                  <Link
+                    to="/login"
+                    className="text-gray-700 text-sm text-brown-hover"
+                  >
+                    ĐĂNG NHẬP
+                  </Link>
+                </>
+              )}
+              {/* cart */}
               <div className="relative mx-5 mt-1">
                 <button className="text-brown cursor-pointer focus:outline-none relative">
                   <FaShoppingCart className="text-2xl" />
@@ -127,22 +173,40 @@ const Header = () => {
               className="w-full px-4 py-2 border-brown rounded-full focus:outline-none"
             />
           </li>
-          <li>
-            <a
-              href="#"
-              className="block text-gray-700 text-sm text-brown-hover"
-            >
-              ĐĂNG KÝ
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="block text-gray-700 text-sm text-brown-hover"
-            >
-              ĐĂNG NHẬP
-            </a>
-          </li>
+          {loggedIn ? (
+            <li>
+              <div className="flex items-center space-x-2 cursor-pointer">
+                <img
+                  src={user.avatar}
+                  alt="User avatar"
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <span className="text-gray-700 text-sm font-medium text-brown-hover text-xl">
+                  {user.name}
+                </span>
+              </div>
+            </li>
+          ) : (
+            <>
+              <li>
+                <Link
+                  to="/register"
+                  className="block text-gray-700 text-sm text-brown-hover"
+                >
+                  ĐĂNG KÝ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/login"
+                  className="block text-gray-700 text-sm text-brown-hover"
+                >
+                  ĐĂNG NHẬP
+                </Link>
+              </li>
+            </>
+          )}
+
           <li>
             <a
               href="#"
