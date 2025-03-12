@@ -6,7 +6,7 @@ import logo from "/pet.png";
 
 const Footer = () => {
   return (
-    <footer className="bg-white text-gray-700">
+    <footer className="bg-white text-gray-700 mt-5">
       {/* head */}
       <div className="bg-brown text-white">
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-3 px-2 md:px-8 lg:px-16">

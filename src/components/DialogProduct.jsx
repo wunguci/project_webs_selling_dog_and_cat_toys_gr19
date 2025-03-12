@@ -1,62 +1,108 @@
-// import * as React from "react";
-// import { Dialog } from "radix-ui";
-// import { IoClose } from "react-icons/io5";
+import { useState } from "react";
+import { IoIosCloseCircle } from "react-icons/io";
+import { Link } from "react-router-dom";
 
-// const DialogProduct = ({ open, setOpen }) => (
-// 	<Dialog.Root open={open} onOpenChange={setOpen}>
-// 		<Dialog.Portal>
-// 			<Dialog.Overlay className="fixed inset-0 bg-blackA6 data-[state=open]:animate-overlayShow" />
-// 			<Dialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-md bg-gray1 p-[25px] shadow-[var(--shadow-6)] focus:outline-none data-[state=open]:animate-contentShow">
-// 				<Dialog.Title className="m-0 text-[17px] font-medium text-mauve12">
-// 					Edit profile
-// 				</Dialog.Title>
-// 				<Dialog.Description className="mb-5 mt-2.5 text-[15px] leading-normal text-mauve11">
-// 					Make changes to your profile here. Click save when you're done.
-// 				</Dialog.Description>
-// 				<fieldset className="mb-[15px] flex items-center gap-5">
-// 					<label
-// 						className="w-[90px] text-right text-[15px] text-violet11"
-// 						htmlFor="name"
-// 					>
-// 						Name
-// 					</label>
-// 					<input
-// 						className="inline-flex h-[35px] w-full flex-1 items-center justify-center rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 outline-none focus:shadow-[0_0_0_2px] focus:shadow-violet8"
-// 						id="name"
-// 						defaultValue="Pedro Duarte"
-// 					/>
-// 				</fieldset>
-// 				<fieldset className="mb-[15px] flex items-center gap-5">
-// 					<label
-// 						className="w-[90px] text-right text-[15px] text-violet11"
-// 						htmlFor="username"
-// 					>
-// 						Username
-// 					</label>
-// 					<input
-// 						className="inline-flex h-[35px] w-full flex-1 items-center justify-center rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 outline-none focus:shadow-[0_0_0_2px] focus:shadow-violet8"
-// 						id="username"
-// 						defaultValue="@peduarte"
-// 					/>
-// 				</fieldset>
-// 				<div className="mt-[25px] flex justify-end">
-// 					<Dialog.Close asChild>
-// 						<button className="inline-flex h-[35px] items-center justify-center rounded bg-green4 px-[15px] font-medium leading-none text-green11 outline-none outline-offset-1 hover:bg-green5 focus-visible:outline-2 focus-visible:outline-green6 select-none">
-// 							Save changes
-// 						</button>
-// 					</Dialog.Close>
-// 				</div>
-// 				<Dialog.Close asChild>
-// 					<button
-// 						className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full text-violet11 bg-gray3 hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
-// 						aria-label="Close"
-// 					>
-// 						<IoClose />
-// 					</button>
-// 				</Dialog.Close>
-// 			</Dialog.Content>
-// 		</Dialog.Portal>
-// 	</Dialog.Root>
-// );
+const categories = [
+  {
+    image: "https://file.hstatic.net/200000521195/collection/thuoc___dinh_duong-01_b86104361469466a84bd4a47032f8b97.png",
+    title: "Thuốc và dinh dưỡng",
+    link: "thuoc-va-dinh-duong"
+  },
+  {
+    image: "https://file.hstatic.net/200000521195/collection/sua_tam-01_2e492eb398844bf49c676a64678c0cdc.png",
+    title: "Sữa tắm & dụng cụ vệ sinh",
+    link: "sua-tam-va-dung-cu-ve-sinh"
+  },
+  {
+    image: "https://file.hstatic.net/200000521195/collection/chuong_nem_tui_van_chuyen-01_8c478a611c05450283dda864d916af07.png",
+    title: "Chuồng, nệm & túi",
+    link: "chuong-nem-tui"
+  },
+  {
+    image: "https://file.hstatic.net/200000521195/collection/chau_cat-01_094e50e82c09499498134d589f23df53.png",
+    title: "Chậu & cát vệ sinh",
+    link: "chau-cat-ve-sinh"
+  }
+];
 
-// export default DialogProduct;
+function DialogProduct({ open, setOpen }) {
+  if (!open) return null;
+
+  const [selectedImage, setSelectedImage] = useState(categories[0].image);
+  const handleImageClick = (image) => {
+    setSelectedImage(image.image);
+  };
+
+  const [quantity, setQuantity] = useState(1);
+
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const handleIncrease = () => {
+    setQuantity(quantity + 1);
+  };
+
+  const handleInputChange = (e) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value) && value >= 1) {
+      setQuantity(value);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 flex justify-center items-center z-50">
+      <div className="absolute inset-0 bg-black opacity-50" onClick={() => setOpen(false)}></div>
+
+      <div className="bg-amber-50 p-6 rounded-lg shadow-lg w-[900px] relative z-10">
+        <IoIosCloseCircle className="size-6 absolute -top-3 -right-3 text-amber-50" onClick={()=>setOpen(false)}/>
+
+        <div className="flex gap-5">
+          <div className="w-1/2 flex flex-col justify-center items-center">
+            <img src={selectedImage} alt="" className="hover:scale-110 transition-transform duration-300 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]"/>
+            <div className="flex justify-center gap-3">
+              {
+                categories.map((image, index) => (
+                  <img key={index} className={`size-25 ${selectedImage===image.image?"border-2":""}`} src={image.image} alt="" onClick={()=>handleImageClick(image)} />
+                ))
+              }
+            </div>
+          </div>
+          <div className="w-1/2 flex flex-col gap-7">
+            <Link className="font-bold text-2xl text-[#333] hover:text-[#c49a6c] transition-colors duration-150">Sữa tắm JOYCE & DOLLS hương trà xanh cho chó mèo</Link>
+            <span>Thương hiệu: Khác | Tình trạng: Còn hàng</span>
+            <div className="bg-[#c49a6c] w-44 text-center p-1 skew-x-[-15deg] ml-1">
+              <h2 className="text-2xl text-white font-bold">35,000Đ</h2>
+            </div>
+            <div className="flex items-center gap-5">
+              <span className="text-gray-700">Số lượng: </span>
+              <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                <button
+                  className="px-3 py-1 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition-colors duration-200"
+                  onClick={handleDecrease}
+                  disabled={quantity <= 1}
+                >
+                  -
+                </button>
+                <span className="px-5 border-x-2 border-gray-300">{quantity}</span>
+                <button
+                  className="px-3 py-1 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition-colors duration-200"
+                  onClick={handleIncrease}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            <button className="w-60 border-2 text-white border-[#c49a6c] bg-[#c49a6c] hover:bg-transparent rounded-[5px] hover:border-[#c49a6c] hover:text-[#c49a6c] py-2 transition-colors duration-200">Thêm vào giỏ hàng</button>
+            <button className="w-60 border-2 text-white border-[#c49a6c] bg-[#c49a6c] hover:bg-transparent rounded-[5px] hover:border-[#c49a6c] hover:text-[#c49a6c] py-2 transition-colors duration-200">Mua ngay</button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  );
+}
+
+export default DialogProduct;
