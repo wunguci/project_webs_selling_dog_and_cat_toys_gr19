@@ -75,11 +75,31 @@ function SliderCategory() {
     autoplaySpeed: 2000,
     pauseOnHover: true,
     nextArrow: <CustomNextArrow />,
-    prevArrow: <CustomPrevArrow />
+    prevArrow: <CustomPrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 4,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 3,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+    ],
   };
 
   return (
-    <div className="relative bottom-20 z-20 max-w-[1350px] mx-auto bg-amber-50">
+    <div className="relative bottom-20 z-20 max-w-[1200px] mx-auto bg-amber-50">
       <Slider {...settings}>
       {
         categories.map((item, index) => (
