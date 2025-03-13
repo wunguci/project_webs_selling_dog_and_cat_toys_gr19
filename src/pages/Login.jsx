@@ -24,6 +24,7 @@ const Login = () => {
   useEffect(() => {
     if (success) {
       const timer = setTimeout(() => {
+        window.location.reload();
         navigate("/");
         setErrors({});
         setSuccess(false);

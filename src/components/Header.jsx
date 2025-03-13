@@ -2,10 +2,20 @@ import logo from "/pet.png";
 import { useState, useEffect } from "react";
 import "./component.scss";
 import { FaCaretDown, FaPhone } from "react-icons/fa6";
-import { FaSearch, FaShoppingCart } from "react-icons/fa";
+import {
+  FaSearch,
+  FaShoppingCart,
+  FaUser,
+  FaShoppingBag,
+  FaHistory,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import { IoMdMenu, IoIosClose } from "react-icons/io";
 import { RiMenu3Fill } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import PopupMenu from "./PopupMenu";
+import LoadingOverlay from "./LoadingOverlay";
+import axios from "axios";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -15,6 +25,8 @@ const Header = () => {
     name: "",
     avatar: "/avatar.png",
   });
+  const navigate = useNavigate();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -26,32 +38,65 @@ const Header = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    console.log(userData);
+  const convertBase64ToImage = (base64) => {
+    if (!base64) return "/avarar.png";
+    return `data:image/jpeg;base64,${base64}`;
+  };
 
-    if (userData) {
-      setLoggedIn(true);
-      const user = JSON.parse(userData);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const res = await axios.get(
+        `https://67c83d630acf98d070858e78.mockapi.io/Pet/users/${user.id}`
+      );
+
+      const userData = res.data;
+      userData.avatar = convertBase64ToImage(userData.avatar);
       setUser({
-        name: user.fullName,
-        avatar: user.avatar,
+        name: userData.fullName,
+        avatar: userData.avatar,
       });
-    }
+      setLoggedIn(true);
+    };
+    fetchUserData();
   }, []);
 
-  // const handleLogout = () => {
-  //   localStorage.removeItem("authToken");
-  //   localStorage.removeItem("user");
-  //   setLoggedIn(false);
-  //   setUser({
-  //     name: "",
-  //     avatar: "/avatar.png",
-  //   });
-  // };
+  const handleLogout = () => {
+    setIsLoggingOut(true);
+    localStorage.removeItem("user");
+    setTimeout(() => {
+      navigate("/");
+      setLoggedIn(false);
+      setIsLoggingOut(false); // tắt loading sau khi chuyển hướng
+    }, 2000);
+  };
+
+  const menuOptionsUser = [
+    {
+      label: "Tài khoản của bạn",
+      icon: <FaUser className="mr-2" />,
+      href: "/userProfile",
+    },
+    {
+      label: "Đơn hàng của bạn",
+      icon: <FaShoppingBag className="mr-2" />,
+      href: "/userProfile",
+    },
+    {
+      label: "Lịch sử mua hàng",
+      icon: <FaHistory className="mr-2" />,
+      href: "/userProfile",
+    },
+    {
+      label: "Đăng xuất",
+      icon: <FaSignOutAlt className="mr-2" />,
+      onClick: handleLogout,
+    },
+  ];
 
   return (
     <header className="bg-white shadow-md">
+      <LoadingOverlay isVisible={isLoggingOut} />
       <div className="container mx-auto flex flex-wrap items-center justify-evenly py-2 px-4 md:px-8 lg:px-16">
         {/* logo */}
         <div className="flex items-center space-x-3">
@@ -108,16 +153,24 @@ const Header = () => {
             {/* user */}
             <div className="flex items-center space-x-4 cursor-pointer">
               {loggedIn ? (
-                <div className="flex items-center space-x-2 cursor-pointer">
-                  <img
-                    src={user.avatar}
-                    alt="User avatar"
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <span className="text-gray-700 text-sm font-medium text-brown-hover text-xl">
-                    {user.name}
-                  </span>
-                </div>
+                <PopupMenu
+                  trigger={
+                    <div className="flex items-center space-x-2 cursor-pointer">
+                      <img
+                        src={user.avatar}
+                        alt="User avatar"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <span
+                        className="text-gray-700 text-sm font-medium text-brown-hover"
+                        style={{ fontSize: "1.1rem" }}
+                      >
+                        {user.name}
+                      </span>
+                    </div>
+                  }
+                  options={menuOptionsUser}
+                />
               ) : (
                 <>
                   {/* đăng ký, đăng nhập  */}
@@ -181,7 +234,10 @@ const Header = () => {
                   alt="User avatar"
                   className="w-10 h-10 rounded-full object-cover"
                 />
-                <span className="text-gray-700 text-sm font-medium text-brown-hover text-xl">
+                <span
+                  className="text-gray-700 text-sm font-medium text-brown-hover text-xl"
+                  style={{ fontSize: "1.1rem" }}
+                >
                   {user.name}
                 </span>
               </div>
