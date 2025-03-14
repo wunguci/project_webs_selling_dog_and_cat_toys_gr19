@@ -9,6 +9,7 @@ import Slider from "react-slick"
 import { useState } from "react"
 import { IoIosArrowForward, IoMdCart } from "react-icons/io"
 import pet from '../assets/images/pet.png'
+import DialogProduct from "../components/DialogProduct"
 
 
 const categories = [
@@ -58,6 +59,7 @@ const ProductDetail = () => {
   const [image, setImage] = useState(categories[0].image);
 
   const CustomPrevArrow = (props) => {
+    // eslint-disable-next-line react/prop-types
     const { onClick } = props;
     return (
       <MdOutlineArrowBackIos className="absolute top-1/2 -left-2 bg-amber-50 rounded-full p-2 -translate-y-1/2 z-10 hover:cursor-pointer" size={30} onClick={onClick} />
@@ -73,7 +75,7 @@ const ProductDetail = () => {
 
   var settings = {
     infinite: true,
-    slidesToShow: 3,
+    slidesToShow: 5,
     slidesToScroll: 2,
     autoplay: true,
     autoplaySpeed: 2000,
@@ -104,6 +106,7 @@ const ProductDetail = () => {
   };
 
   const [quantity, setQuantity] = useState(1);
+  const [open, setOpen] = useState(false);
 
   const handleDecrease = () => {
     if (quantity > 1) {
@@ -125,7 +128,7 @@ const ProductDetail = () => {
   return (
     
     <MainLayout>
-      <ul className="flex gap-10 border-b-[1px] justify-center border-[#c49a6c] items-center">
+      <ul className="gap-10 border-b-[1px] justify-center border-[#c49a6c] items-center hidden md:flex">
         <Link className="font-bold text-blue-900">Cam kết</Link>
         {
           services.map((service, index)=>(
@@ -139,9 +142,9 @@ const ProductDetail = () => {
         }
       </ul>
       <div className="relative">
-        <img src={image1} alt="" />
-        <div className="absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2  text-[20px] text-white font-bold text-center">
-          <h1 className="mb-4 text-2xl">Bát ăn nghiêng chống gù cho chó mèo</h1>
+        <img className="h-32 md:w-full md:h-full" src={image1} alt="" />
+        <div className="absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 text-base md:text-[20px] text-white font-bold text-center">
+          <h1 className="mb-4 text-2xl hidden md:block">Bát ăn nghiêng chống gù cho chó mèo</h1>
           <div>
             <Link to="/" className="hover:text-[#c49a6c]">Trang chủ</Link> 
             <span> &gt; </span>
@@ -151,15 +154,15 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
-      <div className="max-w-[1350px] mx-auto">
-        <div className="flex gap-5 mt-10">
-          <div className="w-2/7 sticky bg-amber-100 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px] rounded-[5px]">
-            <div className="m-3 flex gap-3 flex-col">
-              <div className="border-2 border-amber-200 text-center rounded-[5px]">
+      <div className="max-w-[1350px] mx-auto flex flex-col gap-5 px-5">
+        <div className="flex flex-col md:flex-row gap-5 mt-10">
+          <div className="w-full md:w-2/7 bg-amber-50 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px] rounded-[5px]">
+            <div className="m-3 flex gap-3 flex-row-reverse items-center md:flex-col">
+              <div className="border-2 w-5/6 md:w-full border-amber-200 text-center rounded-[5px]">
                 <img src={image} alt="" />
               </div>
-              <div>
-                <ul className="flex gap-2">
+              <div className="w-1/6 md:w-full">
+                <ul className="flex flex-col md:flex-row gap-2">
                   {
                     categories.map((item, index)=>(
                       <li key={index} onClick={()=>setImage(item.image)} className={`${image===item.image?'border-2':""} border-blue-600 rounded-[3px]`}>
@@ -171,86 +174,46 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
-          <div className="w-3/7 overflow-y-auto bg-amber-50 flex flex-col gap-2">
-            <div className="p-3 flex flex-col gap-3 bg-amber-300 rounded-[5px]">
-              <h1 className="text-[22px] font-semibold">Bát ăn nghiêng chống gù cho chó mèo</h1>
-              <span className="opacity-50">Đã bán: 10</span>
-              <div className="flex items-center gap-5">
-                <h5 className="font-bold text-[25px] text-red-600">100.000đ</h5>
-                <span>-10%</span>
-                <span className="line-through opacity-50">90.000đ</span>
-              </div>
-            </div>
-            <div className="p-3 bg-amber-300 rounded-[5px]">
-              <div className="flex gap-3 flex-col">
-                <h5 className="font-medium text-[18px]">Thông tin vận chuyển</h5>
-                <div className="flex justify-between">
-                  <span>Giao đến: 12 Nguyễn Văn Bảo, P.1, Q.Gò Vấp, TPHCM</span>
-                  <span className="text-blue-700 cursor-pointer">Đổi</span>
+          <div className="w-full md:w-3/7 bg-amber-50">
+            <div className="flex flex-col gap-3 p-3">
+              <div className="p-3 flex flex-col gap-3 bg-amber-300 rounded-[5px]">
+                <h1 className="text-[22px] font-semibold">Bát ăn nghiêng chống gù cho chó mèo</h1>
+                <span className="opacity-50">Đã bán: 10</span>
+                <div className="flex items-center gap-5">
+                  <h5 className="font-bold text-[25px] text-red-600">100.000đ</h5>
+                  <span>-10%</span>
+                  <span className="line-through opacity-50">90.000đ</span>
                 </div>
-                <hr />
-                <div className="flex flex-col gap-1">
-                  <div className="flex gap-2 items-center">
-                    <FaShippingFast size={20} className="opacity-60"/>
-                    <span className="font-medium">Thời gian giao hàng</span>
+              </div>
+              <div className="p-3 bg-amber-300 rounded-[5px]">
+                <div className="flex gap-3 flex-col">
+                  <h5 className="font-medium text-[18px]">Thông tin vận chuyển</h5>
+                  <div className="flex justify-between">
+                    <span>Giao đến: 12 Nguyễn Văn Bảo, P.1, Q.Gò Vấp, TPHCM</span>
+                    <span className="text-blue-700 cursor-pointer">Đổi</span>
                   </div>
-                  <span>
-                    Trước 19h, {new Date(new Date().setDate(new Date().getDate() + 3)).toLocaleDateString("vi-VN")}
-                  </span>
+                  <hr />
+                  <div className="flex flex-col gap-1">
+                    <div className="flex gap-2 items-center">
+                      <FaShippingFast size={20} className="opacity-60"/>
+                      <span className="font-medium">Thời gian giao hàng</span>
+                    </div>
+                    <span>
+                      Trước 19h, {new Date(new Date().setDate(new Date().getDate() + 3)).toLocaleDateString("vi-VN")}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="p-3 bg-amber-300 rounded-[5px] flex flex-col gap-2">
-              <h3 className="font-medium">Ưu đãi khác</h3>
-              <div className="flex justify-between items-center">
-                <span>4 Mã Giảm Giá</span>
-                <IoIosArrowForward className="cursor-pointer"/>
+              <div className="p-3 bg-amber-300 rounded-[5px] flex flex-col gap-2">
+                <h3 className="font-medium">Ưu đãi khác</h3>
+                <div className="flex justify-between items-center">
+                  <span>4 Mã Giảm Giá</span>
+                  <IoIosArrowForward className="cursor-pointer"/>
+                </div>
               </div>
-            </div>
-            <div className="p-3 bg-amber-300 rounded-[5px] flex flex-col gap-2">
-              <h3 className="font-medium">Sản phẩm tương tự</h3>
-              <Slider {...settings}>
-                {
-                  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => (
-                    <div key={index} className="px-3">
-                      <div className='bg-amber-50 p-3 rounded-[10px] overflow-hidden'>
-                        <div>
-                          <div className="flex flex-col gap-2 justify-center items-center">
-                            <div className="relative group hover:cursor-pointer">
-                              <img className="hover:opacity-70" src="https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_large.jpeg" alt="" />
-                              <div className="flex gap-3 absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100">
-                                <div className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
-                                  <MdOutlineRemoveRedEye onClick={() => setOpen(true)} className="hover:text-white" size={25}/>
-                                </div>
-                                <div className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
-                                  <IoMdCart className="hover:text-white" size={25}/>
-                                </div>
-                              </div>
-                            </div>
-                            <h5 className="line-clamp-1 hover:text-[#c49a6c] hover:cursor-pointer">Bát ăn nghiêng chống gù cho chó mèo</h5>
-                            <span className="text-1xl text-[#c49a6c]">45,000Đ</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                }
-              </Slider>
-            </div>
-            <div className="p-3 bg-amber-300 rounded-[5px] flex flex-col gap-2">
-              <h3 className="font-medium">Mô tả sản phẩm</h3>
-              <span>- Tên sản phẩm: Bát ăn có đế nghiêng chống gù cho chó mèo.</span>
-              <p>
-                Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. 
-                Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được 
-                độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm 
-                vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa.
-              </p>
-              <span>- Chất liệu: Nhựa PP an toàn cho sức khỏe và thân thiện với môi trường. Chịu nhiệt tốt. Dễ dàng lau chùi.</span>
-              <span>- Kích thước: dài, rộng 13 cm, cao 14.5 cm.</span>
             </div>
           </div>
-          <div className="w-2/7 sticky bg-amber-50 rounded-[5px]">
+          <div className="w-full md:w-2/7 bg-amber-50 rounded-[5px]">
             <div className="p-3 flex flex-col gap-3">
               <div className="flex gap-5 items-center">
                 <div className="rounded-full bg-amber-800">
@@ -285,13 +248,57 @@ const ProductDetail = () => {
                   </button>
                 </div>
                 <h1 className="font-semibold text-lg text-gray-800">Tổng tiền</h1>
-                <span className="font-semibold text-3xl text-gray-800">91.800đ</span>
-
+                <span className="font-semibold text-3xl text-gray-800">
+                  {new Intl.NumberFormat('vi-VN').format(quantity * 91000)}đ
+                </span>
                 <button className="bg-amber-600 text-white w-full py-2 text-[20px] rounded-[10px]">Mua ngay</button>
                 <button className="border-2 border-amber-600 w-full py-2 text-[20px] rounded-[10px]">Thêm vào giỏ hàng</button>
               </div>
             </div>
           </div>
+        </div>
+        <div className="p-3 bg-amber-50 rounded-[5px] flex flex-col gap-2">
+          <h3 className="font-medium">Mô tả sản phẩm</h3>
+          <span>- Tên sản phẩm: Bát ăn có đế nghiêng chống gù cho chó mèo.</span>
+          <p>
+            Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. 
+            Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được 
+            độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm 
+            vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa.
+          </p>
+          <span>- Chất liệu: Nhựa PP an toàn cho sức khỏe và thân thiện với môi trường. Chịu nhiệt tốt. Dễ dàng lau chùi.</span>
+          <span>- Kích thước: dài, rộng 13 cm, cao 14.5 cm.</span>
+        </div>
+        <div className="p-3 bg-amber-50 rounded-[5px] flex flex-col gap-2">
+          <h3 className="font-medium">Sản phẩm tương tự</h3>
+          <Slider {...settings}>
+            {
+              [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => (
+                <div key={index} className="px-3">
+                  <div className='bg-amber-50 p-3 rounded-[10px] overflow-hidden'>
+                    <div>
+                      <div className="flex flex-col gap-2 justify-center items-center">
+                        <div className="relative group hover:cursor-pointer">
+                          <img className="hover:opacity-70" src="https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_large.jpeg" alt="" />
+                          <div className="flex gap-3 absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100">
+                            <div className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
+                              <MdOutlineRemoveRedEye onClick={() => setOpen(true)} className="hover:text-white" size={25}/>
+                            </div>
+                            <div className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
+                              <IoMdCart className="hover:text-white" size={25}/>
+                            </div>
+                          </div>
+                        </div>
+                        <h5 className="line-clamp-1 hover:text-[#c49a6c] hover:cursor-pointer">Bát ăn nghiêng chống gù cho chó mèo</h5>
+                        <span className="text-1xl text-[#c49a6c]">45,000Đ</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
+          </Slider>
+          <DialogProduct open={open} setOpen={setOpen}/>
         </div>
       </div>
     </MainLayout>

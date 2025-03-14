@@ -74,7 +74,9 @@ function DialogProduct({ open, setOpen }) {
             <Link className="font-bold text-2xl text-[#333] hover:text-[#c49a6c] transition-colors duration-150">Sữa tắm JOYCE & DOLLS hương trà xanh cho chó mèo</Link>
             <span>Thương hiệu: Khác | Tình trạng: Còn hàng</span>
             <div className="bg-[#c49a6c] w-44 text-center p-1 skew-x-[-15deg] ml-1">
-              <h2 className="text-2xl text-white font-bold">35,000Đ</h2>
+              <h2 className="text-2xl text-white font-bold">
+                {new Intl.NumberFormat('vi-VN').format(quantity * 91000)}đ
+              </h2>
             </div>
             <div className="flex items-center gap-5">
               <span className="text-gray-700">Số lượng: </span>

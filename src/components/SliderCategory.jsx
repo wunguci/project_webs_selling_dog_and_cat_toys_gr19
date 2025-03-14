@@ -99,14 +99,14 @@ function SliderCategory() {
   };
 
   return (
-    <div className="relative bottom-20 z-20 max-w-[1200px] mx-auto bg-amber-50">
+    <div className="relative my-5 md:bottom-20 z-20 max-w-[1200px] mx-auto bg-amber-50">
       <Slider {...settings}>
       {
         categories.map((item, index) => (
           <div key={index}>
-            <div onClick={()=>navigate(`/${item.link}`)} className="h-40 flex flex-col justify-center items-center shadow-[0_10px_20px_rgba(240,_46,_170,_0.7)] group hover:cursor-pointer">
-              <img src={item.image} alt="" className="size-20 transition-transform duration-500 group-hover:rotate-y-[360deg]"/>
-              <span className="group-hover:text-amber-700">{item.title}</span>
+            <div onClick={()=>navigate(`/${item.link}`)} className=" h-30 md:h-40 flex flex-col justify-center items-center shadow-[0_10px_20px_rgba(240,_46,_170,_0.7)] group hover:cursor-pointer">
+              <img src={item.image} alt="" className="size-16 md:size-20 transition-transform duration-500 group-hover:rotate-y-[360deg]"/>
+              <span className="group-hover:text-amber-700 text-[12px] md:text-base">{item.title}</span>
             </div>
           </div>
         ))
