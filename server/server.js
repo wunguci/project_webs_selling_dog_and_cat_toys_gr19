@@ -1,0 +1,33 @@
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import userRoutes from './routes/userRoutes.js';
+import productRoutes from './routes/productRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
+
+const app = express();
+// eslint-disable-next-line no-undef
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Connect to MongoDB
+mongoose.connect('mongodb+srv://vutkd23405:vutkd23405@petshop.15d6r.mongodb.net/PetShop?retryWrites=true&w=majority')
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Could not connect to MongoDB', err));
+
+// Routes
+app.get('/api', (req, res) => {
+  res.json({ message: 'Welcome to the API!' });
+});
+
+app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/categories', categoryRoutes);
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

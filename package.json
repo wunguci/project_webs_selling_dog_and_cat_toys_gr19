@@ -7,12 +7,16 @@
     "dev": "vite --host",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server/server.js"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.1",
     "@tailwindcss/vite": "^4.0.9",
     "axios": "^1.8.2",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mongoose": "^8.12.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-fast-marquee": "^1.6.5",

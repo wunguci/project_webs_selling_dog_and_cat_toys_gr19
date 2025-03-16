@@ -72,6 +72,7 @@ const Register = () => {
     return newErrors;
   };
 
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setErrors({});
@@ -84,30 +85,48 @@ const Register = () => {
     }
 
     try {
-      // check trùng
+      // Kiểm tra trùng lặp email và số điện thoại
       const { phone, email } = formData;
-      const existingUsers = await axios.get(
-        "https://67c83d630acf98d070858e78.mockapi.io/Pet/users"
+      const checkDuplicateResponse = await axios.post(
+        "http://localhost:5000/api/users/check-duplicate",
+        {
+          phone,
+          email,
+        }
       );
 
-      const duplicateEmail = existingUsers.data.find(
-        (user) => user.email === email
-      );
-
-      const duplicatePhone = existingUsers.data.find(
-        (user) => user.phone === phone
-      );
-
-      if (duplicateEmail || duplicatePhone) {
-        setErrors({
-          ...(duplicateEmail && { email: "Email đã tồn tại." }),
-          ...(duplicatePhone && { phone: "Số điện thoại đã tồn tại." }),
-        });
-        toast.error("Thông tin đã tồn tại!");
+      if (checkDuplicateResponse.data.duplicateEmail) {
+        setErrors({ email: "Email đã tồn tại." });
+        toast.error("Email đã tồn tại!");
         return;
       }
 
-      // create user nếu không trùng
+      if (checkDuplicateResponse.data.duplicatePhone) {
+        setErrors({ phone: "Số điện thoại đã tồn tại." });
+        toast.error("Số điện thoại đã tồn tại!");
+        return;
+      }
+
+   
+      const imagePath = "/avatar.png"; 
+      const response = await fetch(imagePath); 
+      const blob = await response.blob();
+
+      // Chuyển đổi Blob thành base64
+      const defaultAvatarBase64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob); 
+      });
+
+      if (!defaultAvatarBase64) {
+        throw new Error("Không thể chuyển đổi hình ảnh mặc định.");
+      }
+
+      console.log("defaultAvatarBase64:", defaultAvatarBase64);
+
+      // Tạo người dùng mới
       const userData = {
         fullName: formData.fullName,
         phone: formData.phone,
@@ -115,11 +134,11 @@ const Register = () => {
         birthDate: formData.birthDate,
         password: formData.password,
         role: "user",
-        avatar: "/avatar.png",
+        avatar: defaultAvatarBase64.split(",")[1],
       };
 
       const res = await axios.post(
-        "https://67c83d630acf98d070858e78.mockapi.io/Pet/users",
+        "http://localhost:5000/api/users/register",
         userData
       );
 
@@ -139,7 +158,7 @@ const Register = () => {
       console.error("API Error:", err.response?.data || err.message);
       setErrors({
         general:
-          err.response?.data?.messsage || "Đã có lỗi xảy ra. Vui lòng thử lại.",
+          err.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.",
       });
     }
   };
