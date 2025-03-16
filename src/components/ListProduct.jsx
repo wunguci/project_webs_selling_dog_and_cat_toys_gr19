@@ -4,6 +4,143 @@ import { MdOutlineRemoveRedEye } from "react-icons/md"
 import { GrSettingsOption } from "react-icons/gr"
 import Product from "./Product"
 
+
+const products =  [
+    {
+    "_id": 1,
+    "name": "Bát ăn nghiêng chống gù cho chó mèo",
+    "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
+    "price": 45000,
+    "category": {
+      "name": "Shop cho chó",
+      "description": "Bát ăn"
+    },
+    "stock": 20,
+    "sold": 10,
+    "images": [
+      "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/cc3a9b0c-02fb-4d77-9d94-38043e3cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/ef0ba1ee-5367-4413-9254-9d4fb013e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
+    ],
+    "__v": 0
+  },
+  {
+    "_id": 2,
+    "name": "Bát ăn nghiêng chống gù cho chó mèo",
+    "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
+    "price": 45000,
+    "category": {
+      "name": "Shop cho chó",
+      "description": "Bát ăn"
+    },
+    "stock": 20,
+    "sold": 10,
+    "images": [
+      "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/c…cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/e…3e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
+    ],
+    "__v": 0
+  },
+  {
+    "_id": 3,
+    "name": "Bát ăn nghiêng chống gù cho chó mèo",
+    "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
+    "price": 45000,
+    "category": {
+      "name": "Shop cho chó",
+      "description": "Bát ăn"
+    },
+    "stock": 20,
+    "sold": 10,
+    "images": [
+      "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/c…cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/e…3e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
+    ],
+    "__v": 0
+  },
+  {
+    "_id": 4,
+    "name": "Bát ăn nghiêng chống gù cho chó mèo",
+    "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
+    "price": 45000,
+    "category": {
+      "name": "Shop cho chó",
+      "description": "Bát ăn"
+    },
+    "stock": 20,
+    "sold": 10,
+    "images": [
+      "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/c…cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/e…3e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
+    ],
+    "__v": 0
+  },
+  {
+    "_id": 5,
+    "name": "Bát ăn nghiêng chống gù cho chó mèo",
+    "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
+    "price": 45000,
+    "category": {
+      "name": "Shop cho chó",
+      "description": "Bát ăn"
+    },
+    "stock": 20,
+    "sold": 10,
+    "images": [
+      "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/c…cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/e…3e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
+    ],
+    "__v": 0
+  },
+  {
+    "_id": 6,
+    "name": "Bát ăn nghiêng chống gù cho chó mèo",
+    "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
+    "price": 45000,
+    "category": {
+      "name": "Shop cho chó",
+      "description": "Bát ăn"
+    },
+    "stock": 20,
+    "sold": 10,
+    "images": [
+      "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/c…cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/e…3e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
+    ],
+    "__v": 0
+  },
+  {
+    "_id": 7,
+    "name": "Bát ăn nghiêng chống gù cho chó mèo",
+    "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
+    "price": 45000,
+    "category": {
+      "name": "Shop cho chó",
+      "description": "Bát ăn"
+    },
+    "stock": 20,
+    "sold": 10,
+    "images": [
+      "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/c…cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
+      "https://product.hstatic.net/200000521195/product/e…3e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
+    ],
+    "__v": 0
+  }
+]
+
 function ListProduct({style, title}) {
 
   const collections = [
@@ -76,8 +213,8 @@ function ListProduct({style, title}) {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
           {
-            [1, 2, 3, 4, 5, 6, 7, 8].map((item, index) => (
-              <Product key={index}/>
+            products.map((product, index) => (
+              <Product key={index} product={product}/>
             ))
           }
         </div>
