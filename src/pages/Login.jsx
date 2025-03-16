@@ -96,10 +96,9 @@ const Login = () => {
 
       setSuccess(true);
       toast.success("Đăng nhập thành công!");
-      setFormData({
-        phone: "",
-        password: "",
-      });
+      setTimeout(() => {
+        navigate("/");
+      }, 2000)
     } catch (err) {
       console.error("API Error:", err.response?.data || err.message);
       setErrors({
