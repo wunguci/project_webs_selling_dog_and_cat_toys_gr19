@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { href } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { FaAngleRight } from "react-icons/fa6";
 
-const PopupMenu = ({ trigger, options }) => {
+const PopupMenu = ({ trigger, options, menuType }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
-  let timeoutId = null;
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -17,52 +16,60 @@ const PopupMenu = ({ trigger, options }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleMouseEnter = () => {
-    clearTimeout(timeoutId);
-    setIsOpen(true);
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
   };
 
-  const handleMouseLeave = () => {
-    // delay 300ms trước khi đóng menu
-    timeoutId = setTimeout(() => {
-      setIsOpen(false);
-    }, 300);
+  const handleItemClick = (onClick) => {
+    setIsOpen(false);
+    if (onClick) {
+      onClick();
+    }
   };
 
   return (
-    <div
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      ref={menuRef}
-      className="relative"
-    >
-      {/* trigger element */}
-      <div>{trigger}</div>
+    <div ref={menuRef} className="relative">
+      {/* rigger element */}
+      <div onClick={toggleMenu} className="cursor-pointer">
+        {trigger}
+      </div>
 
       {/* popup menu */}
-      {isOpen && (
-        <div
-          className="absolute left-0 w-60 mt-2 bg-white border border-gray-200 rounded-md shadow-lg z-50"
-          onMouseEnter={() => clearTimeout(timeoutId)} // hủy bỏ timeout khi hover vào menu
-          onMouseLeave={handleMouseLeave}
-        >
-          <ul className="py-2">
-            {options.map((option, index) => (
-              <li key={index}>
-                <button
-                  onClick={option.onClick}
-                  className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 hover:text-blue-600"
+      <div
+        className={`popup-menu absolute left-0 ${
+          menuType === "menuOptionsCategories" ? "w-65" : "w-55"
+        } mt-2 bg-white border border-gray-200 rounded-md shadow-lg z-50 ${
+          isOpen ? "open" : ""
+        }`}
+      >
+        <ul className="py-2">
+          {options.map((option, index) => (
+            <li key={index}>
+              {menuType === "menuOptionsCategories" ? (
+                <Link
+                  to={option.href}
+                  className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 text-brown-hover flex items-center border-brown-hover text-white-hover"
+                  onClick={() => handleItemClick(option.onClick)}
                 >
-                  <Link to={option.href} className="flex items-center">
-                    {option.icon}
-                    <span>{option.label}</span>
-                  </Link>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+                  <FaAngleRight className="mr-3 text-white-hover" />
+                  <span style={{ fontSize: "15px" }}>{option.label}</span>
+                </Link>
+              ) : (
+                <Link
+                  to={option.href}
+                  onClick={() => handleItemClick(option.onClick)}
+                  className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 text-brown-hover flex items-center"
+                >
+                  {option.icon}
+                  <span className="ml-1" style={{ fontSize: "15px" }}>
+                    {option.label}
+                  </span>
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

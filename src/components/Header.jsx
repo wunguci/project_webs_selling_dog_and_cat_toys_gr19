@@ -14,6 +14,7 @@ import { IoMdMenu, IoIosClose } from "react-icons/io";
 import { RiMenu3Fill } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import PopupMenu from "./PopupMenu";
+import HoverPopupMenu from "./HoverPopupMenu";
 import LoadingOverlay from "./LoadingOverlay";
 import axios from "axios";
 
@@ -71,6 +72,49 @@ const Header = () => {
     }, 2000);
   };
 
+  const menuOptionsCategories = [
+    {
+      label: "Thức ăn cho cún",
+      href: "/dogFood",
+    },
+    {
+      label: "Thức ăn cho mèo",
+      href: "/catFood",
+    },
+    {
+      label: "Bát ăn thú cưng",
+      href: "/catFood",
+    },
+    {
+      label: "Vòng cổ dây dắt",
+      href: "/catFood",
+    },
+    {
+      label: "Thuốc và dinh dưỡng",
+      href: "/catFood",
+    },
+    {
+      label: "Sữa tắm & dụng cụng vệ sinh",
+      href: "/catFood",
+    },
+    {
+      label: "Chuồng, nệm & túi",
+      href: "/catFood",
+    },
+    {
+      label: "Chậu & cát vệ sinh",
+      href: "/catFood",
+    },
+    {
+      label: "Đồ chơi thú cưng",
+      href: "/catFood",
+    },
+    {
+      label: "Thời trang thú cưng",
+      href: "/catFood",
+    },
+  ];
+
   const menuOptionsUser = [
     {
       label: "Tài khoản của bạn",
@@ -91,6 +135,68 @@ const Header = () => {
       label: "Đăng xuất",
       icon: <FaSignOutAlt className="mr-2" />,
       onClick: handleLogout,
+    },
+  ];
+
+  const menuOptionsDog = [
+    {
+      label: "Thức ăn & pate",
+      href: "/dogFood",
+    },
+    {
+      label: "Bát ăn",
+      href: "/dogFood",
+    },
+    {
+      label: "Vòng cổ dây dắt",
+      href: "/dogFood",
+    },
+    {
+      label: "Thuốc & dinh dưỡng",
+      href: "/dogFood",
+    },
+    {
+      label: "Sữa tắm & dụng cụ vệ sinh",
+      href: "/dogFood",
+    },
+    {
+      label: "Chuồng, nệm & túi vận chuyển",
+      href: "/dogFood",
+    },
+    {
+      label: "Đồ chơi thú cưng",
+      href: "/dogFood",
+    },
+  ];
+
+  const menuOptionsCat = [
+    {
+      label: "Thức ăn & pate",
+      href: "/dogFood",
+    },
+    {
+      label: "Bát ăn",
+      href: "/dogFood",
+    },
+    {
+      label: "Vòng cổ dây dắt",
+      href: "/dogFood",
+    },
+    {
+      label: "Thuốc & dinh dưỡng",
+      href: "/dogFood",
+    },
+    {
+      label: "Sữa tắm & dụng cụ vệ sinh",
+      href: "/dogFood",
+    },
+    {
+      label: "Chuồng, nệm & túi vận chuyển",
+      href: "/dogFood",
+    },
+    {
+      label: "Đồ chơi thú cưng",
+      href: "/dogFood",
     },
   ];
 
@@ -170,6 +276,7 @@ const Header = () => {
                     </div>
                   }
                   options={menuOptionsUser}
+                  menuType="menuOptionsUser"
                 />
               ) : (
                 <>
@@ -305,35 +412,49 @@ const Header = () => {
         <div className="container mx-auto flex flex-wrap items-center justify-evenly px-4 py-2 lg:px-16">
           {/* Danh mục sản phẩm */}
           <div className="relative group">
-            <button className="flex items-center space-x-3 bg-brown w-65 h-12 text-white px-5 rounded-lg focus:outline-none cursor-pointer">
-              <IoMdMenu className="text-2xl" />
-              <span className="font-semibold text-2sm">DANH MỤC SẢN PHẨM</span>
-            </button>
-            <div className="absolute hidden group-hover:block bg-white text-gray-700 shadow-md mt-2 rounded-md w-48">
-              <ul className="py-2">
-                <li className="px-4 py-2 hover:bg-gray-100">Thức ăn cho cún</li>
-                <li className="px-4 py-2 hover:bg-gray-100">Thức ăn cho mèo</li>
-                <li className="px-4 py-2 hover:bg-gray-100">Bát ăn thú cưng</li>
-              </ul>
-            </div>
+            <PopupMenu
+              trigger={
+                <button className="flex items-center space-x-3 bg-brown w-65 h-12 text-white px-5 rounded-lg focus:outline-none cursor-pointer">
+                  <IoMdMenu className="text-2xl" />
+                  <span className="font-semibold text-2sm">
+                    DANH MỤC SẢN PHẨM
+                  </span>
+                </button> 
+              }
+              options={menuOptionsCategories}
+              menuType="menuOptionsCategories"
+            />
           </div>
 
           {/* Links */}
           <div className="hidden lg:flex space-x-8">
-            <a
-              href="#"
-              className="text-gray-700 flex items-center text-brown-hover"
-            >
-              SHOP CHO CÚN
-              <FaCaretDown className="ml-2 text-lg " />
-            </a>
-            <a
-              href="#"
-              className="text-gray-700 flex items-center text-brown-hover"
-            >
-              SHOP CHO MÈO
-              <FaCaretDown className="ml-2 text-lg " />
-            </a>
+            <HoverPopupMenu
+              trigger={
+                <a
+                  href="#"
+                  className="text-gray-700 flex items-center text-brown-hover"
+                >
+                  SHOP CHO CÚN
+                  <FaCaretDown className="ml-2 text-lg " />
+                </a>
+              }
+              options={menuOptionsDog}
+            />
+
+            <HoverPopupMenu
+              trigger={
+                <a
+                  href="#"
+                  className="text-gray-700 flex items-center text-brown-hover"
+                >
+                  SHOP CHO MÈO
+                  <FaCaretDown className="ml-2 text-lg" />
+                </a>
+              }
+              options={menuOptionsCat}
+              menuType="menuOptionsCat"
+            />
+
             <a href="#" className="text-gray-700 text-brown-hover">
               KHUYẾN MÃI
             </a>

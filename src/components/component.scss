@@ -14,6 +14,14 @@
     border: 2px solid #C49A6C;
 }
 
+.border-brown-hover:hover {
+    background-color: #c4925c;
+}
+
+.text-white-hover:hover {
+    color: white;
+}
+
 
 // Menu hidden 
 .hidden-menu {
@@ -73,4 +81,107 @@
 
 .text-red {
     color: rgb(185, 0, 0);
+}
+
+
+/* hiệu ứng popup */
+.popup-menu {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    visibility 0.3s;
+}
+
+.popup-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(10px);
+}
+
+/* hiệu ứng giấy cong */
+.popup-menu::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  transform: rotate(45deg);
+  box-shadow: -2px -2px 5px rgba(0, 0, 0, 0.1);
+  z-index: -1;
+}
+
+/* hiệu ứng hover và click */
+.popup-menu li {
+  transition: background-color 0.2s ease;
+}
+
+.popup-menu li:hover {
+  background-color: #f3f4f6; 
+}
+
+
+/* Container for the hover popup */
+.hover-popup-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Popup menu styles */
+.hover-popup-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  transform-origin: top center;
+  transform: perspective(500px) rotateX(-90deg);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.hover-popup-container:hover .hover-popup-menu {
+  transform: perspective(500px) rotateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Popup styling */
+.hover-popup-menu {
+  z-index: 10;
+  width: 12rem; /* Adjust the width as needed */
+  padding: 0.5rem 0;
+  background-color: #fff;
+  border: 1px solid #e2e8f0; /* Tailwind's gray-200 */
+  border-radius: 0.375rem; /* Tailwind's rounded-md */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06); /* Tailwind's shadow-lg */
+}
+
+/* List item styles */
+.hover-popup-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hover-popup-menu li {
+  padding: 0.5rem 1rem;
+}
+
+.hover-popup-menu a,
+.hover-popup-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  text-decoration: none;
+  color: #4a5568; /* Tailwind's gray-700 */
+  transition: color 0.2s ease;
+}
+
+.hover-popup-menu a:hover,
+.hover-popup-menu button:hover {
+  color: #8b4513; /* Custom brown-hover color */
 }
