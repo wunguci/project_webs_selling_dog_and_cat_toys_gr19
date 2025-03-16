@@ -7,10 +7,29 @@ import Search from "./pages/Search";
 import CartShop from "./pages/CartShop";
 import CheckOut from "./pages/CheckOut";
 import UserProfile from "./pages/UserProfile";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "./stores/productSlice";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getTotals } from "./stores/cartSlice";
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(fetchProducts())
+    dispatch(getTotals())
+  }, [dispatch])
+
+  const product = useSelector((state) => state)
+  console.log(product);
+  
+
   return (
     <BrowserRouter>
+     <ToastContainer />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

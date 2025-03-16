@@ -16,6 +16,8 @@ import { Link, useNavigate } from "react-router-dom";
 import PopupMenu from "./PopupMenu";
 import LoadingOverlay from "./LoadingOverlay";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { getTotals } from "../stores/cartSlice";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -94,6 +96,14 @@ const Header = () => {
     },
   ];
 
+  const dispatch = useDispatch();
+  const { cartTotalQuantity } = useSelector((state) => state.cart);
+
+  useEffect(()=>{
+    dispatch(getTotals())
+  }, [dispatch])
+  
+
   return (
     <header className="bg-white shadow-md">
       <LoadingOverlay isVisible={isLoggingOut} />
@@ -122,7 +132,7 @@ const Header = () => {
             <button className="text-brown cursor-pointer focus:outline-none relative">
               <FaShoppingCart className="text-2xl" />
               <span className="absolute -top-1 -right-2 bg-green-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                0
+                {cartTotalQuantity}
               </span>
             </button>
           </div>
@@ -194,7 +204,7 @@ const Header = () => {
                 <button className="text-brown cursor-pointer focus:outline-none relative">
                   <FaShoppingCart className="text-2xl" />
                   <span className="absolute -top-1 -right-2 bg-green-400 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                    0
+                    {cartTotalQuantity}
                   </span>
                 </button>
               </div>
