@@ -415,7 +415,7 @@ const Header = () => {
           </li>
           <li>
             <a
-              href="#"
+              href="/blogs/news"
               className="block text-gray-700 text-sm text-brown-hover"
             >
               TIN TỨC
@@ -475,7 +475,7 @@ const Header = () => {
             <a href="#" className="text-gray-700 text-brown-hover">
               KHUYẾN MÃI
             </a>
-            <a href="#" className="text-gray-700 text-brown-hover">
+            <a href="/blogs/news" className="text-gray-700 text-brown-hover">
               TIN TỨC
             </a>
           </div>
