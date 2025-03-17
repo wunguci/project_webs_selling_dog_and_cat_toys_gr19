@@ -125,10 +125,6 @@ const Header = () => {
   const [isHovered, setIsHovered] = useState(false);
   const { cartTotalQuantity } = useSelector((state) => state.cart);
 
-  useEffect(() => {
-    dispatch(getTotals());
-  }, [dispatch]);
-
   return (
     <header className="bg-white shadow-md">
       <LoadingOverlay isVisible={isLoggingOut} />
