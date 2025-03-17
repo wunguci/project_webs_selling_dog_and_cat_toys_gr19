@@ -29,12 +29,12 @@ const PopupMenu = ({ trigger, options, menuType }) => {
 
   return (
     <div ref={menuRef} className="relative">
-      {/* rigger element */}
+      {/* Trigger element */}
       <div onClick={toggleMenu} className="cursor-pointer">
         {trigger}
       </div>
 
-      {/* popup menu */}
+      {/* Popup menu */}
       <div
         className={`popup-menu absolute left-0 ${
           menuType === "menuOptionsCategories" ? "w-65" : "w-55"
