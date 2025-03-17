@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Link } from "react-router-dom"
 
 const CountdownTimer = ({ targetDate }) => {
   const calculateTimeLeft = () => {
@@ -90,6 +91,38 @@ const Home = () => {
           </div>
 
         <ListProduct title={'Shop cho mèo'} style/>
+
+        <div className="p-5 grid grid-cols-2 border-1 border-gray-400 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
+          <div className="flex flex-col gap-3">
+            <h1 className="font-bold text-blue-400 text-2xl">Tin tức</h1>
+            <div className="flex gap-5">
+              <img className="h-32" src="https://file.hstatic.net/200000521195/file/f0b0c62d-1913-4bf8-ba21-31b5d91d6d92_f169512700c4445996abe64225b71a56_grande.jpeg" alt="" />
+              <div className="flex flex-col justify-around">
+                <Link className="font-bold text-[18px] hover:text-blue-400">Cấp cứu chó bị sốc nhiệt tại nhà</Link>
+                <span>Khi quyết định nuôi thú cưng, đặc biệt là chó, bạn cần tìm hiểu những</span>
+                <div className="flex justify-between">
+                  <span>17/03/2025</span>
+                  <Link className="mr-5 text-blue-400">Xem thêm</Link>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-5">
+              <img className="h-32" src="https://file.hstatic.net/200000521195/file/f0b0c62d-1913-4bf8-ba21-31b5d91d6d92_f169512700c4445996abe64225b71a56_grande.jpeg" alt="" />
+              <div className="flex flex-col justify-around">
+                <Link className="font-bold text-[18px] hover:text-blue-400">Cấp cứu chó bị sốc nhiệt tại nhà</Link>
+                <span>Khi quyết định nuôi thú cưng, đặc biệt là chó, bạn cần tìm hiểu những</span>
+                <div className="flex justify-between">
+                  <span>17/03/2025</span>
+                  <Link className="mr-5 text-blue-400">Xem thêm</Link>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <img src="https://bizweb.dktcdn.net/100/147/060/themes/880570/assets/about_img_1.jpg?1741582585151" alt="" />
+            <img src="https://bizweb.dktcdn.net/100/147/060/themes/880570/assets/about_img_1.jpg?1741582585151" alt="" />
+          </div>
+        </div>
       </div>
     </MainLayout>
   )

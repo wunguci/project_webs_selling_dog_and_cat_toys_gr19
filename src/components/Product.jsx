@@ -17,7 +17,7 @@ function Product({ product, primary }) {
 
   return (
     <div>
-      <div className="flex flex-col gap-2 justify-center items-center">
+      <div className="flex flex-col gap-1 border-1 border-[#c49a6c] rounded-[5px] overflow-hidden">
         <div className="relative group hover:cursor-pointer">
           <Link to={"/product/2"}>
             <img className={`hover:opacity-70 w-screen ${primary?"p-5":""}`} src={product.images[0]} alt="" />
@@ -31,8 +31,13 @@ function Product({ product, primary }) {
             </button>
           </div>
         </div>
-        <Link to={"/product/2"} className="line-clamp-1 hover:text-[#c49a6c] hover:cursor-pointer">{product.name}</Link>
-        <span className="text-1xl text-[#c49a6c]">{product.price}Đ</span>
+        <div className='p-3 flex flex-col gap-1'>
+          <Link to={"/product/2"} className="line-clamp-2 hover:text-[#c49a6c] hover:cursor-pointer">{product.name}</Link>
+          <span className="text-1xl text-[#c49a6c] text-start">
+            {product.price.toLocaleString('vi-VN') + '₫'}
+          </span>
+          <button className='bg-[#c49a6c] border-2 border-[#c49a6c] duration-200 transition-colors hover:bg-white hover:text-[#c49a6c] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
+        </div>
       </div>
 
       <DialogProduct open={open} setOpen={setOpen}/>
