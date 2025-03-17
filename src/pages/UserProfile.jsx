@@ -16,11 +16,12 @@ import ScrollToTopButton from "../components/ScrollToTopButton";
 
 const UserProfile = () => {
   const [user, setUser] = useState({
-    name: "",
+    fullName: "",
     email: "",
     phone: "",
     address: "",
-    avatar: "/avatar.png",
+    birthDate: "",
+    avatar: "",
   });
 
   const [orders, setOrders] = useState([]);
@@ -32,8 +33,17 @@ const UserProfile = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
 
+  // Hàm chuyển đổi định dạng ngày
+  const formatDate = (dateString) => {
+    if (!dateString) return ""; // Trả về chuỗi rỗng nếu dateString không tồn tại
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const convertBase64ToImage = (base64) => {
-    if (!base64) return "/avatar.png";
     return `data:image/jpeg;base64,${base64}`;
   };
 
@@ -41,8 +51,13 @@ const UserProfile = () => {
     const fetchUserData = async () => {
       try {
         const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+          navigate("/login");
+          return;
+        }
+
         const res = await axios.get(
-          `https://67c83d630acf98d070858e78.mockapi.io/Pet/users/${user.id}`
+          `http://localhost:5000/api/users/${user._id}`
         );
 
         const userData = res.data;
@@ -56,21 +71,19 @@ const UserProfile = () => {
       }
     };
     fetchUserData();
-  }, []);
+  }, [navigate]);
 
-  // đăng xuất
   const handleLogout = () => {
     setIsLoggingOut(true);
     localStorage.removeItem("user");
     setTimeout(() => {
       navigate("/");
       setLoggedIn(false);
-      setIsLoggingOut(false); // tắt loading sau khi chuyển hướng
+      setIsLoggingOut(false);
     }, 2000);
   };
 
-  // cập nhật avatar
-  const handleAvatarChange = async (file, setUser) => {
+  const handleAvatarChange = async (file) => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = async () => {
@@ -80,11 +93,11 @@ const UserProfile = () => {
 
           const updateUser = {
             ...user,
-            avatar: avatarBinary.split(",")[1], // lưu dưới dạng Base64
+            avatar: avatarBinary.split(",")[1],
           };
 
           const res = await axios.put(
-            `https://67c83d630acf98d070858e78.mockapi.io/Pet/users/${user.id}`,
+            `http://localhost:5000/api/users/${user.id}`,
             updateUser,
             {
               headers: {
@@ -126,6 +139,29 @@ const UserProfile = () => {
     setActiveTab(tab);
   };
 
+  const handleUpdateProfile = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const res = await axios.put(
+        `http://localhost:5000/api/users/${user.id}`,
+        user,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const updatedUser = res.data;
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      toast.success("Cập nhật thông tin thành công!");
+    } catch (err) {
+      console.error("Lỗi khi cập nhật thông tin:", err);
+      toast.error("Cập nhật thông tin thất bại!");
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -139,7 +175,7 @@ const UserProfile = () => {
           <div className="md:col-span-1 bg-white shadow-md rounded-lg p-6">
             <div className="flex flex-col items-center ">
               <img
-                src={user.avatar || "/avatar.png"}
+                src={user.avatar}
                 alt="User Avatar"
                 className="w-24 h-24 rounded-full"
               />
@@ -156,7 +192,7 @@ const UserProfile = () => {
                 {selectedFile && (
                   <button
                     className="w-10 h-6 bg-blue-500 text-white rounded-sm hover:bg-blue-600 cursor-pointer"
-                    onClick={() => handleAvatarChange(selectedFile, setUser)}
+                    onClick={() => handleAvatarChange(selectedFile)}
                   >
                     Lưu
                   </button>
@@ -262,7 +298,7 @@ const UserProfile = () => {
                     <label className="w-32 font-medium">Ngày sinh:</label>
                     <input
                       type="date"
-                      value={user.birthDate}
+                      value={formatDate(user.birthDate)} // Sử dụng hàm formatDate
                       onChange={(e) =>
                         setUser({ ...user, birthDate: e.target.value })
                       }
@@ -306,6 +342,12 @@ const UserProfile = () => {
                     />
                     <FaEdit className="ml-2 text-gray-500 cursor-pointer" />
                   </div>
+                  <button
+                    onClick={handleUpdateProfile}
+                    className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                  >
+                    Cập nhật thông tin
+                  </button>
                 </div>
               </div>
             )}

@@ -64,6 +64,19 @@ const Login = () => {
     return newErrors;
   };
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/users");
+        console.log("All users:", res.data);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrors({});
@@ -76,14 +89,12 @@ const Login = () => {
     }
 
     try {
-      const res = await axios.get(
-        "https://67c83d630acf98d070858e78.mockapi.io/Pet/users"
-      );
+      const res = await axios.post("http://localhost:5000/api/users/login", {
+        phone: formData.phone,
+        password: formData.password,
+      });
 
-      // search for user with phone and password
-      const user = res.data.find(
-        (u) => u.phone === formData.phone && u.password === formData.password
-      );
+      const user = res.data;
 
       if (!user) {
         setErrors({
@@ -93,17 +104,16 @@ const Login = () => {
       }
 
       localStorage.setItem("user", JSON.stringify(user));
-
       setSuccess(true);
       toast.success("Đăng nhập thành công!");
       setTimeout(() => {
         navigate("/");
-      }, 2000)
+      }, 2000);
     } catch (err) {
       console.error("API Error:", err.response?.data || err.message);
       setErrors({
         general:
-          err.response?.data?.messsage || "Đã có lỗi xảy ra. Vui lòng thử lại.",
+          err.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.",
       });
     }
   };

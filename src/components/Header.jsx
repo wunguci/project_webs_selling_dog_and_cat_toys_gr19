@@ -26,7 +26,7 @@ const Header = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({
     name: "",
-    avatar: "/avatar.png",
+    avatar: "",
   });
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -49,18 +49,21 @@ const Header = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const user = JSON.parse(localStorage.getItem("user"));
-      const res = await axios.get(
-        `https://67c83d630acf98d070858e78.mockapi.io/Pet/users/${user.id}`
-      );
-
-      const userData = res.data;
-      userData.avatar = convertBase64ToImage(userData.avatar);
-      setUser({
-        name: userData.fullName,
-        avatar: userData.avatar,
-      });
-      setLoggedIn(true);
-    };
+      if (user) {
+        try {
+          const res = await axios.get(`http://localhost:5000/api/users/${user._id}`);
+          const userData = res.data;
+          userData.avatar = convertBase64ToImage(userData.avatar);
+          setUser({
+            name: userData.fullName,
+            avatar: userData.avatar,
+          });
+          setLoggedIn(true);
+        } catch (err) {
+          console.error("API Error:", err.response?.data || err.message);
+        }
+      }
+    };  
     fetchUserData();
   }, []);
 
@@ -121,7 +124,7 @@ const Header = () => {
     {
       label: "Tài khoản của bạn",
       icon: <FaUser className="mr-2" />,
-      href: "/userProfile",
+      href: `/userProfile/`,
     },
     {
       label: "Đơn hàng của bạn",
