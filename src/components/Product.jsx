@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../stores/cartSlice';
 
-function Product({ product }) {  
+function Product({ product, primary }) {  
 
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ function Product({ product }) {
       <div className="flex flex-col gap-2 justify-center items-center">
         <div className="relative group hover:cursor-pointer">
           <Link to={"/product/2"}>
-            <img className="hover:opacity-70 w-screen" src={product.images[0]} alt="" />
+            <img className={`hover:opacity-70 w-screen ${primary?"p-5":""}`} src={product.images[0]} alt="" />
           </Link>
           <div className="flex gap-3 absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100">
             <button onClick={() => setOpen(true)}  className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
