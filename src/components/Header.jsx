@@ -308,7 +308,7 @@ const Header = () => {
               )}
               {/* cart */}
               <div className="relative mx-5 mt-1">
-                <button className="text-brown cursor-pointer focus:outline-none relative">
+                <button className="text-brown cursor-pointer focus:outline-none relative" >
                   <FaShoppingCart className="text-2xl" />
                   <span className="absolute -top-1 -right-2 bg-green-400 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                     {cartTotalQuantity}
@@ -408,7 +408,7 @@ const Header = () => {
           </li>
           <li>
             <a
-              href="#"
+              href="/blogs/news"
               className="block text-gray-700 text-sm text-brown-hover"
             >
               TIN TỨC
@@ -468,7 +468,7 @@ const Header = () => {
             <a href="#" className="text-gray-700 text-brown-hover">
               KHUYẾN MÃI
             </a>
-            <a href="#" className="text-gray-700 text-brown-hover">
+            <a href="/blogs/news" className="text-gray-700 text-brown-hover">
               TIN TỨC
             </a>
           </div>
