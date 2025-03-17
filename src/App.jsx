@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
-import ProductDetail from "./pages/ProductDetail";
+import ProductDetail from "./pages/ProductDetail"; // Import ProductDetail
 import Search from "./pages/Search";
 import CartShop from "./pages/CartShop";
 import CheckOut from "./pages/CheckOut";
@@ -11,35 +11,30 @@ import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
 import NotFoundPage from "./pages/NotFoundPage";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { fetchProducts } from "./stores/productSlice";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getTotals } from "./stores/cartSlice";
 
 function App() {
-
   const dispatch = useDispatch();
 
-  useEffect(()=>{
-    dispatch(fetchProducts())
-    dispatch(getTotals())
-  }, [dispatch])
-
-  const product = useSelector((state) => state)
-  console.log(product);
-  
+  useEffect(() => {
+    dispatch(fetchProducts());
+    dispatch(getTotals());
+  }, [dispatch]);
 
   return (
     <BrowserRouter>
-     <ToastContainer />
+      <ToastContainer />
       <Routes>
       <Route path="*" element={<NotFoundPage />} />
 
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/product/:_id" element={<ProductDetail />} />{" "}
         <Route path="/search" element={<Search />} />
         <Route path="/cart" element={<CartShop />} />
         <Route path="/checkout/:id" element={<CheckOut />} />

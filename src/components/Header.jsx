@@ -30,6 +30,7 @@ const Header = () => {
   });
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -46,12 +47,28 @@ const Header = () => {
     return `data:image/jpeg;base64,${base64}`;
   };
 
+  // tetch danh mục sản phẩm từ API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/categories");
+        setCategories(res.data);
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   useEffect(() => {
     const fetchUserData = async () => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
         try {
-          const res = await axios.get(`http://localhost:5000/api/users/${user._id}`);
+          const res = await axios.get(
+            `http://localhost:5000/api/users/${user._id}`
+          );
           const userData = res.data;
           userData.avatar = convertBase64ToImage(userData.avatar);
           setUser({
@@ -63,7 +80,7 @@ const Header = () => {
           console.error("API Error:", err.response?.data || err.message);
         }
       }
-    };  
+    };
     fetchUserData();
   }, []);
 
@@ -77,48 +94,10 @@ const Header = () => {
     }, 2000);
   };
 
-  const menuOptionsCategories = [
-    {
-      label: "Thức ăn cho cún",
-      href: "/dogFood",
-    },
-    {
-      label: "Thức ăn cho mèo",
-      href: "/catFood",
-    },
-    {
-      label: "Bát ăn thú cưng",
-      href: "/catFood",
-    },
-    {
-      label: "Vòng cổ dây dắt",
-      href: "/catFood",
-    },
-    {
-      label: "Thuốc và dinh dưỡng",
-      href: "/catFood",
-    },
-    {
-      label: "Sữa tắm & dụng cụng vệ sinh",
-      href: "/catFood",
-    },
-    {
-      label: "Chuồng, nệm & túi",
-      href: "/catFood",
-    },
-    {
-      label: "Chậu & cát vệ sinh",
-      href: "/catFood",
-    },
-    {
-      label: "Đồ chơi thú cưng",
-      href: "/catFood",
-    },
-    {
-      label: "Thời trang thú cưng",
-      href: "/catFood",
-    },
-  ];
+  const menuOptionsCategories = categories.map((category) => ({
+      label: category.name,
+      href: `/categories/${category.slug}`,
+  }));
 
   const menuOptionsUser = [
     {
@@ -145,69 +124,10 @@ const Header = () => {
 
   const [isHovered, setIsHovered] = useState(false);
   const { cartTotalQuantity } = useSelector((state) => state.cart);
-  
 
-  const menuOptionsDog = [
-    {
-      label: "Thức ăn & pate",
-      href: "/dogFood",
-    },
-    {
-      label: "Bát ăn",
-      href: "/dogFood",
-    },
-    {
-      label: "Vòng cổ dây dắt",
-      href: "/dogFood",
-    },
-    {
-      label: "Thuốc & dinh dưỡng",
-      href: "/dogFood",
-    },
-    {
-      label: "Sữa tắm & dụng cụ vệ sinh",
-      href: "/dogFood",
-    },
-    {
-      label: "Chuồng, nệm & túi vận chuyển",
-      href: "/dogFood",
-    },
-    {
-      label: "Đồ chơi thú cưng",
-      href: "/dogFood",
-    },
-  ];
-
-  const menuOptionsCat = [
-    {
-      label: "Thức ăn & pate",
-      href: "/dogFood",
-    },
-    {
-      label: "Bát ăn",
-      href: "/dogFood",
-    },
-    {
-      label: "Vòng cổ dây dắt",
-      href: "/dogFood",
-    },
-    {
-      label: "Thuốc & dinh dưỡng",
-      href: "/dogFood",
-    },
-    {
-      label: "Sữa tắm & dụng cụ vệ sinh",
-      href: "/dogFood",
-    },
-    {
-      label: "Chuồng, nệm & túi vận chuyển",
-      href: "/dogFood",
-    },
-    {
-      label: "Đồ chơi thú cưng",
-      href: "/dogFood",
-    },
-  ];
+  useEffect(() => {
+    dispatch(getTotals());
+  }, [dispatch]);
 
   return (
     <header className="bg-white shadow-md">
@@ -440,7 +360,7 @@ const Header = () => {
                   <span className="font-semibold text-2sm">
                     DANH MỤC SẢN PHẨM
                   </span>
-                </button> 
+                </button>
               }
               options={menuOptionsCategories}
               menuType="menuOptionsCategories"
@@ -459,7 +379,8 @@ const Header = () => {
                   <FaCaretDown className="ml-2 text-lg " />
                 </a>
               }
-              options={menuOptionsDog}
+              options={menuOptionsCategories}
+              menuType="menuOptionsDog"
             />
 
             <HoverPopupMenu
@@ -472,7 +393,7 @@ const Header = () => {
                   <FaCaretDown className="ml-2 text-lg" />
                 </a>
               }
-              options={menuOptionsCat}
+              options={menuOptionsCategories}
               menuType="menuOptionsCat"
             />
 
