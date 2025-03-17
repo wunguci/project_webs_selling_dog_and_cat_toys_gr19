@@ -36,6 +36,7 @@ const cartSlice = createSlice({
       }
       
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
+      state.cartTotalQuantity = state.cartItems.reduce((total, item) => total + item.cartQuantity, 0);
     },
     decreaseCart(state, action) {
       const itemIndex = state.cartItems.findIndex(

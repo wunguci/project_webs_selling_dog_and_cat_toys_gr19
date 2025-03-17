@@ -17,8 +17,8 @@ import PopupMenu from "./PopupMenu";
 import HoverPopupMenu from "./HoverPopupMenu";
 import LoadingOverlay from "./LoadingOverlay";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { getTotals } from "../stores/cartSlice";
+import { useSelector } from "react-redux";
+import DialogCart from "./DialogCart";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -122,7 +122,7 @@ const Header = () => {
     },
   ];
 
-  const dispatch = useDispatch();
+  const [isHovered, setIsHovered] = useState(false);
   const { cartTotalQuantity } = useSelector((state) => state.cart);
 
   useEffect(() => {
@@ -151,20 +151,24 @@ const Header = () => {
         </div>
 
         {/* mobile menu button & cart*/}
-        <div className="flex items-center space-x-4 md:hidden ml-auto">
+        <div className="flex items-center space-x-4 md:hidden ml-auto" >
           {/* cart */}
-          <div className="relative mx-5 mt-1">
+          <div className="relative mx-5 mt-1"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+          >
             <button className="text-brown cursor-pointer focus:outline-none relative">
               <FaShoppingCart className="text-2xl" />
               <span className="absolute -top-1 -right-2 bg-green-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                 {cartTotalQuantity}
               </span>
             </button>
+            {isHovered && <DialogCart />}
           </div>
 
           {/* nút menu ẩn*/}
           <button
-            className="md:hidden text-gray-700 focus:outline-none ml-auto cursor-pointer focus:outline-none relative"
+            className="md:hidden text-gray-700 focus:outline-none ml-auto cursor-pointer relative"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             <RiMenu3Fill className="text-2xl" />
@@ -226,13 +230,17 @@ const Header = () => {
                 </>
               )}
               {/* cart */}
-              <div className="relative mx-5 mt-1">
+              <div className="relative mx-5 mt-1"
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+              >
                 <button className="text-brown cursor-pointer focus:outline-none relative">
                   <FaShoppingCart className="text-2xl" />
                   <span className="absolute -top-1 -right-2 bg-green-400 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                     {cartTotalQuantity}
                   </span>
                 </button>
+                {isHovered && <DialogCart />}
               </div>
             </div>
           </>
