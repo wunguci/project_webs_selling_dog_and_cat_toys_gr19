@@ -30,6 +30,10 @@ const productSchema = new mongoose.Schema({
     ref: 'Category', // Tham chiếu đến model Category
     required: true,
   },
+  slug: {
+    type: String,
+    unique: true,
+  },
 }, { collection: 'products' });
 
 const Product = mongoose.model('Product', productSchema);

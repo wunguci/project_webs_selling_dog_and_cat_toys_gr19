@@ -1,24 +1,25 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
 
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async () => {
-    const response = await axios.get('http://localhost:8017/api/product/allproduct');
+    const response = await axios.get('http://localhost:5000/api/products');
     return response.data;
   }
 );
 
-const productSlide = createSlice({
+const productSlice = createSlice({
   name: "products",
   initialState: {
     items: [],
     status: "idle",
     error: null,
   },
-  extraReducers: (builer) => {
-    builer
-      .addCase(fetchProducts.pending, (state)=>{
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchProducts.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
@@ -28,8 +29,8 @@ const productSlide = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
-      })
-  }
+      });
+  },
 });
 
-export default productSlide.reducer;
+export default productSlice.reducer;
