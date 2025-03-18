@@ -99,7 +99,7 @@ function SliderCategory() {
   };
 
   return (
-    <div className="relative my-5 md:bottom-20 z-20 max-w-[1200px] mx-auto bg-amber-50">
+    <div className="relative md:bottom-20 z-20 max-w-[1200px] mx-auto bg-amber-50">
       <Slider {...settings}>
       {
         categories.map((item, index) => (

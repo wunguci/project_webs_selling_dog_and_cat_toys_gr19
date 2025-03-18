@@ -86,3 +86,33 @@
 .custom-number-input {
   -moz-appearance: textfield; /* Ẩn trên Firefox */
 }
+
+
+.bg-brown {
+    background: #C49A6C;
+}
+
+.bg-brown-hover:hover {
+    background: #c4925c;
+}
+
+.text-brown {
+    color: #C49A6C;
+}
+
+.text-brown-hover:hover {
+    color: #c4925c;
+}
+
+.border-brown {
+    border: none;
+    border-bottom: 3px solid #C49A6C;
+}
+
+.border-brown-hover:hover {
+    background-color: #c4925c;
+}
+
+.text-white-hover:hover {
+    color: white;
+}

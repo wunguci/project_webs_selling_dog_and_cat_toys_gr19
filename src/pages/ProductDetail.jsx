@@ -125,6 +125,8 @@ const ProductDetail = () => {
     }
   };
 
+  const [activeTab, setActiveTab] = useState("mo-ta");
+
   return (
     
     <MainLayout>
@@ -257,20 +259,100 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
-        <div className="p-3 bg-amber-50 rounded-[5px] flex flex-col gap-2">
-          <h3 className="font-medium">Mô tả sản phẩm</h3>
-          <span>- Tên sản phẩm: Bát ăn có đế nghiêng chống gù cho chó mèo.</span>
-          <p>
-            Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. 
-            Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được 
-            độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm 
-            vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa.
-          </p>
-          <span>- Chất liệu: Nhựa PP an toàn cho sức khỏe và thân thiện với môi trường. Chịu nhiệt tốt. Dễ dàng lau chùi.</span>
-          <span>- Kích thước: dài, rộng 13 cm, cao 14.5 cm.</span>
+        <div className="p-3 bg-amber-50 shadow-md rounded-lg">
+          <div className="flex border-b border-gray-500">
+            {[
+              { id: "mo-ta", label: "Mô tả" },
+              { id: "chinh-sach", label: "Chính sách đổi trả" },
+              { id: "huong-dan", label: "Hướng dẫn sử dụng" }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-2 text-sm font-medium ${
+                  activeTab === tab.id ? "bg-blue-400" : "text-gray-500"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-3">
+            {activeTab === "mo-ta" && (
+              <div className="flex flex-col gap-2">
+                <h3 className="font-medium">Mô tả sản phẩm</h3>
+                <span>- Tên sản phẩm: Bát ăn có đế nghiêng chống gù cho chó mèo.</span>
+                <p>
+                  Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hưởng xương sống.
+                  Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được
+                  độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm
+                  vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa.
+                </p>
+                <span>- Chất liệu: Nhựa PP an toàn cho sức khỏe và thân thiện với môi trường. Chịu nhiệt tốt. Dễ dàng lau chùi.</span>
+                <span>- Kích thước: dài, rộng 13 cm, cao 14.5 cm.</span>
+              </div>
+            )}
+
+            {activeTab === "chinh-sach" && (
+              <div className="flex flex-col gap-4 p-4">
+                <h3 className="font-semibold text-lg text-gray-800">Chính sách đổi trả</h3>
+              
+                <div className="space-y-2">
+                  <h3 className="font-medium text-gray-700">Quý khách có thể đổi hàng đã mua trong các trường hợp sau:</h3>
+                  <ul className="list-disc list-inside text-gray-600">
+                    <li>Hàng có lỗi kỹ thuật do nhà sản xuất.</li>
+                    <li>Hàng bị giao nhầm, nhầm size.</li>
+                  </ul>
+                  <p className="text-gray-600"><span className="font-medium">Thời hạn đổi hàng:</span> 05 ngày kể từ ngày mua/nhận hàng.</p>
+                </div>
+              
+                <div className="space-y-2">
+                  <h3 className="font-medium text-gray-700">Điều kiện đổi hàng:</h3>
+                  <ul className="list-disc list-inside text-gray-600">
+                    <li>Hàng chưa qua sử dụng, giặt ủi, phải còn nguyên tem mác, không dính bẩn,…</li>
+                    <li>Hàng đổi phải có giá bằng hoặc cao hơn hàng đã mua.</li>
+                  </ul>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="font-medium text-gray-700">Phí đổi hàng:</h3>
+                  <ul className="list-disc list-inside text-gray-600">
+                    <li>Nếu hàng bị lỗi kỹ thuật do nhà sản xuất: miễn phí toàn bộ phí chuyển hàng (gửi trả và giao hàng)</li>
+                    <li>Trường hợp khác Quý khách hàng sẽ chịu chi phí chuyển hàng (gửi trả và giao hàng).</li>
+                  </ul>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="font-medium text-gray-700">CHÍNH SÁCH BẢO HÀNH.</h3>
+                  <ul className="list-disc list-inside text-gray-600">
+                    <li>Hàng có lỗi kỹ thuật do nhà sản xuất.</li>
+                    <li>Thời hạn bảo hành dây kéo : trọn đời.</li>
+                  </ul>
+                </div>
+
+                <h3 className="font-medium text-gray-700">Chân thành cảm ơn Quý Khách Hàng đã quan tâm đến các sản phẩm nhãn hiệu Pet Shop.</h3>
+              </div>            
+            )}
+
+            {activeTab === "huong-dan" && (
+              <div className="flex flex-col gap-2">
+                <h3 className="font-medium">Hướng dẫn sử dụng</h3>
+                <p>
+                  - Lắp đặt bát ăn theo đúng hướng dẫn để đảm bảo độ nghiêng phù hợp cho thú cưng.
+                </p>
+                <p>
+                  - Sử dụng nước ấm và khăn mềm để vệ sinh, tránh dùng hóa chất mạnh.
+                </p>
+                <p>
+                  - Đặt bát ăn ở nơi bằng phẳng, tránh khu vực có nhiều bụi bẩn.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
         <div className="p-3 bg-amber-50 rounded-[5px] flex flex-col gap-2">
-          <h3 className="font-medium">Sản phẩm tương tự</h3>
+          <h3 className="font-medium text-2xl">Sản phẩm tương tự</h3>
           <Slider {...settings}>
             {
               [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => (
