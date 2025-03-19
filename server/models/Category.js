@@ -17,6 +17,14 @@ const categorySchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  type: {
+    type: String,
+    required: true,
+  },
+  slug_type: {
+    type: String,
+    required: true,
+  },
 }, { collection: 'categories' });
 
 const Category = mongoose.model('Category', categorySchema);

@@ -99,6 +99,20 @@ const Header = () => {
       href: `/categories/${category.slug}`,
   }));
 
+  const menuOptionsCategoriesCat = categories
+    .filter((category) => category.type === "SHOP CHO MÈO")
+    .map((category) => ({
+      label: category.name,
+      href: `/categories/${category.slug_type}`,
+    }));
+
+  const menuOptionsCategoriesDog = categories
+    .filter((category) => category.type === "SHOP CHO CÚN")
+    .map((category) => ({
+      label: category.name,
+      href: `/categories/${category.slug_type}`,
+    }));  
+
   const menuOptionsUser = [
     {
       label: "Tài khoản của bạn",
@@ -147,11 +161,12 @@ const Header = () => {
         </div>
 
         {/* mobile menu button & cart*/}
-        <div className="flex items-center space-x-4 md:hidden ml-auto" >
+        <div className="flex items-center space-x-4 md:hidden ml-auto">
           {/* cart */}
-          <div className="relative mx-5 mt-1"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+          <div
+            className="relative mx-5 mt-1"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
             <button className="text-brown cursor-pointer focus:outline-none relative">
               <FaShoppingCart className="text-2xl" />
@@ -226,9 +241,10 @@ const Header = () => {
                 </>
               )}
               {/* cart */}
-              <div className="relative mx-5 mt-1"
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
+              <div
+                className="relative mx-5 mt-1"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
               >
                 <button className="text-brown cursor-pointer focus:outline-none relative">
                   <FaShoppingCart className="text-2xl" />
@@ -371,7 +387,7 @@ const Header = () => {
                   <FaCaretDown className="ml-2 text-lg " />
                 </a>
               }
-              options={menuOptionsCategories}
+              options={menuOptionsCategoriesDog}
               menuType="menuOptionsDog"
             />
 
@@ -385,7 +401,7 @@ const Header = () => {
                   <FaCaretDown className="ml-2 text-lg" />
                 </a>
               }
-              options={menuOptionsCategories}
+              options={menuOptionsCategoriesCat}
               menuType="menuOptionsCat"
             />
 
