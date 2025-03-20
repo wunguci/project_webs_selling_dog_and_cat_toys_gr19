@@ -7,7 +7,7 @@ import {
   FaSignOutAlt,
   FaTrash,
   FaEye,
-  FaFileDownload
+  FaFileDownload,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
@@ -19,6 +19,7 @@ import ScrollToTopButton from "../components/ScrollToTopButton";
 import Modal from "../components/Modal";
 import { generateInvoice } from "../utils/GenerateInvoice";
 import { FaCartPlus } from "react-icons/fa6";
+import axiosInstance from "../utils/axiosInstance";
 
 const UserProfile = () => {
   const [user, setUser] = useState({
@@ -28,7 +29,7 @@ const UserProfile = () => {
     address: "",
     birthDate: "",
     avatar: "",
-    gender: ""
+    gender: "",
   });
 
   const [orders, setOrders] = useState([]);
@@ -85,8 +86,7 @@ const UserProfile = () => {
           return;
         }
 
-        const res = await axios.get(
-          `http://localhost:5000/api/users/${user._id}`
+        const res = await axiosInstance.get(`/api/users/${user._id}`
         );
 
         const userData = res.data;
@@ -105,7 +105,7 @@ const UserProfile = () => {
 
   const fetchUserOrders = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/orders`);
+      const response = await axiosInstance.post(`/api/orders`);
       const allOrders = response.data;
 
       // Filter orders for current user
@@ -176,8 +176,7 @@ const UserProfile = () => {
             avatar: avatarBinary.split(",")[1],
           };
 
-          const res = await axios.put(
-            `http://localhost:5000/api/users/${user._id}`,
+          const res = await axiosInstance.put(`/api/users/${user._id}`,
             updateUser,
             {
               headers: {
@@ -222,15 +221,14 @@ const UserProfile = () => {
   const handleUpdateProfile = async () => {
     try {
       const storedUser = JSON.parse(localStorage.getItem("user"));
-      const res = await axios.put(
-        `http://localhost:5000/api/users/${storedUser._id}`,
+      const res = await axiosInstance.put(`/api/users/${storedUser._id}`,
         {
           fullName: user.fullName,
           email: user.email,
           phone: user.phone,
           address: user.address,
           birthDate: user.birthDate,
-          gender: user.gender
+          gender: user.gender,
         },
         {
           headers: {
@@ -240,7 +238,7 @@ const UserProfile = () => {
       );
 
       const updatedUser = res.data;
-      
+
       if (user.avatar && user.avatar.startsWith("data:image")) {
         updatedUser.avatar = user.avatar;
       } else {
@@ -280,8 +278,7 @@ const UserProfile = () => {
       );
       if (!confirmed) return;
 
-      const response = await axios.put(
-        `http://localhost:5000/api/orders/${orderId}`,
+      const response = await axiosInstance.put(`/api/orders/${orderId}`,
         { status: "Cancelled" }
       );
 
@@ -301,7 +298,7 @@ const UserProfile = () => {
   // xử lý người dùng nhấn nút tạo hóa đơn
   const hanldeGenerateInvoice = (order) => {
     generateInvoice(order, formatDisplayDate);
-  }
+  };
 
   const getStatusClass = (status) => {
     switch (status) {

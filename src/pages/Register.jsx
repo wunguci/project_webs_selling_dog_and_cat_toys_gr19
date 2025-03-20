@@ -9,6 +9,7 @@ import ScrollToTopButton from "../components/ScrollToTopButton";
 import { Link, useNavigate } from "react-router-dom";
 import "./page.scss";
 import { ToastContainer, toast } from "react-toastify";
+import axiosInstance from "../utils/axiosInstance";
 
 const Register = () => {
   const links = [{ label: "Trang chủ", link: "/" }, { label: "Đăng ký" }];
@@ -72,7 +73,6 @@ const Register = () => {
     return newErrors;
   };
 
-
   const handleRegister = async (e) => {
     e.preventDefault();
     setErrors({});
@@ -87,8 +87,7 @@ const Register = () => {
     try {
       // Kiểm tra trùng lặp email và số điện thoại
       const { phone, email } = formData;
-      const checkDuplicateResponse = await axios.post(
-        "http://localhost:5000/api/users/check-duplicate",
+      const checkDuplicateResponse = await axiosInstance.post("/api/users/check-duplicate",
         {
           phone,
           email,
@@ -107,9 +106,8 @@ const Register = () => {
         return;
       }
 
-   
-      const imagePath = "/avatar.png"; 
-      const response = await fetch(imagePath); 
+      const imagePath = "/avatar.png";
+      const response = await fetch(imagePath);
       const blob = await response.blob();
 
       // Chuyển đổi Blob thành base64
@@ -117,7 +115,7 @@ const Register = () => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result);
         reader.onerror = reject;
-        reader.readAsDataURL(blob); 
+        reader.readAsDataURL(blob);
       });
 
       if (!defaultAvatarBase64) {
@@ -137,8 +135,7 @@ const Register = () => {
         avatar: defaultAvatarBase64.split(",")[1],
       };
 
-      const res = await axios.post(
-        "http://localhost:5000/api/users/register",
+      const res = await axiosInstance.post("/api/users/register",
         userData
       );
 

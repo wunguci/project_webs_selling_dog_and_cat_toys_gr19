@@ -20,7 +20,7 @@ export const getCategoryById = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
-      return res.status(404).json({ message: 'Category not found' });
+      return res.status(404).json({ message: "Category not found" });
     }
     res.json(category);
   } catch (err) {
@@ -51,7 +51,7 @@ export const updateCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
-      return res.status(404).json({ message: 'Category not found' });
+      return res.status(404).json({ message: "Category not found" });
     }
 
     // Cập nhật slug nếu tên thay đổi
@@ -71,11 +71,11 @@ export const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
-      return res.status(404).json({ message: 'Category not found' });
+      return res.status(404).json({ message: "Category not found" });
     }
 
     await category.remove();
-    res.json({ message: 'Category deleted' });
+    res.json({ message: "Category deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -96,3 +96,14 @@ export const getCategoryByType = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 }
+export const searchCategories = async (req, res) => {
+  const { query } = req.query;
+  try {
+    const categories = await Category.find({
+      name: { $regex: query, $options: 'i' }, // Tìm kiếm theo tên danh mục (không phân biệt hoa thường)
+    });
+    res.json(categories);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

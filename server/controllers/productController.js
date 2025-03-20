@@ -78,3 +78,23 @@ export const getProductsSale = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 }
+// Search products
+export const searchProducts = async (req, res) => {
+  // Sửa để xử lý cả 'query' và 'q' để tương thích với frontend
+  const searchQuery = req.query.query || req.query.q;
+
+  if (!searchQuery) {
+    return res.status(400).json({ message: 'Query parameter is required' });
+  }
+
+  try {
+    const products = await Product.find({
+      name: { $regex: searchQuery, $options: 'i' }, 
+    }).populate('category_id'); 
+
+    res.json(products); 
+  } catch (err) {
+    console.error("Error in searchProducts:", err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};

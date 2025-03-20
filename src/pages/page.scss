@@ -39,14 +39,14 @@
 }
 
 .input-container .error-message {
-  position: absolute; 
+  position: absolute;
   bottom: -20px;
   left: 10px;
   color: red;
   font-size: 0.85rem;
   font-style: italic;
-  margin: 0; 
-  white-space: nowrap; 
+  margin: 0;
+  white-space: nowrap;
 }
 
 .input-container input[type="date"] {
@@ -76,31 +76,50 @@
   color: #c4925c;
 }
 
+/* Ẩn nút tăng/giảm của input type="number" */
+.custom-number-input::-webkit-inner-spin-button,
+.custom-number-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.custom-number-input {
+  -moz-appearance: textfield; /* Ẩn trên Firefox */
+}
+
 .bg-brown {
-    background: #C49A6C;
+  background: #c49a6c;
 }
 
 .bg-brown-hover:hover {
-    background: #c4925c;
+  background: #c4925c;
 }
 
 .text-brown {
-    color: #C49A6C;
+  color: #c49a6c;
 }
 
 .text-brown-hover:hover {
-    color: #c4925c;
+  color: #c4925c;
 }
 
 .border-brown {
-    border: none;
-    border-bottom: 3px solid #C49A6C;
+  border: none;
+  border-bottom: 3px solid #c49a6c;
 }
 
 .border-brown-hover:hover {
-    background-color: #c4925c;
+  background-color: #c4925c;
 }
 
 .text-white-hover:hover {
-    color: white;
+  color: white;
+}
+
+//checkout
+.bg-blue-0 {
+  background-color: #338dbc;
+}
+.border-blue-0 {
+  border: 1px solid #338dbc;
 }

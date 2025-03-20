@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import Product from "./Product"
 import { useEffect, useState } from "react"
 import axios from "axios"
+import axiosInstance from "../utils/axiosInstance";
 
 function ListProduct({title, products}) {
 
@@ -12,7 +13,7 @@ function ListProduct({title, products}) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/categories");
+        const res = await axiosInstance.get("/api/categories");
         setCategories(res.data);
       } catch (err) {
         console.error("Failed to fetch categories:", err);
@@ -28,10 +29,6 @@ function ListProduct({title, products}) {
   }));
 
   console.log(collections);
-  
-
-
-  
   return (
     // <div className={`flex flex-col gap-4 ${style ? "md:flex-row-reverse" : "md:flex-row"}`}>
     //   <div className="hidden lg:w-1/3 lg:flex flex-col items-center border-2 gap-5 border-[#c49a6c]">
@@ -48,11 +45,11 @@ function ListProduct({title, products}) {
     //         {
     //           collections.map((collection, index) => (
     //             <li key={index}>
-    //               <Link 
+    //               <Link
     //                 to={
     //                 title === "Shop cho cún"
     //                   ? `/collections/${collection.link || collection.link1}`
-    //                   : `/collections/${collection.link || collection.link2}`} 
+    //                   : `/collections/${collection.link || collection.link2}`}
     //                 className="hover:text-[#c49a6c]">{collection.name}
     //               </Link>
     //             </li>
@@ -77,19 +74,20 @@ function ListProduct({title, products}) {
           </div>
         </div>
         <ul className="hidden md:flex gap-5 pb-5">
-          {
-            collections.map((collection, index) => (
-              <li key={index}>
-                <Link 
-                  to={
+          {collections.map((collection, index) => (
+            <li key={index}>
+              <Link
+                to={
                   title === "Shop cho cún"
                     ? `/collections/${collection.link || collection.link1}`
-                    : `/collections/${collection.link || collection.link2}`} 
-                  className="hover:text-[#c49a6c]">{collection.name}
-                </Link>
-              </li>
-            ))
-          }
+                    : `/collections/${collection.link || collection.link2}`
+                }
+                className="hover:text-[#c49a6c]"
+              >
+                {collection.name}
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-5">
@@ -100,7 +98,7 @@ function ListProduct({title, products}) {
         }
       </div>
     </div>
-  )
+  );
 }
 
 export default ListProduct;

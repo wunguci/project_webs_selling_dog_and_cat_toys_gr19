@@ -5,29 +5,36 @@ import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import dotenv from 'dotenv';
+import cartRoutes from './routes/cartRoutes.js';
+
+
+dotenv.config();
 
 const app = express();
 // eslint-disable-next-line no-undef
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.VITE_PORT || 5000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://vutkd23405:vutkd23405@petshop.15d6r.mongodb.net/PetShop?retryWrites=true&w=majority')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Could not connect to MongoDB', err));
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("Could not connect to MongoDB", err));
 
 // Routes
-app.get('/api', (req, res) => {
-  res.json({ message: 'Welcome to the API!' });
+app.get("/api", (req, res) => {
+  res.json({ message: "Welcome to the API!" });
 });
 
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/carts', cartRoutes);
 
 // Start the server
 app.listen(PORT, () => {
