@@ -163,7 +163,7 @@ const Header = () => {
         <div className="flex items-center space-x-4 md:hidden ml-auto">
           {/* cart */}
           <div
-            className="relative mx-5 mt-1"
+            className="relative mx-5 mt-1 cart-dialog"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
@@ -245,9 +245,10 @@ const Header = () => {
                   </Link>
                 </>
               )}
-              {/* cart */}
+              {/* cart
+               */}
               <div
-                className="relative mx-5 mt-1"
+                className="relative mx-5 mt-1 cart-dialog"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
