@@ -86,7 +86,7 @@ const UserProfile = () => {
         }
 
         const res = await axios.get(
-          `http://localhost:5000/api/users/${user._id}`
+          `http://localhost:5002/api/users/${user._id}`
         );
 
         const userData = res.data;
@@ -105,7 +105,7 @@ const UserProfile = () => {
 
   const fetchUserOrders = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/orders`);
+      const response = await axios.get(`http://localhost:5002/api/orders`);
       const allOrders = response.data;
 
       // Filter orders for current user
@@ -177,7 +177,7 @@ const UserProfile = () => {
           };
 
           const res = await axios.put(
-            `http://localhost:5000/api/users/${user._id}`,
+            `http://localhost:5002/api/users/${user._id}`,
             updateUser,
             {
               headers: {
@@ -223,7 +223,7 @@ const UserProfile = () => {
     try {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       const res = await axios.put(
-        `http://localhost:5000/api/users/${storedUser._id}`,
+        `http://localhost:5002/api/users/${storedUser._id}`,
         {
           fullName: user.fullName,
           email: user.email,
@@ -281,7 +281,7 @@ const UserProfile = () => {
       if (!confirmed) return;
 
       const response = await axios.put(
-        `http://localhost:5000/api/orders/${orderId}`,
+        `http://localhost:5002/api/orders/${orderId}`,
         { status: "Cancelled" }
       );
 

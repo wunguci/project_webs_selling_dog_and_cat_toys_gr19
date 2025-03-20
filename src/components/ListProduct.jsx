@@ -49,7 +49,7 @@ function ListProduct({style, title}) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/categories");
+        const res = await axios.get("http://localhost:5002/api/categories");
         setCategories(res.data);
       } catch (err) {
         console.error("Failed to fetch categories:", err);

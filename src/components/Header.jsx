@@ -19,6 +19,7 @@ import LoadingOverlay from "./LoadingOverlay";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import DialogCart from "./DialogCart";
+import axiosInstance from "../utils/axiosInstance";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -51,8 +52,8 @@ const Header = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/categories");
-        setCategories(res.data);
+        const { data } = await axiosInstance.get("api/categories");
+        setCategories(data);
       } catch (err) {
         console.error("Failed to fetch categories:", err);
       }
@@ -66,10 +67,10 @@ const Header = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
         try {
-          const res = await axios.get(
-            `http://localhost:5000/api/users/${user._id}`
+          const { data } = await axiosInstance.get(
+            `api/users/${user._id}`
           );
-          const userData = res.data;
+          const userData = data;
           userData.avatar = convertBase64ToImage(userData.avatar);
           setUser({
             name: userData.fullName,
