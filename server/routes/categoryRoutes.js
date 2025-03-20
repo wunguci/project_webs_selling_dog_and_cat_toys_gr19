@@ -5,7 +5,7 @@ import {
     createCategory,
     updateCategory,
     deleteCategory,
-    getCategoryByType
+    getCategoryByType,
     searchCategories,
 } from '../controllers/categoryController.js'
 

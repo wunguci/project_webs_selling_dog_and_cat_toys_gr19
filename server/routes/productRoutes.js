@@ -5,7 +5,7 @@ import {
     createProduct,
     updateProduct,
     deleteProduct,
-    getProductsSale
+    getProductsSale,
     searchProducts,
 } from '../controllers/productController.js';
 
@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.get('/search', searchProducts);
 router.get('/', getAllProducts);
-router.get("/sales", getProductsSale)
+router.get("/product/sales", getProductsSale)
 router.get('/:slug', getProductByName);
 router.post('/', createProduct);
 router.put('/:id', updateProduct);
