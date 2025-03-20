@@ -17,10 +17,20 @@ export const createOrder = async (req, res) => {
     }
 };
 
-// Lấy tất cả đơn hàng
+// Lấy tất cả đơn hàng với tùy chọn lọc theo user_id
 export const getOrders = async (req, res) => {
     try {
-        const orders = await Order.find().populate('user_id').populate('items.product_id');
+        const { user_id } = req.query;
+        let query = {};
+        
+        if (user_id) {
+            query.user_id = user_id;
+        }
+        
+        const orders = await Order.find(query)
+            .populate('user_id')
+            .populate('items.product_id');
+            
         res.status(200).json(orders);
     } catch (error) {
         res.status(404).json({ message: error.message });
