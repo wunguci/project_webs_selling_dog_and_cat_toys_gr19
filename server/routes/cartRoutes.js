@@ -31,3 +31,5 @@ router.delete('/:user_id', deleteCart);
 
 // Đếm số lượng sản phẩm trong giỏ hàng
 router.get('/count/:user_id', countCartItems);
+
+export default router;

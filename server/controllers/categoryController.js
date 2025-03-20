@@ -79,3 +79,15 @@ export const deleteCategory = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const searchCategories = async (req, res) => {
+  const { query } = req.query;
+  try {
+    const categories = await Category.find({
+      name: { $regex: query, $options: 'i' }, // Tìm kiếm theo tên danh mục (không phân biệt hoa thường)
+    });
+    res.json(categories);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

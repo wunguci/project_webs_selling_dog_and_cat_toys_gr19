@@ -10,34 +10,6 @@ import axios from "axios"
 
 function ListProduct({style, title}) {
 
-  // const collections = [
-  //   {
-  //     name: 'Thức ăn & pate',
-  //     link: 'thuc-an-pate'
-  //   },
-  //   {
-  //     name: 'Bát ăn',
-  //     link: 'bat-an'
-  //   },
-  //   {
-  //     name: 'Vòng cổ da dắt',
-  //     link: 'vong-co-day-dat'
-  //   },
-  //   {
-  //     name: 'Thuốc và dinh dưỡng',
-  //     link: 'thuoc-va-dinh-duong'
-  //   },
-  //   {
-  //     name: 'Sửa tắm & dụng cụ vệ sinh',
-  //     link: 'sua-tam-dung-cu-ve-sinh'
-  //   },
-  //   {
-  //     name: 'Xem tất cả',
-  //     link1: 'shop-cho-cun',
-  //     link2: 'shop-cho-meo'
-  //   }
-  // ]
-
   const dispatch = useDispatch();
   const { items: products, status } = useSelector((state) => state.products);
   const [categories, setCategories] = useState([]);

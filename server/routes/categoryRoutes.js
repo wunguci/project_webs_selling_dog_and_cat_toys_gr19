@@ -5,6 +5,7 @@ import {
     createCategory,
     updateCategory,
     deleteCategory,
+    searchCategories,
 } from '../controllers/categoryController.js'
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.get('/:id', getCategoryById);
 router.post('/', createCategory);
 router.put('/:id', updateCategory);
 router.delete('/:id', deleteCategory);
+router.get('/search', searchCategories);
 
 export default router;
