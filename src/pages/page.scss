@@ -76,6 +76,18 @@
   color: #c4925c;
 }
 
+/* Ẩn nút tăng/giảm của input type="number" */
+.custom-number-input::-webkit-inner-spin-button,
+.custom-number-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.custom-number-input {
+  -moz-appearance: textfield; /* Ẩn trên Firefox */
+}
+
+
 .bg-brown {
     background: #C49A6C;
 }

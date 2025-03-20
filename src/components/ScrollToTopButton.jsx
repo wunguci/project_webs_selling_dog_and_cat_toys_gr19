@@ -7,18 +7,16 @@ const ScrollToTopButton = () => {
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      setIsVisible(scrollTop > 50);
+      setIsVisible(scrollTop > 300); // Hiện nút khi lướt xuống > 300px
     };
 
     window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Hàm scroll mượt với easeInOutQuad
   const scrollToTop = () => {
-    const duration = 800; // thời gian cuộn
+    const duration = 800;
     const start = window.scrollY || document.documentElement.scrollTop;
     const startTime = performance.now();
 
@@ -27,7 +25,7 @@ const ScrollToTopButton = () => {
 
     const animateScroll = (currentTime) => {
       const elapsedTime = currentTime - startTime;
-      const progress = Math.min(elapsedTime / duration, 1); // giới hạn trong khoảng [0, 1]
+      const progress = Math.min(elapsedTime / duration, 1);
       const easeProgress = easeInOutQuad(progress);
 
       window.scrollTo(0, start * (1 - easeProgress));
@@ -41,10 +39,13 @@ const ScrollToTopButton = () => {
 
   return (
     <button
-      className={`fixed bottom-6 right-6 p-3 rounded-full bg-brown text-white shadow-lg transition-opacity duration-300 cursor-pointer
-            ${isVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+      className={`fixed bottom-10 right-10 p-4 rounded-full bg-[#c49b6c] text-white shadow-xl border-3 border-white transition-all duration-300
+        transform ${
+          isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"
+        }
+        hover:bg-[#b28354] hover:scale-110 hover:border-opacity-80 active:scale-95`}
       aria-label="Scroll to top"
-      onClick={() => scrollToTop()}
+      onClick={scrollToTop}
     >
       <FaArrowUp className="w-6 h-6" />
     </button>

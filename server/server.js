@@ -5,6 +5,9 @@ import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 // eslint-disable-next-line no-undef
@@ -15,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://vutkd23405:vutkd23405@petshop.15d6r.mongodb.net/PetShop?retryWrites=true&w=majority')
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB', err));
 

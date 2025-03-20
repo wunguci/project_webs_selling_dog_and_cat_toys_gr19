@@ -7,6 +7,9 @@ import Search from "./pages/Search";
 import CartShop from "./pages/CartShop";
 import CheckOut from "./pages/CheckOut";
 import UserProfile from "./pages/UserProfile";
+import News from "./pages/News";
+import NewsDetail from "./pages/NewsDetail";
+import NotFoundPage from "./pages/NotFoundPage";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchProducts } from "./stores/productSlice";
@@ -26,6 +29,8 @@ function App() {
     <BrowserRouter>
       <ToastContainer />
       <Routes>
+      <Route path="*" element={<NotFoundPage />} />
+
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -34,6 +39,9 @@ function App() {
         <Route path="/cart" element={<CartShop />} />
         <Route path="/checkout/:id" element={<CheckOut />} />
         <Route path="/userProfile" element={<UserProfile />} />
+        <Route path="/blogs/news" element={<News />} />
+        <Route path="/blogs/news/:slug" element={<NewsDetail />} />
+
       </Routes>
     </BrowserRouter>
   );
