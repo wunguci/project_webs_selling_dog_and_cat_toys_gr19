@@ -59,7 +59,7 @@ const Header = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await axiosInstance.get("api/categories");
+        const { data } = await axiosInstance.get("/api/categories");
         setCategories(data);
       } catch (err) {
         console.error("Failed to fetch categories:", err);
@@ -74,7 +74,7 @@ const Header = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
         try {
-          const { data } = await axiosInstance.get(`api/users/${user._id}`);
+          const { data } = await axiosInstance.get(`/api/users/${user._id}`);
           const userData = data;
           userData.avatar = convertBase64ToImage(userData.avatar);
           setUser({
@@ -99,8 +99,8 @@ const Header = () => {
     setIsSearching(true);
 
     try {
-      const response = await axios.get(
-        `http://localhost:5002/api/products/search?q=${query}`
+      const response = await axiosInstance.get(
+        `/api/products/search?q=${query}`
       );
       setSearchResults(response.data);
     } catch (err) {

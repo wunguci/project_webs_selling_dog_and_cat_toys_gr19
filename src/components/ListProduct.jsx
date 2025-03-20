@@ -1,12 +1,14 @@
 /* eslint-disable react/prop-types */
-import { Link } from "react-router-dom";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { GrSettingsOption } from "react-icons/gr";
-import Product from "./Product";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { fetchProducts } from "../stores/productSlice";
-import axios from "axios";
+import { Link } from "react-router-dom"
+import { MdOutlineRemoveRedEye } from "react-icons/md"
+import { GrSettingsOption } from "react-icons/gr"
+import Product from "./Product"
+import { useDispatch, useSelector } from "react-redux"
+import { useEffect, useState } from "react"
+import { fetchProducts } from "../stores/productSlice"
+import axios from "axios"
+import axiosInstance from "../utils/axiosInstance";
+
 
 function ListProduct({ style, title }) {
   
@@ -21,7 +23,7 @@ function ListProduct({ style, title }) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get("http://localhost:5002/api/categories");
+        const res = await axiosInstance.get("/api/categories");
         setCategories(res.data);
       } catch (err) {
         console.error("Failed to fetch categories:", err);

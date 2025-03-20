@@ -9,6 +9,7 @@ import ScrollToTopButton from "../components/ScrollToTopButton";
 import { Link, useNavigate } from "react-router-dom";
 import "./page.scss";
 import { ToastContainer, toast } from "react-toastify";
+import axiosInstance from "../utils/axiosInstance";
 
 const Register = () => {
   const links = [{ label: "Trang chủ", link: "/" }, { label: "Đăng ký" }];
@@ -86,8 +87,7 @@ const Register = () => {
     try {
       // Kiểm tra trùng lặp email và số điện thoại
       const { phone, email } = formData;
-      const checkDuplicateResponse = await axios.post(
-        "http://localhost:5002/api/users/check-duplicate",
+      const checkDuplicateResponse = await axiosInstance.post("/api/users/check-duplicate",
         {
           phone,
           email,
@@ -135,8 +135,7 @@ const Register = () => {
         avatar: defaultAvatarBase64.split(",")[1],
       };
 
-      const res = await axios.post(
-        "http://localhost:5002/api/users/register",
+      const res = await axiosInstance.post("/api/users/register",
         userData
       );
 
