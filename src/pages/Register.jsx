@@ -73,7 +73,6 @@ const Register = () => {
     return newErrors;
   };
 
-
   const handleRegister = async (e) => {
     e.preventDefault();
     setErrors({});
@@ -107,9 +106,8 @@ const Register = () => {
         return;
       }
 
-   
-      const imagePath = "/avatar.png"; 
-      const response = await fetch(imagePath); 
+      const imagePath = "/avatar.png";
+      const response = await fetch(imagePath);
       const blob = await response.blob();
 
       // Chuyển đổi Blob thành base64
@@ -117,7 +115,7 @@ const Register = () => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result);
         reader.onerror = reject;
-        reader.readAsDataURL(blob); 
+        reader.readAsDataURL(blob);
       });
 
       if (!defaultAvatarBase64) {

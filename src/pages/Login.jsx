@@ -112,10 +112,16 @@ const Login = () => {
       }, 2000);
     } catch (err) {
       console.error("API Error:", err.response?.data || err.message);
+      // Kiểm tra mã lỗi từ phản hồi
+    if (err.response && err.response.status === 401) {
       setErrors({
-        general:
-          err.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.",
+        general: "Số điện thoại hoặc mật khẩu không chính xác.",
       });
+    } else {
+      setErrors({
+        general: err.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.",
+      });
+    }
     }
   };
 
@@ -147,6 +153,13 @@ const Login = () => {
             <span className="mx-4 text-gray-500">hoặc</span>
             <hr className="flex-grow border-gray-300" />
           </div>
+          {
+            errors.general && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-10" role="alert">
+                {errors.general}
+              </div>
+            )
+          }
           {/* form */}
           <form onSubmit={handleLogin}>
             <div className="space-y-6">

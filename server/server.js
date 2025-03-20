@@ -6,6 +6,8 @@ import productRoutes from './routes/productRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import dotenv from 'dotenv';
+import cartRoutes from './routes/cartRoutes.js';
+
 
 dotenv.config();
 
@@ -18,19 +20,21 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Could not connect to MongoDB', err));
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("Could not connect to MongoDB", err));
 
 // Routes
-app.get('/api', (req, res) => {
-  res.json({ message: 'Welcome to the API!' });
+app.get("/api", (req, res) => {
+  res.json({ message: "Welcome to the API!" });
 });
 
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/carts', cartRoutes);
 
 // Start the server
 app.listen(PORT, () => {

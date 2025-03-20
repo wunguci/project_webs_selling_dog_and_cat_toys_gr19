@@ -9,36 +9,9 @@ import { fetchProducts } from "../stores/productSlice"
 import axios from "axios"
 import axiosInstance from "../utils/axiosInstance";
 
-function ListProduct({style, title}) {
 
-  // const collections = [
-  //   {
-  //     name: 'Thức ăn & pate',
-  //     link: 'thuc-an-pate'
-  //   },
-  //   {
-  //     name: 'Bát ăn',
-  //     link: 'bat-an'
-  //   },
-  //   {
-  //     name: 'Vòng cổ da dắt',
-  //     link: 'vong-co-day-dat'
-  //   },
-  //   {
-  //     name: 'Thuốc và dinh dưỡng',
-  //     link: 'thuoc-va-dinh-duong'
-  //   },
-  //   {
-  //     name: 'Sửa tắm & dụng cụ vệ sinh',
-  //     link: 'sua-tam-dung-cu-ve-sinh'
-  //   },
-  //   {
-  //     name: 'Xem tất cả',
-  //     link1: 'shop-cho-cun',
-  //     link2: 'shop-cho-meo'
-  //   }
-  // ]
-
+function ListProduct({ style, title }) {
+  
   const dispatch = useDispatch();
   const { items: products, status } = useSelector((state) => state.products);
   const [categories, setCategories] = useState([]);
@@ -65,11 +38,10 @@ function ListProduct({style, title}) {
     href: `/categories/${category.slug}`,
   }));
 
-
   if (status === "loading") {
     return <div>Loading...</div>;
   }
-  
+
   return (
     // <div className={`flex flex-col gap-4 ${style ? "md:flex-row-reverse" : "md:flex-row"}`}>
     //   <div className="hidden lg:w-1/3 lg:flex flex-col items-center border-2 gap-5 border-[#c49a6c]">
@@ -86,11 +58,11 @@ function ListProduct({style, title}) {
     //         {
     //           collections.map((collection, index) => (
     //             <li key={index}>
-    //               <Link 
+    //               <Link
     //                 to={
     //                 title === "Shop cho cún"
     //                   ? `/collections/${collection.link || collection.link1}`
-    //                   : `/collections/${collection.link || collection.link2}`} 
+    //                   : `/collections/${collection.link || collection.link2}`}
     //                 className="hover:text-[#c49a6c]">{collection.name}
     //               </Link>
     //             </li>
@@ -115,30 +87,29 @@ function ListProduct({style, title}) {
           </div>
         </div>
         <ul className="hidden md:flex gap-5 pb-5">
-          {
-            collections.map((collection, index) => (
-              <li key={index}>
-                <Link 
-                  to={
+          {collections.map((collection, index) => (
+            <li key={index}>
+              <Link
+                to={
                   title === "Shop cho cún"
                     ? `/collections/${collection.link || collection.link1}`
-                    : `/collections/${collection.link || collection.link2}`} 
-                  className="hover:text-[#c49a6c]">{collection.name}
-                </Link>
-              </li>
-            ))
-          }
+                    : `/collections/${collection.link || collection.link2}`
+                }
+                className="hover:text-[#c49a6c]"
+              >
+                {collection.name}
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-5">
-        {
-          products.map((product, index) => (
-            <Product key={index} product={product}/>
-          ))
-        }
+        {products.map((product, index) => (
+          <Product key={index} product={product} />
+        ))}
       </div>
     </div>
-  )
+  );
 }
 
-export default ListProduct
+export default ListProduct;
