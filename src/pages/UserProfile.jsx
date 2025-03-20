@@ -7,7 +7,7 @@ import {
   FaSignOutAlt,
   FaTrash,
   FaEye,
-  FaFileDownload
+  FaFileDownload,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
@@ -28,7 +28,7 @@ const UserProfile = () => {
     address: "",
     birthDate: "",
     avatar: "",
-    gender: ""
+    gender: "",
   });
 
   const [orders, setOrders] = useState([]);
@@ -230,7 +230,7 @@ const UserProfile = () => {
           phone: user.phone,
           address: user.address,
           birthDate: user.birthDate,
-          gender: user.gender
+          gender: user.gender,
         },
         {
           headers: {
@@ -240,7 +240,7 @@ const UserProfile = () => {
       );
 
       const updatedUser = res.data;
-      
+
       if (user.avatar && user.avatar.startsWith("data:image")) {
         updatedUser.avatar = user.avatar;
       } else {
@@ -301,7 +301,7 @@ const UserProfile = () => {
   // xử lý người dùng nhấn nút tạo hóa đơn
   const hanldeGenerateInvoice = (order) => {
     generateInvoice(order, formatDisplayDate);
-  }
+  };
 
   const getStatusClass = (status) => {
     switch (status) {

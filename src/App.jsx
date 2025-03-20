@@ -29,19 +29,17 @@ function App() {
     <BrowserRouter>
       <ToastContainer />
       <Routes>
-      <Route path="*" element={<NotFoundPage />} />
-
+        <Route path="*" element={<NotFoundPage />} />
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/product/:_id" element={<ProductDetail />} />{" "}
         <Route path="/search" element={<Search />} />
         <Route path="/cart" element={<CartShop />} />
-        <Route path="/checkout/:id" element={<CheckOut />} />
+        <Route path="/checkout" element={<CheckOut />} />
         <Route path="/userProfile" element={<UserProfile />} />
         <Route path="/blogs/news" element={<News />} />
         <Route path="/blogs/news/:slug" element={<NewsDetail />} />
-
       </Routes>
     </BrowserRouter>
   );

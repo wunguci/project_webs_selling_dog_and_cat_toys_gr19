@@ -67,9 +67,7 @@ const Header = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
         try {
-          const { data } = await axiosInstance.get(
-            `api/users/${user._id}`
-          );
+          const { data } = await axiosInstance.get(`api/users/${user._id}`);
           const userData = data;
           userData.avatar = convertBase64ToImage(userData.avatar);
           setUser({
@@ -96,8 +94,8 @@ const Header = () => {
   };
 
   const menuOptionsCategories = categories.map((category) => ({
-      label: category.name,
-      href: `/categories/${category.slug}`,
+    label: category.name,
+    href: `/categories/${category.slug}`,
   }));
 
   const menuOptionsCategoriesCat = categories
@@ -112,7 +110,7 @@ const Header = () => {
     .map((category) => ({
       label: category.name,
       href: `/categories/${category.slug_type}`,
-    }));  
+    }));
 
   const menuOptionsUser = [
     {
@@ -169,10 +167,12 @@ const Header = () => {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-<button 
-        className="text-brown cursor-pointer focus:outline-none relative"
-        onClick={() => navigate("/cart")} // Click icon sẽ chuyển hướng
-      >              <FaShoppingCart className="text-2xl" />
+            <button
+              className="text-brown cursor-pointer focus:outline-none relative"
+              onClick={() => navigate("/cart")} // Click icon sẽ chuyển hướng
+            >
+              {" "}
+              <FaShoppingCart className="text-2xl" />
               <span className="absolute -top-1 -right-2 bg-green-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                 {cartTotalQuantity}
               </span>
@@ -198,9 +198,11 @@ const Header = () => {
                 placeholder="Nhập từ khóa tìm kiếm"
                 className="w-full px-4 py-2 border-brown rounded-l-full focus:outline-none"
               />
-              <button className="bg-brown px-4 py-2 text-white rounded-full focus:outline-none w-14 h-13 relative -left-4 flex items-center justify-center cursor-pointer">
-                <FaSearch className="text-lg" />
-              </button>
+              <Link to="/search">
+                <button className="bg-brown px-4 py-2 text-white rounded-full focus:outline-none w-14 h-13 relative -left-4 flex items-center justify-center cursor-pointer">
+                  <FaSearch className="text-lg" />
+                </button>
+              </Link>
             </div>
 
             {/* user */}
@@ -249,10 +251,12 @@ const Header = () => {
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
-<button 
-        className="text-brown cursor-pointer focus:outline-none relative"
-        onClick={() => navigate("/cart")} // Click icon sẽ chuyển hướng
-      >                  <FaShoppingCart className="text-2xl" />
+                <button
+                  className="text-brown cursor-pointer focus:outline-none relative"
+                  onClick={() => navigate("/cart")} // Click icon sẽ chuyển hướng
+                >
+                  {" "}
+                  <FaShoppingCart className="text-2xl" />
                   <span className="absolute -top-1 -right-2 bg-green-400 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                     {cartTotalQuantity}
                   </span>

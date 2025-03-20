@@ -1,15 +1,14 @@
 /* eslint-disable react/prop-types */
-import { Link } from "react-router-dom"
-import { MdOutlineRemoveRedEye } from "react-icons/md"
-import { GrSettingsOption } from "react-icons/gr"
-import Product from "./Product"
-import { useDispatch, useSelector } from "react-redux"
-import { useEffect, useState } from "react"
-import { fetchProducts } from "../stores/productSlice"
-import axios from "axios"
+import { Link } from "react-router-dom";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { GrSettingsOption } from "react-icons/gr";
+import Product from "./Product";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { fetchProducts } from "../stores/productSlice";
+import axios from "axios";
 
-function ListProduct({style, title}) {
-
+function ListProduct({ style, title }) {
   // const collections = [
   //   {
   //     name: 'Thức ăn & pate',
@@ -64,11 +63,10 @@ function ListProduct({style, title}) {
     href: `/categories/${category.slug}`,
   }));
 
-
   if (status === "loading") {
     return <div>Loading...</div>;
   }
-  
+
   return (
     // <div className={`flex flex-col gap-4 ${style ? "md:flex-row-reverse" : "md:flex-row"}`}>
     //   <div className="hidden lg:w-1/3 lg:flex flex-col items-center border-2 gap-5 border-[#c49a6c]">
@@ -85,11 +83,11 @@ function ListProduct({style, title}) {
     //         {
     //           collections.map((collection, index) => (
     //             <li key={index}>
-    //               <Link 
+    //               <Link
     //                 to={
     //                 title === "Shop cho cún"
     //                   ? `/collections/${collection.link || collection.link1}`
-    //                   : `/collections/${collection.link || collection.link2}`} 
+    //                   : `/collections/${collection.link || collection.link2}`}
     //                 className="hover:text-[#c49a6c]">{collection.name}
     //               </Link>
     //             </li>
@@ -114,30 +112,29 @@ function ListProduct({style, title}) {
           </div>
         </div>
         <ul className="hidden md:flex gap-5 pb-5">
-          {
-            collections.map((collection, index) => (
-              <li key={index}>
-                <Link 
-                  to={
+          {collections.map((collection, index) => (
+            <li key={index}>
+              <Link
+                to={
                   title === "Shop cho cún"
                     ? `/collections/${collection.link || collection.link1}`
-                    : `/collections/${collection.link || collection.link2}`} 
-                  className="hover:text-[#c49a6c]">{collection.name}
-                </Link>
-              </li>
-            ))
-          }
+                    : `/collections/${collection.link || collection.link2}`
+                }
+                className="hover:text-[#c49a6c]"
+              >
+                {collection.name}
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-5">
-        {
-          products.map((product, index) => (
-            <Product key={index} product={product}/>
-          ))
-        }
+        {products.map((product, index) => (
+          <Product key={index} product={product} />
+        ))}
       </div>
     </div>
-  )
+  );
 }
 
-export default ListProduct
+export default ListProduct;
