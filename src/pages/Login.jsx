@@ -9,6 +9,7 @@ import ScrollToTopButton from "../components/ScrollToTopButton";
 import { Link, useNavigate } from "react-router-dom";
 import "./page.scss";
 import { ToastContainer, toast } from "react-toastify";
+import axiosInstance from "../utils/axiosInstance";
 
 const Login = () => {
   const links = [{ label: "Trang chủ", link: "/" }, { label: "Đăng nhập" }];
@@ -67,8 +68,8 @@ const Login = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/users");
-        console.log("All users:", res.data);
+        const data = await axiosInstance.get("api/users");
+        console.log("All users:", data);
       } catch (err) {
         console.error("Error fetching users:", err);
       }
@@ -89,10 +90,13 @@ const Login = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/api/users/login", {
-        phone: formData.phone,
-        password: formData.password,
-      });
+      const res = await axiosInstance.post(
+        "api/users/login",
+        {
+          phone: formData.phone,
+          password: formData.password,
+        }
+      );
 
       const user = res.data;
 

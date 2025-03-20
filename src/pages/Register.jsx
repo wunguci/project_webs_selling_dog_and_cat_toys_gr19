@@ -88,7 +88,7 @@ const Register = () => {
       // Kiểm tra trùng lặp email và số điện thoại
       const { phone, email } = formData;
       const checkDuplicateResponse = await axios.post(
-        "http://localhost:5000/api/users/check-duplicate",
+        "http://localhost:5002/api/users/check-duplicate",
         {
           phone,
           email,
@@ -138,7 +138,7 @@ const Register = () => {
       };
 
       const res = await axios.post(
-        "http://localhost:5000/api/users/register",
+        "http://localhost:5002/api/users/register",
         userData
       );
 
