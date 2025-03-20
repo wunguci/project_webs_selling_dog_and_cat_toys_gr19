@@ -1,5 +1,5 @@
 import logo from "/pet.png";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./component.scss";
 import { FaCaretDown, FaPhone } from "react-icons/fa6";
 import {
@@ -16,10 +16,11 @@ import { Link, useNavigate } from "react-router-dom";
 import PopupMenu from "./PopupMenu";
 import HoverPopupMenu from "./HoverPopupMenu";
 import LoadingOverlay from "./LoadingOverlay";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import DialogCart from "./DialogCart";
 import axiosInstance from "../utils/axiosInstance";
+import PopupSearch from "./PopupSearch";
+import axios from "axios";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -32,6 +33,12 @@ const Header = () => {
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showPopupSearch, setShowPopupSearch] = useState(false);
+  const searchRef = useRef(null);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchHistory, setSearchHistory] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -83,6 +90,79 @@ const Header = () => {
     fetchUserData();
   }, []);
 
+  const fetchSearchResults = async (query) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+
+    try {
+      const response = await axios.get(
+        `http://localhost:5002/api/products/search?q=${query}`
+      );
+      setSearchResults(response.data);
+    } catch (err) {
+      console.error("Failed to fetch search results:", err);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      if (searchTerm.trim()) {
+        fetchSearchResults(searchTerm);
+      } else {
+        setSearchResults([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const savedHistory = localStorage.getItem("searchHistory");
+    if (savedHistory) {
+      try {
+        setSearchHistory(JSON.parse(savedHistory));
+      } catch (error) {
+        console.error("Failed to parse search history:", error);
+        localStorage.removeItem("searchHistory");
+      }
+    }
+  }, []);
+
+  // Xử lý khi người dùng click ra ngoài popup
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowPopupSearch(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Lưu từ khóa tìm kiếm vào lịch sử
+  const saveToHistory = (term) => {
+    if (!term.trim()) return;
+
+    const newHistory = [
+      term,
+      ...searchHistory.filter((item) => item !== term),
+    ].slice(0, 5);
+
+    setSearchHistory(newHistory);
+    localStorage.setItem("searchHistory", JSON.stringify(newHistory));
+  };
+
+  // Đăng xuất
   const handleLogout = () => {
     setIsLoggingOut(true);
     localStorage.removeItem("user");
@@ -91,6 +171,32 @@ const Header = () => {
       setLoggedIn(false);
       setIsLoggingOut(false); // tắt loading sau khi chuyển hướng
     }, 2000);
+  };
+
+  // Tìm kiếm
+  const handleSearch = (term) => {
+    if (!term.trim()) return;
+
+    saveToHistory(term);
+    setSearchTerm(term);
+    setShowPopupSearch(false);
+    navigate(`/search?q=${term}`);
+  };
+
+  const handleSearchResultClick = (result) => {
+    saveToHistory(result.name);
+    setSearchTerm(result.name);
+    setShowPopupSearch(false);
+    navigate(
+      result.type === "product"
+        ? `/products/${result.slug}`
+        : `/categories/${result.slug}`
+    );
+  };
+
+  const handleHistoryItemClick = (term) => {
+    setSearchTerm(term);
+    fetchSearchResults(term);
   };
 
   const menuOptionsCategories = categories.map((category) => ({
@@ -169,9 +275,8 @@ const Header = () => {
           >
             <button
               className="text-brown cursor-pointer focus:outline-none relative"
-              onClick={() => navigate("/cart")} // Click icon sẽ chuyển hướng
+              onClick={() => navigate("/cart")}
             >
-              {" "}
               <FaShoppingCart className="text-2xl" />
               <span className="absolute -top-1 -right-2 bg-green-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                 {cartTotalQuantity}
@@ -180,7 +285,7 @@ const Header = () => {
             {isHovered && <DialogCart />}
           </div>
 
-          {/* nút menu ẩn*/}
+          {/* menu button */}
           <button
             className="md:hidden text-gray-700 focus:outline-none ml-auto cursor-pointer relative"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -192,17 +297,32 @@ const Header = () => {
         {/* search bar & links */}
         {!isMobile && (
           <>
-            <div className="flex items-center w-full max-w-md lg:max-w-lg">
+            <div
+              className="flex items-center w-full max-w-md lg:max-w-lg relative"
+              ref={searchRef}
+            >
               <input
                 type="text"
                 placeholder="Nhập từ khóa tìm kiếm"
                 className="w-full px-4 py-2 border-brown rounded-l-full focus:outline-none"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onFocus={() => setShowPopupSearch(true)}
               />
-              <Link to="/search">
-                <button className="bg-brown px-4 py-2 text-white rounded-full focus:outline-none w-14 h-13 relative -left-4 flex items-center justify-center cursor-pointer">
-                  <FaSearch className="text-lg" />
-                </button>
-              </Link>
+              <button
+                className="bg-brown px-4 py-2 text-white rounded-full focus:outline-none w-14 h-13 relative -left-4 flex items-center justify-center cursor-pointer"
+                onClick={() => handleSearch(searchTerm)}
+              >
+                <FaSearch className="text-lg" />
+              </button>
+              {showPopupSearch && (
+                <PopupSearch
+                  searchResults={searchResults}
+                  searchHistory={searchHistory}
+                  onSearch={handleSearchResultClick}
+                  onHistoryItemClick={handleHistoryItemClick}
+                />
+              )}
             </div>
 
             {/* user */}
@@ -253,9 +373,8 @@ const Header = () => {
               >
                 <button
                   className="text-brown cursor-pointer focus:outline-none relative"
-                  onClick={() => navigate("/cart")} // Click icon sẽ chuyển hướng
+                  onClick={() => navigate("/cart")}
                 >
-                  {" "}
                   <FaShoppingCart className="text-2xl" />
                   <span className="absolute -top-1 -right-2 bg-green-400 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                     {cartTotalQuantity}
@@ -284,15 +403,37 @@ const Header = () => {
           </button>
         </div>
         <ul>
-          <li>
-            <input
-              type="text"
-              placeholder="Nhập từ khóa tìm kiếm"
-              className="w-full px-4 py-2 border-brown rounded-full focus:outline-none"
-            />
+          <li
+            className="flex items-center w-full relative pb-4"
+            ref={searchRef}
+          >
+            <div className="flex w-full relative">
+              <input
+                type="text"
+                placeholder="Nhập từ khóa tìm kiếm"
+                className="w-full px-4 py-2 border-brown rounded-full focus:outline-none"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onFocus={() => setShowPopupSearch(true)}
+              />
+              <button
+                className="bg-brown px-4 py-2 text-white rounded-full focus:outline-none w-14 h-10 relative -left-4 flex items-center justify-center cursor-pointer"
+                onClick={() => handleSearch(searchTerm)}
+              >
+                <FaSearch className="text-lg" />
+              </button>
+            </div>
+            {showPopupSearch && (
+              <PopupSearch
+                searchResults={searchResults}
+                searchHistory={searchHistory}
+                onSearch={handleSearchResultClick}
+                onHistoryItemClick={handleHistoryItemClick}
+              />
+            )}
           </li>
           {loggedIn ? (
-            <li>
+            <li className="py-3">
               <div className="flex items-center space-x-2 cursor-pointer">
                 <img
                   src={user.avatar}
@@ -306,10 +447,33 @@ const Header = () => {
                   {user.name}
                 </span>
               </div>
+              <div className="mt-2">
+                {menuOptionsUser.map((option, index) => (
+                  <div key={index} className="py-2">
+                    {option.onClick ? (
+                      <button
+                        onClick={option.onClick}
+                        className="flex items-center text-gray-700 hover:text-brown"
+                      >
+                        {option.icon}
+                        {option.label}
+                      </button>
+                    ) : (
+                      <Link
+                        to={option.href}
+                        className="flex items-center text-gray-700 hover:text-brown"
+                      >
+                        {option.icon}
+                        {option.label}
+                      </Link>
+                    )}
+                  </div>
+                ))}
+              </div>
             </li>
           ) : (
             <>
-              <li>
+              <li className="py-3">
                 <Link
                   to="/register"
                   className="block text-gray-700 text-sm text-brown-hover"
@@ -317,7 +481,7 @@ const Header = () => {
                   ĐĂNG KÝ
                 </Link>
               </li>
-              <li>
+              <li className="py-3">
                 <Link
                   to="/login"
                   className="block text-gray-700 text-sm text-brown-hover"
@@ -328,7 +492,7 @@ const Header = () => {
             </>
           )}
 
-          <li>
+          <li className="py-3">
             <a
               href="#"
               className="text-gray-700 flex items-center text-brown-hover"
@@ -337,7 +501,7 @@ const Header = () => {
               <FaCaretDown className="ml-2 text-lg" />
             </a>
           </li>
-          <li>
+          <li className="py-3">
             <a
               href="#"
               className="text-gray-700 flex items-center text-brown-hover"
@@ -346,7 +510,7 @@ const Header = () => {
               <FaCaretDown className="ml-2 text-lg" />
             </a>
           </li>
-          <li>
+          <li className="py-3">
             <a
               href="#"
               className="block text-gray-700 text-sm text-brown-hover"
@@ -354,7 +518,7 @@ const Header = () => {
               KHUYẾN MÃI
             </a>
           </li>
-          <li>
+          <li className="py-3">
             <a
               href="/blogs/news"
               className="block text-gray-700 text-sm text-brown-hover"
