@@ -1,14 +1,14 @@
-import Banner from "../components/Banner"
-import SliderCategory from "../components/SliderCategory"
-import MainLayout from "../layout/mainLayout"
-import ListProduct from "../components/ListProduct"
-import Marquee from "react-fast-marquee"
-import SaleProduct from "../components/SaleProduct"
-import { useEffect, useState } from "react"
-import Slider from "react-slick"
+import Banner from "../components/Banner";
+import SliderCategory from "../components/SliderCategory";
+import MainLayout from "../layout/mainLayout";
+import ListProduct from "../components/ListProduct";
+import Marquee from "react-fast-marquee";
+import SaleProduct from "../components/SaleProduct";
+import { useEffect, useState } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 const CountdownTimer = ({ targetDate }) => {
   const calculateTimeLeft = () => {
@@ -37,8 +37,10 @@ const CountdownTimer = ({ targetDate }) => {
     <div className="flex gap-4 justify-center items-center">
       {Object.entries(timeLeft).map(([label, value], index) => (
         <div key={index} className="bg-white flex flex-col justify-center items-center p-2 rounded-[5px]">
-          <span >{value.toString().padStart(2, "0")}</span>
-          <span className="text-[12px]">{label === "days" ? "Ngày" : label === "hours" ? "Giờ" : label === "minutes" ? "Phút" : "Giây"}</span>
+          <span>{value.toString().padStart(2, "0")}</span>
+          <span className="text-[12px]">
+            {label === "days" ? "Ngày" : label === "hours" ? "Giờ" : label === "minutes" ? "Phút" : "Giây"}
+          </span>
         </div>
       ))}
     </div>
@@ -48,84 +50,112 @@ const CountdownTimer = ({ targetDate }) => {
 const images = [
   "https://bizweb.dktcdn.net/100/426/888/themes/902732/assets/section_home_banner1.jpg?1728468327659",
   "https://bizweb.dktcdn.net/100/426/888/themes/902732/assets/section_home_banner2.jpg?1728468327659",
-  "https://bizweb.dktcdn.net/100/426/888/themes/902732/assets/section_home_banner2.jpg?1728468327659"
-]
+  "https://bizweb.dktcdn.net/100/426/888/themes/902732/assets/section_home_banner2.jpg?1728468327659",
+];
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const { categories: productCategory, productSale } = useSelector((state) => state.products);
 
   const targetDate = new Date();
   targetDate.setHours(targetDate.getHours() + 12);
 
-  var settings = {
+  const settings = {
     dots: true,
     infinite: true,
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2000,
-    pauseOnHover: true
+    pauseOnHover: true,
   };
 
   return (
     <MainLayout>
       <div className="relative mt-10 px-5">
-          <Banner/>
-          <SliderCategory/>
+        <Banner />
+        <SliderCategory />
       </div>
       <div className="max-w-[1200px] mx-auto flex flex-col gap-10 px-5">
-        <ListProduct title = {'Shop cho cún'}/>
+        <ListProduct products={productCategory["shop-cho-cun"]} title={"Shop cho cún"} />
 
-          <div className="bg-red-400 p-5 rounded-[10px]">
-            <div className="flex flex-col md:flex-row gap-3 md:gap-7 mb-5">
-              <div className="flex justify-center items-center gap-3">
-                <img className="h-4" src="https://file.hstatic.net/200000713019/file/flashsale-hot_6f59fac9870c4452bbed862ad7020f15.webp" alt="" />
-                <h1 className="text-1xl text-white font-bold">CHỈ CÓ TẠI PETMALL ONLINE 8:30 - 20:59 MỖI NGÀY</h1>
-              </div>
-              <Marquee speed={50} gradient={false} className="text-[14px] text-white">
-                <span className="mx-4">GIAO HÀNG NHANH TRONG 30 PHÚT TẠI HỒ CHÍ MINH</span>
-                <span className="mx-4">SẢN PHẨM CHÍNH HÃNG GIÁ TỐT NHẤT THỊ TRƯỜNG</span>
-              </Marquee>
-              <CountdownTimer targetDate={targetDate} />
+        <div className="bg-red-400 p-5 rounded-[10px]">
+          <div className="flex flex-col md:flex-row gap-3 md:gap-7 mb-5">
+            <div className="flex justify-center items-center gap-3">
+              <img
+                className="h-4"
+                src="https://file.hstatic.net/200000713019/file/flashsale-hot_6f59fac9870c4452bbed862ad7020f15.webp"
+                alt=""
+              />
+              <h1 className="text-1xl text-white font-bold">CHỈ CÓ TẠI PETMALL ONLINE 8:30 - 20:59 MỖI NGÀY</h1>
             </div>
-            <SaleProduct/>
+            <Marquee speed={50} gradient={false} className="text-[14px] text-white">
+              <span className="mx-4">GIAO HÀNG NHANH TRONG 30 PHÚT TẠI HỒ CHÍ MINH</span>
+              <span className="mx-4">SẢN PHẨM CHÍNH HÃNG GIÁ TỐT NHẤT THỊ TRƯỜNG</span>
+            </Marquee>
+            <CountdownTimer targetDate={targetDate} />
           </div>
+          <SaleProduct productSale = {productSale}/>
+        </div>
 
-        <ListProduct title={'Shop cho mèo'} style/>
+        <ListProduct products={productCategory["shop-cho-meo"]} title={"Shop cho mèo"} />
 
         <div className="p-5 grid grid-cols-2 border-1 border-gray-400 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
           <div className="flex flex-col gap-3">
             <h1 className="font-bold text-blue-400 text-2xl">Tin tức</h1>
             <div className="flex gap-5">
-              <img className="h-32" src="https://file.hstatic.net/200000521195/file/f0b0c62d-1913-4bf8-ba21-31b5d91d6d92_f169512700c4445996abe64225b71a56_grande.jpeg" alt="" />
+              <img
+                className="h-32"
+                src="https://file.hstatic.net/200000521195/file/f0b0c62d-1913-4bf8-ba21-31b5d91d6d92_f169512700c4445996abe64225b71a56_grande.jpeg"
+                alt=""
+              />
               <div className="flex flex-col justify-around">
-                <Link className="font-bold text-[18px] hover:text-blue-400">Cấp cứu chó bị sốc nhiệt tại nhà</Link>
+                <Link to="/" className="font-bold text-[18px] hover:text-blue-400">
+                  Cấp cứu chó bị sốc nhiệt tại nhà
+                </Link>
                 <span>Khi quyết định nuôi thú cưng, đặc biệt là chó, bạn cần tìm hiểu những</span>
                 <div className="flex justify-between">
                   <span>17/03/2025</span>
-                  <Link className="mr-5 text-blue-400">Xem thêm</Link>
+                  <Link to="/" className="mr-5 text-blue-400">
+                    Xem thêm
+                  </Link>
                 </div>
               </div>
             </div>
             <div className="flex gap-5">
-              <img className="h-32" src="https://file.hstatic.net/200000521195/file/f0b0c62d-1913-4bf8-ba21-31b5d91d6d92_f169512700c4445996abe64225b71a56_grande.jpeg" alt="" />
+              <img
+                className="h-32"
+                src="https://file.hstatic.net/200000521195/file/f0b0c62d-1913-4bf8-ba21-31b5d91d6d92_f169512700c4445996abe64225b71a56_grande.jpeg"
+                alt=""
+              />
               <div className="flex flex-col justify-around">
-                <Link className="font-bold text-[18px] hover:text-blue-400">Cấp cứu chó bị sốc nhiệt tại nhà</Link>
+                <Link to="/" className="font-bold text-[18px] hover:text-blue-400">
+                  Cấp cứu chó bị sốc nhiệt tại nhà
+                </Link>
                 <span>Khi quyết định nuôi thú cưng, đặc biệt là chó, bạn cần tìm hiểu những</span>
                 <div className="flex justify-between">
                   <span>17/03/2025</span>
-                  <Link className="mr-5 text-blue-400">Xem thêm</Link>
+                  <Link to="/" className="mr-5 text-blue-400">
+                    Xem thêm
+                  </Link>
                 </div>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-3">
-            <img src="https://bizweb.dktcdn.net/100/147/060/themes/880570/assets/about_img_1.jpg?1741582585151" alt="" />
-            <img src="https://bizweb.dktcdn.net/100/147/060/themes/880570/assets/about_img_1.jpg?1741582585151" alt="" />
+            <img
+              src="https://bizweb.dktcdn.net/100/147/060/themes/880570/assets/about_img_1.jpg?1741582585151"
+              alt=""
+            />
+            <img
+              src="https://bizweb.dktcdn.net/100/147/060/themes/880570/assets/about_img_1.jpg?1741582585151"
+              alt=""
+            />
           </div>
         </div>
       </div>
     </MainLayout>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/home";
+import Home from "./pages/Home";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import ProductDetail from "./pages/ProductDetail"; // Import ProductDetail
@@ -12,18 +12,24 @@ import NewsDetail from "./pages/NewsDetail";
 import NotFoundPage from "./pages/NotFoundPage";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { fetchProducts } from "./stores/productSlice";
+import { featchProductSale, fetchProductsByCategory } from "./stores/productSlice";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getTotals } from "./stores/cartSlice";
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchProducts());
-    dispatch(getTotals());
+    dispatch(fetchProductsByCategory("shop-cho-cun"));
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchProductsByCategory("shop-cho-meo"));
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(featchProductSale());
+  }, [dispatch])
 
   return (
     <BrowserRouter>
@@ -33,7 +39,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/product/:_id" element={<ProductDetail />} />{" "}
+        <Route path="/product/:slug" element={<ProductDetail />} />
         <Route path="/search" element={<Search />} />
         <Route path="/cart" element={<CartShop />} />
         <Route path="/checkout" element={<CheckOut />} />

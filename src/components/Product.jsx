@@ -9,6 +9,7 @@ import { addToCart } from "../stores/cartSlice";
 function Product({ product }) {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+  
 
   const handleAddToCart = (product) => {
     dispatch(addToCart(product));
@@ -18,7 +19,7 @@ function Product({ product }) {
     <div>
       <div className="flex flex-col gap-1 border-1 border-[#c49a6c] rounded-[5px] overflow-hidden">
         <div className="relative group hover:cursor-pointer">
-          <Link to={`/product/${product._id}`}>
+          <Link to={`/product/${product.slug}`}>
             <img
               className="hover:opacity-70 w-screen"
               src={product.images[0]}
@@ -49,7 +50,7 @@ function Product({ product }) {
         </div>
       </div>
 
-      <DialogProduct open={open} setOpen={setOpen} />
+      <DialogProduct open={open} product={product} setOpen={setOpen} />
     </div>
   );
 }

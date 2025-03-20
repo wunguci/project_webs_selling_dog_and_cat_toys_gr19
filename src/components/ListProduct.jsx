@@ -1,24 +1,14 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom"
-import { MdOutlineRemoveRedEye } from "react-icons/md"
-import { GrSettingsOption } from "react-icons/gr"
 import Product from "./Product"
-import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
-import { fetchProducts } from "../stores/productSlice"
 import axios from "axios"
 import axiosInstance from "../utils/axiosInstance";
 
+function ListProduct({title, products}) {
 
-function ListProduct({ style, title }) {
-  
-  const dispatch = useDispatch();
-  const { items: products, status } = useSelector((state) => state.products);
   const [categories, setCategories] = useState([]);
 
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -38,10 +28,7 @@ function ListProduct({ style, title }) {
     href: `/categories/${category.slug}`,
   }));
 
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
-
+  console.log(collections);
   return (
     // <div className={`flex flex-col gap-4 ${style ? "md:flex-row-reverse" : "md:flex-row"}`}>
     //   <div className="hidden lg:w-1/3 lg:flex flex-col items-center border-2 gap-5 border-[#c49a6c]">
@@ -104,9 +91,11 @@ function ListProduct({ style, title }) {
         </ul>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-5">
-        {products.map((product, index) => (
-          <Product key={index} product={product} />
-        ))}
+        {
+          products?.slice(0, 8).map((product, index) => (
+            <Product key={index} product={product}/>
+          ))
+        }
       </div>
     </div>
   );
