@@ -68,8 +68,8 @@ const Login = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axiosInstance.get("/api/users");
-        console.log("All users:", res.data);
+        const data = await axiosInstance.get("/api/users");
+        console.log("All users:", data);
       } catch (err) {
         console.error("Error fetching users:", err);
       }
