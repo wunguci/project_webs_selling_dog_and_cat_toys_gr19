@@ -106,54 +106,58 @@ const CartShop = () => {
                       </td>
 
                       <td className="p-5 w-32 text-center">
-  <div className="flex items-center justify-center border border-gray-300 rounded-lg w-28 shadow-sm">
-    {/* Nút Giảm */}
-    <button
-      onClick={() => {
-        if (item.quantity === 1) {
-          removeItem(item.id);
-        } else {
-          updateQuantity(item.id, item.quantity - 1);
-        }
-      }}
-      className="px-3 py-2 text-gray-700 rounded-l-lg cursor-pointer"
-    >
-      -
-    </button>
+                        <div className="flex items-center justify-center border border-gray-300 rounded-lg w-28 shadow-sm">
+                          {/* Nút Giảm */}
+                          <button
+                            onClick={() => {
+                              if (item.quantity === 1) {
+                                removeItem(item.id);
+                              } else {
+                                updateQuantity(item.id, item.quantity - 1);
+                              }
+                            }}
+                            className="px-3 py-2 text-gray-700 rounded-l-lg cursor-pointer"
+                          >
+                            -
+                          </button>
 
-    {/* Số Lượng (Cho phép nhập + Ẩn nút tăng giảm mặc định) */}
-    <input
-      type="number"
-      value={item.quantity}
-      onChange={(e) => {
-        const value = e.target.value;
-        if (value === "") {
-          updateQuantity(item.id, ""); // Nếu rỗng thì chờ nhập số
-        } else {
-          const newQuantity = parseInt(value, 10);
-          if (!isNaN(newQuantity) && newQuantity >= 1) {
-            updateQuantity(item.id, newQuantity);
-          }
-        }
-      }}
-      onBlur={(e) => {
-        if (!e.target.value || parseInt(e.target.value, 10) < 1) {
-          updateQuantity(item.id, 1);
-        }
-      }}
-      className="w-10 text-center border-x border-gray-300 bg-white text-gray-800 appearance-none custom-number-input"
-    />
+                          {/* Số Lượng (Cho phép nhập + Ẩn nút tăng giảm mặc định) */}
+                          <input
+                            type="number"
+                            value={item.quantity}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === "") {
+                                updateQuantity(item.id, ""); // Nếu rỗng thì chờ nhập số
+                              } else {
+                                const newQuantity = parseInt(value, 10);
+                                if (!isNaN(newQuantity) && newQuantity >= 1) {
+                                  updateQuantity(item.id, newQuantity);
+                                }
+                              }
+                            }}
+                            onBlur={(e) => {
+                              if (
+                                !e.target.value ||
+                                parseInt(e.target.value, 10) < 1
+                              ) {
+                                updateQuantity(item.id, 1);
+                              }
+                            }}
+                            className="w-10 text-center border-x border-gray-300 bg-white text-gray-800 appearance-none custom-number-input"
+                          />
 
-    {/* Nút Tăng */}
-    <button
-      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-      className="w-10 h-10 text-gray-700 rounded-r-lg cursor-pointer flex items-center justify-center"
-    >
-      +
-    </button>
-  </div>
-</td>
-
+                          {/* Nút Tăng */}
+                          <button
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity + 1)
+                            }
+                            className="w-10 h-10 text-gray-700 rounded-r-lg cursor-pointer flex items-center justify-center"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </td>
 
                       <td className="p-5 w-32 text-center">
                         {(item.price * item.quantity).toLocaleString()}đ
