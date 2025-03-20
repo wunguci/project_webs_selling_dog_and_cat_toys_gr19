@@ -17,16 +17,18 @@ const orderSchema = new mongoose.Schema({
                 type: Number,
                 required: true,
             },
-        }
+        },
     ],
     total_price: {
         type: Number,
         required: true,
+        min: 0,
     },
     status: {
         type: String,
         required: true,
-        default: "Đang giao",
+        default: "Đang giao hàng",
+        enum: ["Chờ xử lý", "Đang xử lý", "Đang giao hàng", "Đã giao hàng", "Hoàn tất", "Đã hủy"],
     },
     order_date: {
         type: Date,

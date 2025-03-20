@@ -14,9 +14,9 @@ const router = express.Router();
 router.get('/search', searchProducts);
 router.get('/', getAllProducts);
 router.get("/product/sales", getProductsSale)
-router.get('/:slug', getProductByName);
 router.post('/', createProduct);
 router.put('/:id', updateProduct);
+router.get('/:slug', getProductByName);
 router.delete('/:id', deleteProduct);
 
 
