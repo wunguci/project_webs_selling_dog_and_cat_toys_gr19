@@ -99,8 +99,8 @@ const Header = () => {
     setIsSearching(true);
 
     try {
-      const response = await axios.get(
-        `http://localhost:5002/api/products/search?q=${query}`
+      const response = await axiosInstance.get(
+        `/api/products/search?q=${query}`
       );
       setSearchResults(response.data);
     } catch (err) {
