@@ -269,7 +269,7 @@ const Header = () => {
         <div className="flex items-center space-x-4 md:hidden ml-auto">
           {/* cart */}
           <div
-            className="relative mx-5 mt-1"
+            className="relative mx-5 mt-1 cart-dialog"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
@@ -309,12 +309,14 @@ const Header = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onFocus={() => setShowPopupSearch(true)}
               />
-              <button
-                className="bg-brown px-4 py-2 text-white rounded-full focus:outline-none w-14 h-13 relative -left-4 flex items-center justify-center cursor-pointer"
-                onClick={() => handleSearch(searchTerm)}
-              >
-                <FaSearch className="text-lg" />
-              </button>
+              <Link to="/search" className="">
+                <button
+                  className="bg-brown px-4 py-2 text-white rounded-full focus:outline-none w-14 h-13 relative -left-4 flex items-center justify-center cursor-pointer"
+                  onClick={() => handleSearch(searchTerm)}
+                >
+                  <FaSearch className="text-lg" />
+                </button>
+              </Link>
               {showPopupSearch && (
                 <PopupSearch
                   searchResults={searchResults}
@@ -367,7 +369,7 @@ const Header = () => {
               )}
               {/* cart */}
               <div
-                className="relative mx-5 mt-1"
+                className="relative mx-5 mt-1 cart-dialog"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
