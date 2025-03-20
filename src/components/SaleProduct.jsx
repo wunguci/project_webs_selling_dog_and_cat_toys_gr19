@@ -144,7 +144,7 @@ const products =  [
 }
 ]
 
-function SaleProduct() {
+function SaleProduct({productSale}) {
 
   const CustomPrevArrow = (props) => {
     const { onClick } = props;
@@ -162,7 +162,7 @@ function SaleProduct() {
 
   var settings = {
     infinite: true,
-    slidesToShow: 5,
+    slidesToShow: 4,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2000,
@@ -192,26 +192,33 @@ function SaleProduct() {
   };
 
   const [open, setOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   const dispatch = useDispatch();
 
   const handleAddToCart = (product) => {
     dispatch(addToCart(product))
   }
 
+  const handleViewProduct = (product) => {
+    setSelectedProduct(product)
+    setOpen(true)
+  }
+
   return (
     <div>
       <Slider {...settings}>
         {
-          products.map((product, index) => (
+          productSale?.map((product, index) => (
             <div key={index} className="px-3">
               <div>
                 <div className="flex flex-col gap-1 border-1 border-[#c49a6c] rounded-[5px] overflow-hidden bg-white">
                   <div className="relative group hover:cursor-pointer">
-                    <Link to={"/product/2"}>
+                    <Link to={`/product/${product.slug}`}>
                       <img className={`hover:opacity-70 w-screen`} src={product.images[0]} alt="" />
                     </Link>
                     <div className="flex gap-3 absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100">
-                      <button onClick={() => setOpen(true)}  className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
+                      <button onClick={() => handleViewProduct(product)}  className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
                         <MdOutlineRemoveRedEye className="hover:text-white" size={25}/>
                       </button>
                       <button onClick={()=> handleAddToCart(product)} className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
@@ -220,7 +227,7 @@ function SaleProduct() {
                     </div>
                   </div>
                   <div className='p-3 flex flex-col gap-1'>
-                    <Link to={"/product/2"} className="line-clamp-2 hover:text-[#c49a6c] hover:cursor-pointer">{product.name}</Link>
+                    <Link to={"/product/2"} className="line-clamp-1 hover:text-[#c49a6c] hover:cursor-pointer">{product.name}</Link>
                     <span className="text-1xl text-[#c49a6c] text-start">
                       {product.price.toLocaleString('vi-VN') + '₫'}
                     </span>
@@ -232,7 +239,7 @@ function SaleProduct() {
           ))
         }
       </Slider>
-      <DialogProduct open={open} setOpen={setOpen}/>
+      <DialogProduct open={open} product={selectedProduct} setOpen={setOpen}/>
     </div>
   )
 }

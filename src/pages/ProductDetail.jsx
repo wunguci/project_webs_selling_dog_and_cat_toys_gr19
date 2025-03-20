@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom"
+/* eslint-disable react/prop-types */
+import { Link, useParams } from "react-router-dom"
 import MainLayout from "../layout/mainLayout"
 import { TiTick } from "react-icons/ti"
 import { FaShippingFast } from "react-icons/fa"
@@ -6,66 +7,47 @@ import { RiRefund2Line } from "react-icons/ri"
 import { MdAssignmentReturn, MdOutlineArrowBackIos, MdOutlineArrowForwardIos, MdOutlineRemoveRedEye, MdOutlineStar } from "react-icons/md"
 import image1 from '../assets/images/image1.jpg'
 import Slider from "react-slick"
-import { useState } from "react"
-import { IoIosArrowForward, IoMdCart } from "react-icons/io"
-import pet from '../assets/images/pet.png'
+import { useEffect, useState } from "react"
 import DialogProduct from "../components/DialogProduct"
+import { useDispatch, useSelector } from "react-redux"
+import { fetachProductByName, fetchProducts } from "../stores/productSlice"
+import { Image } from 'antd'
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/free-mode';
+import 'swiper/css/navigation';
+import 'swiper/css/thumbs';
+import { IoMdCart } from "react-icons/io"
 
 
-const categories = [
+const services = [
   {
-    image: "https://file.hstatic.net/200000521195/collection/thuoc___dinh_duong-01_b86104361469466a84bd4a47032f8b97.png",
-    title: "Thuốc và dinh dưỡng",
-    link: "thuoc-va-dinh-duong"
+    icon: <TiTick />,
+    title: "100% hàng thật"
   },
   {
-    image: "https://file.hstatic.net/200000521195/collection/sua_tam-01_2e492eb398844bf49c676a64678c0cdc.png",
-    title: "Sữa tắm & dụng cụ vệ sinh",
-    link: "sua-tam-va-dung-cu-ve-sinh"
+    icon: <FaShippingFast />,
+    title: "Freeship mọi nơi"
   },
   {
-    image: "https://file.hstatic.net/200000521195/collection/chuong_nem_tui_van_chuyen-01_8c478a611c05450283dda864d916af07.png",
-    title: "Chuồng, nệm & túi",
-    link: "chuong-nem-tui"
+    icon: <RiRefund2Line />,
+    title: 'Hoàn 200% nếu hàng giả'
   },
   {
-    image: "https://file.hstatic.net/200000521195/collection/chau_cat-01_094e50e82c09499498134d589f23df53.png",
-    title: "Chậu & cát vệ sinh",
-    link: "chau-cat-ve-sinh"
+    icon: <MdAssignmentReturn />,
+    title: "30 ngày đổi trả"
   }
-];
+]
 
 const ProductDetail = () => {
-
-  const services = [
-    {
-      icon: <TiTick />,
-      title: "100% hàng thật"
-    },
-    {
-      icon: <FaShippingFast />,
-      title: "Freeship mọi nơi"
-    },
-    {
-      icon: <RiRefund2Line />,
-      title: 'Hoàn 200% nếu hàng giả'
-    },
-    {
-      icon: <MdAssignmentReturn />,
-      title: "30 ngày đổi trả"
-    }
-  ]
-
-  const [image, setImage] = useState(categories[0].image);
-
   const CustomPrevArrow = (props) => {
-    // eslint-disable-next-line react/prop-types
     const { onClick } = props;
     return (
       <MdOutlineArrowBackIos className="absolute top-1/2 -left-2 bg-amber-50 rounded-full p-2 -translate-y-1/2 z-10 hover:cursor-pointer" size={30} onClick={onClick} />
     );
   };
-  
   const CustomNextArrow = (props) => {
     const { onClick } = props;
     return (
@@ -107,25 +89,50 @@ const ProductDetail = () => {
 
   const [quantity, setQuantity] = useState(1);
   const [open, setOpen] = useState(false);
-
   const handleDecrease = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
   };
-
   const handleIncrease = () => {
     setQuantity(quantity + 1);
   };
 
-  const handleInputChange = (e) => {
-    const value = parseInt(e.target.value, 10);
-    if (!isNaN(value) && value >= 1) {
-      setQuantity(value);
-    }
-  };
+  // const handleInputChange = (e) => {
+  //   const value = parseInt(e.target.value, 10);
+  //   if (!isNaN(value) && value >= 1) {
+  //     setQuantity(value);
+  //   }
+  // };
 
   const [activeTab, setActiveTab] = useState("mo-ta");
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const { slug } = useParams();
+  const dispatch = useDispatch();
+  const { productDetail, items:products } = useSelector((state) => state.products)
+
+  useEffect(()=>{
+    dispatch(fetchProducts())
+  }, [dispatch])
+  
+  
+  useEffect(()=>{
+    dispatch(fetachProductByName(slug))
+  }, [slug, dispatch])
+
+
+  const handleViewProduct = (product) => {
+    setSelectedProduct(product)
+    setOpen(true)
+  }
+
+
+  if (!productDetail) {
+    return <p>loading</p>;
+  }
 
   return (
     
@@ -146,7 +153,7 @@ const ProductDetail = () => {
       <div className="relative">
         <img className="h-32 md:w-full md:h-full" src={image1} alt="" />
         <div className="absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 text-base md:text-[20px] text-white font-bold text-center">
-          <h1 className="mb-4 text-2xl hidden md:block">Bát ăn nghiêng chống gù cho chó mèo</h1>
+          <h1 className="mb-4 text-2xl hidden md:block">{productDetail.name}</h1>
           <div>
             <Link to="/" className="hover:text-[#c49a6c]">Trang chủ</Link> 
             <span> &gt; </span>
@@ -157,105 +164,140 @@ const ProductDetail = () => {
         </div>
       </div>
       <div className="max-w-[1350px] mx-auto flex flex-col gap-5 px-5">
-        <div className="flex flex-col md:flex-row gap-5 mt-10">
-          <div className="w-full md:w-2/7 bg-amber-50 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px] rounded-[5px]">
-            <div className="m-3 flex gap-3 flex-row-reverse items-center md:flex-col">
-              <div className="border-2 w-5/6 md:w-full border-amber-200 text-center rounded-[5px]">
-                <img src={image} alt="" />
-              </div>
-              <div className="w-1/6 md:w-full">
-                <ul className="flex flex-col md:flex-row gap-2">
-                  {
-                    categories.map((item, index)=>(
-                      <li key={index} onClick={()=>setImage(item.image)} className={`${image===item.image?'border-2':""} border-blue-600 rounded-[3px]`}>
-                        <img src={item.image} alt="" />
-                      </li>
-                    ))
-                  }
-                </ul>
-              </div>
+        <div className="flex gap-5 mt-5">
+          <div className="w-8/10 grid grid-cols-2 gap-5">
+            <div className="bg-white shadow-md rounded-lg p-4">
+              <Swiper
+                style={{
+                  '--swiper-navigation-color': '#fff',
+                  '--swiper-pagination-color': '#fff',
+                }}
+                spaceBetween={10}
+                thumbs={{ swiper: thumbsSwiper }}
+                navigation={true}
+                modules={[FreeMode, Navigation, Thumbs]}
+                onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+                className="mySwiper2 h-[300px] md:h-[400px] w-full rounded-lg overflow-hidden"
+              >
+                {productDetail?.images?.map((product, index) => (
+                  <SwiperSlide key={index} className="flex justify-center items-center bg-white">
+                    <Image
+                      src={product}
+                      className="block w-full h-full object-cover"
+                      preview={{ mask: "Xem ảnh" }}
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+              <hr className="my-5 opacity-10"/>
+              <Swiper
+                onSwiper={setThumbsSwiper}
+                spaceBetween={10}
+                slidesPerView={4}
+                freeMode={true}
+                watchSlidesProgress={true}
+                modules={[FreeMode, Navigation, Thumbs]}
+                className="mySwiper h-[80px] md:h-[100px] box-border py-[10px] mt-4"
+              >
+                {productDetail?.images?.map((product, index) => (
+                  <SwiperSlide key={index} className="w-[25%] h-full transition-opacity duration-200 cursor-pointer">
+                    <img
+                      src={product}
+                      className="block w-full h-full object-cover rounded-lg"
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </div>
-          </div>
-          <div className="w-full md:w-3/7 bg-amber-50">
-            <div className="flex flex-col gap-3 p-3">
-              <div className="p-3 flex flex-col gap-3 bg-amber-300 rounded-[5px]">
-                <h1 className="text-[22px] font-semibold">Bát ăn nghiêng chống gù cho chó mèo</h1>
-                <span className="opacity-50">Đã bán: 10</span>
-                <div className="flex items-center gap-5">
-                  <h5 className="font-bold text-[25px] text-red-600">100.000đ</h5>
-                  <span>-10%</span>
-                  <span className="line-through opacity-50">90.000đ</span>
-                </div>
-              </div>
-              <div className="p-3 bg-amber-300 rounded-[5px]">
-                <div className="flex gap-3 flex-col">
-                  <h5 className="font-medium text-[18px]">Thông tin vận chuyển</h5>
-                  <div className="flex justify-between">
-                    <span>Giao đến: 12 Nguyễn Văn Bảo, P.1, Q.Gò Vấp, TPHCM</span>
-                    <span className="text-blue-700 cursor-pointer">Đổi</span>
+            <div className="bg-white shadow-md rounded-lg">
+              <div className="p-3 flex flex-col gap-3">
+                <div className="flex gap-5 items-center">
+                  {/* <div className="rounded-full bg-amber-800">
+                    <img src={pet} alt="" className="size-15 p-1" />
                   </div>
-                  <hr />
-                  <div className="flex flex-col gap-1">
-                    <div className="flex gap-2 items-center">
-                      <FaShippingFast size={20} className="opacity-60"/>
-                      <span className="font-medium">Thời gian giao hàng</span>
+                  <div className="flex flex-col">
+                    <h1 className="font-medium">Pet shope</h1>
+                    <div className="flex items-center gap-2">
+                      <span>4.8</span>
+                      <MdOutlineStar className="text-yellow-300"/>
+                      <span>(100+ đánh giá)</span>
                     </div>
-                    <span>
-                      Trước 19h, {new Date(new Date().setDate(new Date().getDate() + 3)).toLocaleDateString("vi-VN")}
-                    </span>
+                  </div> */}
+
+                  <div className="p-3 flex flex-col gap-3 rounded-[5px]">
+                    <h1 className="text-[22px] font-semibold">{productDetail?.name}</h1>
+                    <span className="opacity-50">Đã bán: {productDetail.sold}</span>
+                    <div className="flex items-center gap-5">
+                      <h5 className="font-bold text-[25px] text-red-600">{new Intl.NumberFormat('vi-VN').format(productDetail.price)}đ</h5>
+                      {/* <span>-10%</span>
+                      <span className="line-through opacity-50">90.000đ</span> */}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="p-3 bg-amber-300 rounded-[5px] flex flex-col gap-2">
-                <h3 className="font-medium">Ưu đãi khác</h3>
-                <div className="flex justify-between items-center">
-                  <span>4 Mã Giảm Giá</span>
-                  <IoIosArrowForward className="cursor-pointer"/>
+                <hr />
+                <div className="flex flex-col gap-4">
+                  <h1 className="font-semibold text-lg text-gray-800">Số lượng</h1>
+                  <div className="flex items-center w-fit bg-white border border-gray-300 rounded-full shadow-sm">
+                    <button
+                      className="size-10 text-lg font-bold bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={handleDecrease}
+                      disabled={quantity <= 1}
+                    >
+                      -
+                    </button>
+                    <span className="px-6 text-lg font-medium">{quantity}</span>
+                    <button
+                      className="size-10 text-lg font-bold bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition rounded-full"
+                      onClick={handleIncrease}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <h1 className="font-semibold text-lg text-gray-800">Tổng tiền</h1>
+                  <span className="font-semibold text-3xl text-gray-800">
+                    {new Intl.NumberFormat('vi-VN').format(quantity * productDetail.price)}đ
+                  </span>
+                  <div className="flex gap-5">
+                    <button className="bg-amber-600 text-white w-full py-2 text-[20px] rounded-[10px] cursor-pointer border-2 hover:border-amber-600 hover:text-amber-600 hover:bg-transparent">Mua ngay</button>
+                    <button className="border-2 border-amber-600 w-full py-2 text-[20px] rounded-[10px] cursor-pointer hover:bg-amber-600 hover:text-white">Thêm vào giỏ hàng</button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="w-full md:w-2/7 bg-amber-50 rounded-[5px]">
-            <div className="p-3 flex flex-col gap-3">
-              <div className="flex gap-5 items-center">
-                <div className="rounded-full bg-amber-800">
-                  <img src={pet} alt="" className="size-15 p-1" />
-                </div>
-                <div className="flex flex-col">
-                  <h1 className="font-medium">Pet shope</h1>
-                  <div className="flex items-center gap-2">
-                    <span>4.8</span>
-                    <MdOutlineStar className="text-yellow-300"/>
-                    <span>(100+ đánh giá)</span>
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div className="flex flex-col gap-4">
-                <h1 className="font-semibold text-lg text-gray-800">Số lượng</h1>
-                <div className="flex items-center w-fit bg-white border border-gray-300 rounded-full shadow-sm">
-                  <button
-                    className="size-10 text-lg font-bold bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
-                    onClick={handleDecrease}
-                    disabled={quantity <= 1}
-                  >
-                    -
-                  </button>
-                  <span className="px-6 text-lg font-medium">{quantity}</span>
-                  <button
-                    className="size-10 text-lg font-bold bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition rounded-full"
-                    onClick={handleIncrease}
-                  >
-                    +
-                  </button>
-                </div>
-                <h1 className="font-semibold text-lg text-gray-800">Tổng tiền</h1>
-                <span className="font-semibold text-3xl text-gray-800">
-                  {new Intl.NumberFormat('vi-VN').format(quantity * 91000)}đ
-                </span>
-                <button className="bg-amber-600 text-white w-full py-2 text-[20px] rounded-[10px]">Mua ngay</button>
-                <button className="border-2 border-amber-600 w-full py-2 text-[20px] rounded-[10px]">Thêm vào giỏ hàng</button>
-              </div>
+          <div className="w-2/10 bg-white shadow-md rounded-lg overflow-hidden">
+            <div className="border-b-2 border-gray-200 p-6">
+              <h1 className="text-xl font-semibold text-gray-800 mb-4">Liên hệ</h1>
+              <p className="text-sm text-gray-600 mb-2">
+                <span className="font-medium">Showroom Hà Nội:</span> 185 Lệ Mật, Phường Đức Giang, Quận Long Biên, Thành phố Hà Nội
+              </p>
+              <p className="text-sm text-gray-600 mb-2">
+                <span className="font-medium">Showroom HCM:</span> 180 Nguyễn Văn Thương, Phường 25, Quận Bình Thạnh, Hồ Chí Minh
+              </p>
+              <p className="text-sm text-gray-600 mb-2">
+                <span className="font-medium">Hotline:</span> 0888.042.637
+              </p>
+              <p className="text-sm text-gray-600">
+                <span className="font-medium">Email:</span> info@hangxingiatot.com
+              </p>
+            </div>
+
+            <div className="p-6">
+              <h1 className="text-xl font-semibold text-gray-800 mb-4">DỊCH VỤ BÁN HÀNG</h1>
+              <ul className="space-y-2">
+                <li className="text-sm text-gray-600 flex items-center">
+                  <span className="mr-2">✅</span>Sản phẩm chất lượng
+                </li>
+                <li className="text-sm text-gray-600 flex items-center">
+                  <span className="mr-2">✅</span>Giao hàng toàn quốc
+                </li>
+                <li className="text-sm text-gray-600 flex items-center">
+                  <span className="mr-2">✅</span>Tư vấn, chăm sóc nhiệt tình
+                </li>
+                <li className="text-sm text-gray-600 flex items-center">
+                  <span className="mr-2">✅</span>Đổi trả sản phẩm trong 7 ngày
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -282,7 +324,7 @@ const ProductDetail = () => {
             {activeTab === "mo-ta" && (
               <div className="flex flex-col gap-2">
                 <h3 className="font-medium">Mô tả sản phẩm</h3>
-                <span>- Tên sản phẩm: Bát ăn có đế nghiêng chống gù cho chó mèo.</span>
+                <span>- Tên sản phẩm: {productDetail?.name}</span>
                 <p>
                   Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hưởng xương sống.
                   Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được
@@ -355,24 +397,29 @@ const ProductDetail = () => {
           <h3 className="font-medium text-2xl">Sản phẩm tương tự</h3>
           <Slider {...settings}>
             {
-              [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => (
-                <div key={index} className="px-3">
-                  <div className='bg-amber-50 p-3 rounded-[10px] overflow-hidden'>
-                    <div>
-                      <div className="flex flex-col gap-2 justify-center items-center">
-                        <div className="relative group hover:cursor-pointer">
-                          <img className="hover:opacity-70" src="https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_large.jpeg" alt="" />
-                          <div className="flex gap-3 absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100">
-                            <div className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
-                              <MdOutlineRemoveRedEye onClick={() => setOpen(true)} className="hover:text-white" size={25}/>
-                            </div>
-                            <div className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
-                              <IoMdCart className="hover:text-white" size={25}/>
-                            </div>
-                          </div>
+              products.map((product, index) => (
+                <div key={index} className="p-3">
+                  <div>
+                    <div className="flex flex-col gap-1 border-1 border-[#c49a6c] rounded-[5px] overflow-hidden bg-white">
+                      <div className="relative group hover:cursor-pointer">
+                        <Link to={`/product/${product.slug}`}>
+                          <img className={`hover:opacity-70 w-screen`} src={product.images[0]} alt="" />
+                        </Link>
+                        <div className="flex gap-3 absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100">
+                          <button onClick={() => handleViewProduct(product)}  className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
+                            <MdOutlineRemoveRedEye className="hover:text-white" size={25}/>
+                          </button>
+                          <button onClick={()=> handleAddToCart(product)} className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
+                            <IoMdCart className="hover:text-white" size={25}/>
+                          </button>
                         </div>
-                        <h5 className="line-clamp-1 hover:text-[#c49a6c] hover:cursor-pointer">Bát ăn nghiêng chống gù cho chó mèo</h5>
-                        <span className="text-1xl text-[#c49a6c]">45,000Đ</span>
+                      </div>
+                      <div className='p-3 flex flex-col gap-1'>
+                        <Link to={"/product/2"} className="line-clamp-1 hover:text-[#c49a6c] hover:cursor-pointer">{product.name}</Link>
+                        <span className="text-1xl text-[#c49a6c] text-start">
+                          {product.price.toLocaleString('vi-VN') + '₫'}
+                        </span>
+                        <button className='bg-[#c49a6c] border-2 border-[#c49a6c] duration-200 transition-colors hover:bg-white hover:text-[#c49a6c] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
                       </div>
                     </div>
                   </div>
@@ -380,7 +427,7 @@ const ProductDetail = () => {
               ))
             }
           </Slider>
-          <DialogProduct open={open} setOpen={setOpen}/>
+          <DialogProduct open={open} product={selectedProduct} setOpen={setOpen}/>
         </div>
       </div>
     </MainLayout>

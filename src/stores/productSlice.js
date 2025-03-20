@@ -9,27 +9,89 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+export const fetchProductsByCategory = createAsyncThunk(
+  "category/fetchProductsByCategory",
+  async (slug_type) => {
+    const response = await axios.get(`http://localhost:5000/api/categories/${slug_type}`);
+    return { slug_type, products: response.data };
+  }
+);
+
+export const fetachProductByName = createAsyncThunk(
+  "products/fetachProductByName",
+  async (slug) => {
+    const response = await axios.get(`http://localhost:5000/api/products/${slug}`)
+    return response.data
+  }
+)
+
+export const featchProductSale = createAsyncThunk(
+  "products/featchProductSale",
+  async () => {
+    const response = await axios.get(`http://localhost:5000/api/products/sales`)
+    return response.data
+  }
+)
+
+
 const productSlice = createSlice({
   name: "products",
   initialState: {
     items: [],
-    status: "idle",
+    categories: {},
+    productSale: [],
+    productDetail: null,
+    load: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
+
+    // All product
     builder
       .addCase(fetchProducts.pending, (state) => {
-        state.status = "loading";
+        state.load = true;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
-        state.status = "succeeded";
         state.items = action.payload;
+        state.load = false;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
-        state.status = "failed";
+        state.load = true;
         state.error = action.error.message;
       });
+
+    // product by category slug_type
+    builder
+      .addCase(fetchProductsByCategory.pending, (state) => {
+        state.load = true;
+      })
+      .addCase(fetchProductsByCategory.fulfilled, (state, action) => {
+        state.categories[action.payload.slug_type] = action.payload.products;
+        state.load = false
+      })
+      .addCase(fetchProductsByCategory.rejected, (state, action) => {
+        state.load = true;
+        state.error = action.error.message;
+      })
+
+      // product by name (slug)
+    builder
+      .addCase(fetachProductByName.pending, (state) => {
+        state.load = true;
+      })
+      .addCase(fetachProductByName.fulfilled, (state, action) => {
+        state.productDetail = action.payload;
+        state.load = false;
+      })
+      .addCase(fetachProductByName.rejected, (state, action) => {
+        state.load = false;
+        state.error = action.error.message;
+      });
+
+    builder.addCase(featchProductSale.fulfilled, (state, action)=>{
+      state.productSale = action.payload
+    })
   },
 });
 

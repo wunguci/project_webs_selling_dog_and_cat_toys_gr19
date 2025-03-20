@@ -9,11 +9,12 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
-export const getProductById = async (req, res) => {
+export const getProductByName = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate('category_id');
+    const { slug } = req.params;
+    const product = await Product.findOne({slug: slug})
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
     }
     res.json(product);
   } catch (err) {
@@ -60,3 +61,20 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const getProductsSale = async (req, res) => {
+  try{
+    const products = await Product.aggregate([
+      {
+        $sort: { sold: 1 }
+      },
+      {
+        $limit: 20
+      }
+    ]);
+
+    res.status(200).json(products);
+  } catch(err) {
+    res.status(500).json({ message: err.message });
+  }
+}

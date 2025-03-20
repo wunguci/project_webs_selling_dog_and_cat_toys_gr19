@@ -1,5 +1,6 @@
 import Category from '../models/Category.js';
 import slugify from 'slugify'; // Thêm thư viện slugify
+import Product from '../models/Product.js';
 
 // Tạo slug từ tên danh mục
 const createSlug = (name) => {
@@ -79,3 +80,19 @@ export const deleteCategory = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+export const getCategoryByType = async (req, res) => {
+  try{
+    const { slug_type } = req.params;
+    const categorys = await Category.find({ slug_type: slug_type });
+    if (categorys===0) {
+      return res.status(404).json({ message: "Danh mục không tồn tại" });
+    }
+    const categoryIds = categorys.map(category => category._id);
+    const products = await Product.find({ category_id: { $in: categoryIds } });
+    res.status(200).json(products)
+  } catch(err) {
+    res.status(500).json({ message: err.message });
+  }
+}
