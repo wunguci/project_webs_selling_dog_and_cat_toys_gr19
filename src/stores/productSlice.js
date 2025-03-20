@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
 import axiosInstance from '../utils/axiosInstance';
 
 export const fetchProducts = createAsyncThunk(
@@ -13,7 +12,7 @@ export const fetchProducts = createAsyncThunk(
 export const fetchProductsByCategory = createAsyncThunk(
   "category/fetchProductsByCategory",
   async (slug_type) => {
-    const response = await axios.get(`http://localhost:5000/api/categories/${slug_type}`);
+    const response = await axiosInstance.get(`/api/categories/${slug_type}`);
     return { slug_type, products: response.data };
   }
 );
@@ -21,7 +20,7 @@ export const fetchProductsByCategory = createAsyncThunk(
 export const fetachProductByName = createAsyncThunk(
   "products/fetachProductByName",
   async (slug) => {
-    const response = await axios.get(`http://localhost:5000/api/products/${slug}`)
+    const response = await axiosInstance.get(`/api/products/${slug}`)
     return response.data
   }
 )
@@ -29,7 +28,7 @@ export const fetachProductByName = createAsyncThunk(
 export const featchProductSale = createAsyncThunk(
   "products/featchProductSale",
   async () => {
-    const response = await axios.get(`http://localhost:5000/api/products/sales`)
+    const response = await axiosInstance.get(`/api/products/sales`)
     return response.data
   }
 )
