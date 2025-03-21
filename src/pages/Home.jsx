@@ -9,6 +9,42 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import dog1 from "../assets/images/dog1.jpg";
+import dog2 from "../assets/images/dog2.jpg";
+import { ScaleLoader } from "react-spinners";
+
+const articles = [
+  {
+    id: 1,
+    title: "Cách xử lý khi chó mèo bị tiêu chảy?",
+    date: "08/06/2022",
+    author: "Vân Nguyễn Thị Khánh",
+    image: dog1,
+    slug: "cach-xu-ly-khi-cho-meo-bi-tieu-chay",
+    excerpt:
+      "Trong cuộc sống hằng ngày thì con người cũng như động vật việc hệ tiêu hóa gặp vấn đề...",
+  },
+  {
+    id: 2,
+    title: "Cấp cứu chó bị sốc nhiệt tại nhà",
+    date: "08/06/2022",
+    author: "Vân Nguyễn Thị Khánh",
+    image: dog2,
+    slug: "cap-cuu-cho-bi-soc-nhiet-tai-nha",
+    excerpt:
+      "Khi quyết định nuôi thú cưng, đặc biệt là chó, bạn cần tìm hiểu những thông tin cơ bản...",
+  },
+  {
+    id: 3,
+    title: "Có thể bạn chưa biết 'Những lợi ích của việc ngủ với thú cưng'",
+    date: "08/06/2022",
+    author: "Vân Nguyễn Thị Khánh",
+    image: dog1,
+    slug: "nhung-loi-ich-cua-viec-ngu-voi-thu-cung",
+    excerpt:
+      "Theo một nghiên cứu của Đại học Canisius, New York dựa trên việc khảo sát gần 1.000 người...",
+  },
+];
 
 const CountdownTimer = ({ targetDate }) => {
   const calculateTimeLeft = () => {
@@ -54,7 +90,6 @@ const images = [
 ];
 
 const Home = () => {
-  const dispatch = useDispatch();
   const { categories: productCategory, productSale } = useSelector((state) => state.products);
 
   const targetDate = new Date();
@@ -69,6 +104,14 @@ const Home = () => {
     autoplaySpeed: 2000,
     pauseOnHover: true,
   };
+
+  if(!productCategory || !productSale){
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <ScaleLoader />
+      </div>
+    )
+  }
 
   return (
     <MainLayout>
@@ -100,58 +143,32 @@ const Home = () => {
 
         <ListProduct products={productCategory["shop-cho-meo"]} title={"Shop cho mèo"} />
 
-        <div className="p-5 grid grid-cols-2 border-1 border-gray-400 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
-          <div className="flex flex-col gap-3">
-            <h1 className="font-bold text-blue-400 text-2xl">Tin tức</h1>
-            <div className="flex gap-5">
-              <img
-                className="h-32"
-                src="https://file.hstatic.net/200000521195/file/f0b0c62d-1913-4bf8-ba21-31b5d91d6d92_f169512700c4445996abe64225b71a56_grande.jpeg"
-                alt=""
-              />
-              <div className="flex flex-col justify-around">
-                <Link to="/" className="font-bold text-[18px] hover:text-blue-400">
-                  Cấp cứu chó bị sốc nhiệt tại nhà
-                </Link>
-                <span>Khi quyết định nuôi thú cưng, đặc biệt là chó, bạn cần tìm hiểu những</span>
-                <div className="flex justify-between">
-                  <span>17/03/2025</span>
-                  <Link to="/" className="mr-5 text-blue-400">
-                    Xem thêm
-                  </Link>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-5">
-              <img
-                className="h-32"
-                src="https://file.hstatic.net/200000521195/file/f0b0c62d-1913-4bf8-ba21-31b5d91d6d92_f169512700c4445996abe64225b71a56_grande.jpeg"
-                alt=""
-              />
-              <div className="flex flex-col justify-around">
-                <Link to="/" className="font-bold text-[18px] hover:text-blue-400">
-                  Cấp cứu chó bị sốc nhiệt tại nhà
-                </Link>
-                <span>Khi quyết định nuôi thú cưng, đặc biệt là chó, bạn cần tìm hiểu những</span>
-                <div className="flex justify-between">
-                  <span>17/03/2025</span>
-                  <Link to="/" className="mr-5 text-blue-400">
-                    Xem thêm
-                  </Link>
-                </div>
-              </div>
+
+        <div className="flex flex-row justify-between border-b-2 border-[#c49a6c]">
+          <div>
+            <div className="bg-[#c49a6c] w-44 text-center p-1 skew-x-[-15deg] ml-1">
+              <h2 className="text-2xl text-white">Tin tức</h2>
             </div>
           </div>
-          <div className="flex flex-col gap-3">
-            <img
-              src="https://bizweb.dktcdn.net/100/147/060/themes/880570/assets/about_img_1.jpg?1741582585151"
-              alt=""
-            />
-            <img
-              src="https://bizweb.dktcdn.net/100/147/060/themes/880570/assets/about_img_1.jpg?1741582585151"
-              alt=""
-            />
-          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          {articles.map((article) => (
+            <Link
+              key={article.id}
+              to={`/blogs/news/${article.slug}`}
+              className="bg-white shadow-lg rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer block"
+            >
+              <img src={article.image} alt={article.title} className="w-full h-48 object-cover" />
+              <div className="p-4">
+                <p className="text-gray-500 text-sm">
+                  📅 {article.date} • Đăng bởi:{" "}
+                  <strong>{article.author}</strong>
+                </p>
+                <h2 className="text-lg font-semibold mt-2">{article.title}</h2>
+                <p className="text-gray-600 mt-2">{article.excerpt}</p>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </MainLayout>

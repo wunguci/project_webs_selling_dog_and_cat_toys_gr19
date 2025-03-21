@@ -1,14 +1,8 @@
-import { useState } from "react";
-import { FaSortDown, FaSortUp } from "react-icons/fa6";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllCategory } from "../stores/catetorySlice";
+import { Link } from "react-router-dom";
 
-const categories = [
-  { name: "SHOP CHO CÚN", subCategories: [] },
-  { name: "SHOP CHO MÈO", subCategories: [] },
-  { name: "KHUYẾN MÃI", subCategories: [] },
-  { name: "TIN TỨC", subCategories: [] },
-];
-
-const brands = ["ROYAL CANIN", "Khác"];
 const priceRanges = [
   "Giá dưới 100.000đ",
   "100.000đ - 200.000đ",
@@ -19,59 +13,35 @@ const priceRanges = [
 ];
 
 const Filter = () => {
-  const [selectedBrand, setSelectedBrand] = useState(null);
   const [selectedPrices, setSelectedPrices] = useState([]);
-  const [openCategory, setOpenCategory] = useState(null);
+  const dispatch = useDispatch();
+  const { allCategory } = useSelector(state => state.categories)
 
-  // Xử lý checkbox khoảng giá
   const handlePriceChange = (price) => {
     setSelectedPrices((prev) =>
       prev.includes(price)
-        ? prev.filter((p) => p !== price) // Bỏ chọn nếu đã chọn trước đó
-        : [...prev, price] // Thêm vào danh sách nếu chưa chọn
+        ? prev.filter((p) => p !== price)
+        : [...prev, price]
     );
   };
 
+  useEffect(() => {
+    dispatch(fetchAllCategory())
+  }, [dispatch])
+
   return (
     <div className="w-64 bg-white shadow-md p-4">
-      {/* Danh mục */}
       <div className="mb-4">
         <h2 className="bg-[#C49A6C] text-white px-3 py-2 font-semibold">DANH MỤC</h2>
-        <div className="bg-white border rounded p-2">
-          {categories.map((cat, index) => (
-            <div key={index} className="flex justify-between items-center py-2">
-              <span>{cat.name}</span>
-              {cat.subCategories.length > 0 && (
-                <button onClick={() => setOpenCategory(openCategory === index ? null : index)}>
-                  {openCategory === index ? <FaSortUp size={16} /> : <FaSortDown size={16} />}
-                </button>
-              )}
+        <div className="bg-white border rounded p-2 flex flex-col gap-2">
+          {allCategory?.map((category, index) => (
+            <div key={index} className="hover:text-[#C49A6C]">
+              <Link to={`/categories/${category.slug}`}>{category.name}</Link>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Thương hiệu */}
-      <div className="mb-4">
-        <h2 className="bg-[#C49A6C] text-white px-3 py-2 font-semibold">THƯƠNG HIỆU</h2>
-        <div className="bg-white border rounded p-2">
-          {brands.map((brand, index) => (
-            <label key={index} className="flex items-center space-x-2 py-1">
-              <input
-                type="radio"
-                name="brand"
-                value={brand}
-                checked={selectedBrand === brand}
-                onChange={() => setSelectedBrand(brand)}
-                className="accent-[#C49A6C]"
-              />
-              <span>{brand}</span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Khoảng giá (Checkbox) */}
       <div>
         <h2 className="bg-[#C49A6C] text-white px-3 py-2 font-semibold">KHOẢNG GIÁ</h2>
         <div className="bg-white border rounded p-2">

@@ -21,6 +21,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import { IoMdCart } from "react-icons/io"
 import { addToCart } from "../stores/cartSlice"
+import { ScaleLoader } from "react-spinners"
 
 
 const services = [
@@ -142,8 +143,12 @@ const ProductDetail = () => {
   };
 
 
-  if (!productDetail) {
-    return <p>loading</p>;
+  if(!productDetail){
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <ScaleLoader />
+      </div>
+    )
   }
 
   return (
@@ -165,13 +170,13 @@ const ProductDetail = () => {
       <div className="relative">
         <img className="h-32 md:w-full md:h-full" src={image1} alt="" />
         <div className="absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 text-base md:text-[20px] text-white font-bold text-center">
-          <h1 className="mb-4 text-2xl hidden md:block">{productDetail.name}</h1>
+          <h1 style={{ color: 'white' }} className="mb-4 text-2xl hidden md:block">{productDetail.name}</h1>
           <div>
             <Link to="/" className="hover:text-[#c49a6c]">Trang chủ</Link> 
             <span> &gt; </span>
-            <Link to="/shop-meo" className="hover:text-[#c49a6c]">Shop cho mèo</Link>
+            <Link to="/shop-meo" className="hover:text-[#c49a6c]">{productDetail.category_id.type}</Link>
             <span> &gt; </span>
-            <span className="text-[#C49A6C] font-semibold">Bát ăn nghiêng chống gù cho chó mèo</span>
+            <span className="text-[#C49A6C] font-semibold">{productDetail.name}</span>
           </div>
         </div>
       </div>
@@ -313,7 +318,7 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
-        <div className="p-3 bg-amber-50 shadow-md rounded-lg">
+        <div className="p-3 bg-white shadow-md rounded-lg">
           <div className="flex border-b border-gray-500">
             {[
               { id: "mo-ta", label: "Mô tả" },
@@ -405,7 +410,7 @@ const ProductDetail = () => {
             )}
           </div>
         </div>
-        <div className="p-3 bg-amber-50 rounded-[5px] flex flex-col gap-2">
+        <div className="p-3 bg-white shadow-md rounded-lg flex flex-col gap-2">
           <h3 className="font-medium text-2xl">Sản phẩm tương tự</h3>
           <Slider {...settings}>
             {

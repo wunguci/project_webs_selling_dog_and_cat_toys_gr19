@@ -127,8 +127,6 @@ export const getCategoryByType = async (req, res) => {
 export const getProductByCatetoryName = async (req, res) => {
   try{
     const { slug } = req.params;
-    console.log(slug);
-    
     const categorys = await Category.find({
       slug: { $regex: slug, $options: 'i' }
     });
@@ -136,6 +134,7 @@ export const getProductByCatetoryName = async (req, res) => {
       return res.status(404).json({ message: "Danh mục không tồn tại" });
     }
     const categoryIds = categorys.map(category => category._id);
+    
     const products = await Product.find({ category_id: { $in: categoryIds } }).populate('category_id');
     res.status(200).json(products)
   } catch(err) {
