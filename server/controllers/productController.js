@@ -12,7 +12,7 @@ export const getAllProducts = async (req, res) => {
 export const getProductByName = async (req, res) => {
   try {
     const { slug } = req.params;
-    const product = await Product.findOne({slug: slug})
+    const product = await Product.findOne({slug: slug}).populate('category_id');
     if (!product) {
       return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
     }

@@ -603,7 +603,7 @@ const UserProfile = () => {
                     <p>Bạn chưa có đơn hàng nào đang xử lý.</p>
                     <Link
                       to="/products"
-                      className="mt-4 inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                      className="mt-4 inline-block bg-[#e17100] text-white py-2 px-4 rounded-lg hover:bg-[#d06a03]"
                     >
                       Mua sắm ngay
                     </Link>

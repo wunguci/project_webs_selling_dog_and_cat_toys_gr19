@@ -2,13 +2,12 @@ import { useState } from "react";
 import { IoMdCart } from "react-icons/io";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import DialogProduct from "./DialogProduct";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../stores/cartSlice";
 import axiosInstance from "../utils/axiosInstance";
 import { ToastContainer, toast } from "react-toastify";
 import { useCart } from "../context/CartContext";
-import { useNavigate } from "react-router-dom";
 
 function Product({ product}) {
   const [open, setOpen] = useState(false);
@@ -57,6 +56,10 @@ function Product({ product}) {
   };
   
 
+  const handleBuyNow = (product) => {
+    dispatch(addToCart(product))
+    navigate("/cart")
+  }
   return (
     <div>
       <div className="flex flex-col gap-1 border-1 border-[#c49a6c] rounded-[5px] overflow-hidden">
@@ -88,7 +91,7 @@ function Product({ product}) {
           <span className="text-1xl text-[#c49a6c] text-start">
             {product.price.toLocaleString('vi-VN') + '₫'}
           </span>
-          <button className='bg-[#c49a6c] border-2 border-[#c49a6c] duration-200 transition-colors hover:bg-white hover:text-[#c49a6c] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
+          <button onClick={()=>handleBuyNow(product)} className='bg-[#c49a6c] border-2 border-[#c49a6c] duration-200 transition-colors hover:bg-white hover:text-[#c49a6c] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
         </div>
       </div>
 

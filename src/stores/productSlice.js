@@ -28,7 +28,15 @@ export const fetachProductByName = createAsyncThunk(
 export const featchProductSale = createAsyncThunk(
   "products/featchProductSale",
   async () => {
-    const response = await axiosInstance.get(`/api/products/product/sales/`)
+    const response = await axiosInstance.get(`/api/products/product/sales`)
+    return response.data
+  }
+)
+
+export const featchProductByCategoryName = createAsyncThunk(
+  "products/featchProductByCategoryName", 
+  async (slug) => {
+    const response = await axiosInstance.get(`api/categories/name/${slug}`)
     return response.data
   }
 )
@@ -41,6 +49,7 @@ const productSlice = createSlice({
     categories: {},
     productSale: [],
     productDetail: null,
+    productByCateoty: [],
     load: false,
     error: null,
   },
@@ -91,6 +100,10 @@ const productSlice = createSlice({
 
     builder.addCase(featchProductSale.fulfilled, (state, action)=>{
       state.productSale = action.payload
+    })
+
+    builder.addCase(featchProductByCategoryName.fulfilled, (state, action)=>{
+      state.productByCateoty = action.payload
     })
   },
 });

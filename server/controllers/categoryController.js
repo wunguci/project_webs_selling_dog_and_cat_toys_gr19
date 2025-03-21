@@ -82,7 +82,7 @@ export const deleteCategory = async (req, res) => {
 };
 
 
-export const getCategoryByType = async (req, res) => {
+export const getProductByCatetoryType = async (req, res) => {
   try{
     const { slug_type } = req.params;
     const categorys = await Category.find({ slug_type: slug_type });
@@ -96,6 +96,7 @@ export const getCategoryByType = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 }
+
 export const searchCategories = async (req, res) => {
   const { query } = req.query;
   try {
@@ -107,3 +108,36 @@ export const searchCategories = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+export const getCategoryByType = async (req, res) => {
+  try{
+    const { slug_type } = req.params;    
+    const categorys = await Category.find({ slug_type: slug_type });
+    if (categorys===0) {
+      return res.status(404).json({ message: "Danh mục không tồn tại" });
+    }
+    res.status(200).json(categorys);
+  } catch(err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+
+export const getProductByCatetoryName = async (req, res) => {
+  try{
+    const { slug } = req.params;
+    const categorys = await Category.find({
+      slug: { $regex: slug, $options: 'i' }
+    });
+    if (categorys===0) {
+      return res.status(404).json({ message: "Danh mục không tồn tại" });
+    }
+    const categoryIds = categorys.map(category => category._id);
+    
+    const products = await Product.find({ category_id: { $in: categoryIds } }).populate('category_id');
+    res.status(200).json(products)
+  } catch(err) {
+    res.status(500).json({ message: err.message });
+  }
+}

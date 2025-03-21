@@ -1,25 +1,29 @@
 .bg-brown {
-    background: #C49A6C;
+    background: #e17100;
 }
 
 .text-brown {
-    color: #C49A6C;
+    color: #e17100;
 }
 
 .text-brown-hover:hover {
-    color: #c4925c;
+    color: #d06a03;
 }
 
 .border-brown {
-    border: 2px solid #C49A6C;
+    border: 2px solid #e17100;
 }
 
 .border-brown-hover:hover {
-    background-color: #c4925c;
+    background-color: #d06a03;
 }
 
 .text-white-hover:hover {
     color: white;
+}
+
+.text-white {
+  color: white;
 }
 
 
@@ -183,7 +187,7 @@
 
 .hover-popup-menu a:hover,
 .hover-popup-menu button:hover {
-  color: #8b4513; /* Custom brown-hover color */
+  color: #e17100 /* Custom brown-hover color */
 }
 
 

@@ -10,15 +10,21 @@ import UserProfile from "./pages/UserProfile";
 import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
 import NotFoundPage from "./pages/NotFoundPage";
+import UserManagement from "./pages/UserManagement";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { featchProductSale, fetchProductsByCategory } from "./stores/productSlice";
+import { featchProductSale, fetchProducts, fetchProductsByCategory } from "./stores/productSlice";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Category from "./pages/Category";
 import { CartProvider } from "./context/CartContext";
 
 function App() {
   const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(fetchProducts())
+  }, [dispatch])
 
   useEffect(() => {
     dispatch(fetchProductsByCategory("shop-cho-cun"));
@@ -48,6 +54,8 @@ function App() {
         <Route path="/userProfile" element={<UserProfile />} />
         <Route path="/blogs/news" element={<News />} />
         <Route path="/blogs/news/:slug" element={<NewsDetail />} />
+        <Route path="/categories/:slug" element={<Category/>}/>
+        <Route path="/user-management" element={<UserManagement/>}/>
       </Routes>
       </CartProvider>
     </BrowserRouter>

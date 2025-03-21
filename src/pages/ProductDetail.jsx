@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import MainLayout from "../layout/mainLayout"
 import { TiTick } from "react-icons/ti"
 import { FaShippingFast } from "react-icons/fa"
@@ -20,7 +20,8 @@ import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import { IoMdCart } from "react-icons/io"
-import Breadcrumb2 from "../components/Breadcrumb2";
+import { addToCart } from "../stores/cartSlice"
+import { ScaleLoader } from "react-spinners"
 
 
 const services = [
@@ -113,6 +114,7 @@ const ProductDetail = () => {
 
   const { slug } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { productDetail, items:products } = useSelector((state) => state.products)
   console.log(productDetail)
   useEffect(()=>{
@@ -130,9 +132,23 @@ const ProductDetail = () => {
     setOpen(true)
   }
 
+  const handleBuyNow = () => {
+    dispatch(addToCart({ ...productDetail, cartQuantity: quantity }));
+    navigate("/checkout");
+  };
 
-  if (!productDetail) {
-    return <p>loading</p>;
+  const handleAddToCart = () => {
+    dispatch(addToCart({ ...productDetail, cartQuantity: quantity }));
+    navigate("/cart")
+  };
+
+
+  if(!productDetail){
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <ScaleLoader />
+      </div>
+    )
   }
 
   return (
@@ -151,15 +167,19 @@ const ProductDetail = () => {
           ))
         }
       </ul>
-      <Breadcrumb2
-        links={[
-          { label: "Trang chủ", href: "/" },
-          { label: "Shop cho mèo", href: "/shop-meo" },
-          { label: productDetail.name, href: `#` },
-        ]}
-        banner={null}
-      />
-
+      <div className="relative">
+        <img className="h-32 md:w-full md:h-full" src={image1} alt="" />
+        <div className="absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 text-base md:text-[20px] text-white font-bold text-center">
+          <h1 style={{ color: 'white' }} className="mb-4 text-2xl hidden md:block">{productDetail.name}</h1>
+          <div>
+            <Link to="/" className="hover:text-[#c49a6c]">Trang chủ</Link> 
+            <span> &gt; </span>
+            <Link to="/shop-meo" className="hover:text-[#c49a6c]">{productDetail.category_id.type}</Link>
+            <span> &gt; </span>
+            <span className="text-[#C49A6C] font-semibold">{productDetail.name}</span>
+          </div>
+        </div>
+      </div>
       <div className="max-w-[1350px] mx-auto flex flex-col gap-5 px-5">
         <div className="flex gap-5 mt-5">
           <div className="w-8/10 grid grid-cols-2 gap-5">
@@ -255,8 +275,8 @@ const ProductDetail = () => {
                     {new Intl.NumberFormat('vi-VN').format(quantity * productDetail.price)}đ
                   </span>
                   <div className="flex gap-5">
-                    <button className="bg-amber-600 text-white w-full py-2 text-[20px] rounded-[10px] cursor-pointer border-2 hover:border-amber-600 hover:text-amber-600 hover:bg-transparent">Mua ngay</button>
-                    <button className="border-2 border-amber-600 w-full py-2 text-[20px] rounded-[10px] cursor-pointer hover:bg-amber-600 hover:text-white">Thêm vào giỏ hàng</button>
+                    <button onClick={()=>handleBuyNow(productDetail)} className="bg-amber-600 text-white w-full py-2 text-[20px] rounded-[10px] cursor-pointer border-2 hover:border-amber-600 hover:text-amber-600 hover:bg-transparent">Mua ngay</button>
+                    <button onClick={()=>handleAddToCart(productDetail)} className="border-2 border-amber-600 w-full py-2 text-[20px] rounded-[10px] cursor-pointer hover:bg-amber-600 hover:text-white">Thêm vào giỏ hàng</button>
                   </div>
                 </div>
               </div>
@@ -298,7 +318,7 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
-        <div className="p-3 bg-amber-50 shadow-md rounded-lg">
+        <div className="p-3 bg-white shadow-md rounded-lg">
           <div className="flex border-b border-gray-500">
             {[
               { id: "mo-ta", label: "Mô tả" },
@@ -390,7 +410,7 @@ const ProductDetail = () => {
             )}
           </div>
         </div>
-        <div className="p-3 bg-amber-50 rounded-[5px] flex flex-col gap-2">
+        <div className="p-3 bg-white shadow-md rounded-lg flex flex-col gap-2">
           <h3 className="font-medium text-2xl">Sản phẩm tương tự</h3>
           <Slider {...settings}>
             {
