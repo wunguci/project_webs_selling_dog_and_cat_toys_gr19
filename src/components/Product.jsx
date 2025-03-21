@@ -2,18 +2,24 @@ import { useState } from "react";
 import { IoMdCart } from "react-icons/io";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import DialogProduct from "./DialogProduct";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../stores/cartSlice";
 
 function Product({ product }) {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   
 
   const handleAddToCart = (product) => {
     dispatch(addToCart(product));
   };
+
+  const handleBuyNow = (product) => {
+    dispatch(addToCart(product))
+    navigate("/cart")
+  }
 
   return (
     <div>
@@ -46,7 +52,7 @@ function Product({ product }) {
           <span className="text-1xl text-[#c49a6c] text-start">
             {product.price.toLocaleString('vi-VN') + '₫'}
           </span>
-          <button className='bg-[#c49a6c] border-2 border-[#c49a6c] duration-200 transition-colors hover:bg-white hover:text-[#c49a6c] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
+          <button onClick={()=>handleBuyNow(product)} className='bg-[#c49a6c] border-2 border-[#c49a6c] duration-200 transition-colors hover:bg-white hover:text-[#c49a6c] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
         </div>
       </div>
 

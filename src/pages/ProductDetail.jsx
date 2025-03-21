@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import MainLayout from "../layout/mainLayout"
 import { TiTick } from "react-icons/ti"
 import { FaShippingFast } from "react-icons/fa"
@@ -20,6 +20,7 @@ import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import { IoMdCart } from "react-icons/io"
+import { addToCart } from "../stores/cartSlice"
 
 
 const services = [
@@ -112,6 +113,7 @@ const ProductDetail = () => {
 
   const { slug } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { productDetail, items:products } = useSelector((state) => state.products)
 
   useEffect(()=>{
@@ -128,6 +130,16 @@ const ProductDetail = () => {
     setSelectedProduct(product)
     setOpen(true)
   }
+
+  const handleBuyNow = () => {
+    dispatch(addToCart({ ...productDetail, cartQuantity: quantity }));
+    navigate("/checkout");
+  };
+
+  const handleAddToCart = () => {
+    dispatch(addToCart({ ...productDetail, cartQuantity: quantity }));
+    navigate("/cart")
+  };
 
 
   if (!productDetail) {
@@ -258,8 +270,8 @@ const ProductDetail = () => {
                     {new Intl.NumberFormat('vi-VN').format(quantity * productDetail.price)}đ
                   </span>
                   <div className="flex gap-5">
-                    <button className="bg-amber-600 text-white w-full py-2 text-[20px] rounded-[10px] cursor-pointer border-2 hover:border-amber-600 hover:text-amber-600 hover:bg-transparent">Mua ngay</button>
-                    <button className="border-2 border-amber-600 w-full py-2 text-[20px] rounded-[10px] cursor-pointer hover:bg-amber-600 hover:text-white">Thêm vào giỏ hàng</button>
+                    <button onClick={()=>handleBuyNow(productDetail)} className="bg-amber-600 text-white w-full py-2 text-[20px] rounded-[10px] cursor-pointer border-2 hover:border-amber-600 hover:text-amber-600 hover:bg-transparent">Mua ngay</button>
+                    <button onClick={()=>handleAddToCart(productDetail)} className="border-2 border-amber-600 w-full py-2 text-[20px] rounded-[10px] cursor-pointer hover:bg-amber-600 hover:text-white">Thêm vào giỏ hàng</button>
                   </div>
                 </div>
               </div>
