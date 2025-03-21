@@ -52,11 +52,8 @@ function App() {
         <Route path="/userProfile" element={<UserProfile />} />
         <Route path="/blogs/news" element={<News />} />
         <Route path="/blogs/news/:slug" element={<NewsDetail />} />
-<<<<<<< HEAD
         <Route path="/categories/:slug" element={<Category/>}/>
-=======
         <Route path="/user-management" element={<UserManagement/>}/>
->>>>>>> cf5561de9fc1505ea8f7e095fd1bea87219e5baf
       </Routes>
     </BrowserRouter>
   );
