@@ -12,7 +12,7 @@ import {
 const router = express.Router();
 
 // Thêm sản phẩm vào giỏ hàng
-router.post('/', addToCart);
+router.post('/add', addToCart);
 
 // Lấy giỏ hàng theo user_id
 router.get('/:user_id', getCartByUserId);

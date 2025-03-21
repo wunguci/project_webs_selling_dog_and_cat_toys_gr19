@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { featchProductSale, fetchProductsByCategory } from "./stores/productSlice";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CartProvider } from "./context/CartContext";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ function App() {
   return (
     <BrowserRouter>
       <ToastContainer />
+      <CartProvider>
       <Routes>
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/" element={<Home />} />
@@ -47,6 +49,7 @@ function App() {
         <Route path="/blogs/news" element={<News />} />
         <Route path="/blogs/news/:slug" element={<NewsDetail />} />
       </Routes>
+      </CartProvider>
     </BrowserRouter>
   );
 }

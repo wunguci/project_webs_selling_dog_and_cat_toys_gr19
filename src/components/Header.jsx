@@ -21,14 +21,19 @@ import DialogCart from "./DialogCart";
 import axiosInstance from "../utils/axiosInstance";
 import PopupSearch from "./PopupSearch";
 import axios from "axios";
+import CartButton from "./CartButton";
+import { useCart } from "../context/CartContext";
 
 const Header = () => {
+  const { fetchCart } = useCart();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({
     name: "",
     avatar: "",
+    id: ""
   });
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -76,10 +81,12 @@ const Header = () => {
         try {
           const { data } = await axiosInstance.get(`/api/users/${user._id}`);
           const userData = data;
+
           userData.avatar = convertBase64ToImage(userData.avatar);
           setUser({
             name: userData.fullName,
             avatar: userData.avatar,
+            id: userData._id
           });
           setLoggedIn(true);
         } catch (err) {
@@ -89,6 +96,14 @@ const Header = () => {
     };
     fetchUserData();
   }, []);
+
+
+  useEffect(() => {
+    if (user?._id) {
+      fetchCart(user._id);
+    }
+  }, [user?._id, fetchCart]);
+
 
   const fetchSearchResults = async (query) => {
     if (!query.trim()) {
@@ -166,9 +181,10 @@ const Header = () => {
   const handleLogout = () => {
     setIsLoggingOut(true);
     localStorage.removeItem("user");
+    setUser({ name: "", avatar: "", id: "" });
+    setLoggedIn(false);
     setTimeout(() => {
       navigate("/");
-      setLoggedIn(false);
       setIsLoggingOut(false); // tắt loading sau khi chuyển hướng
     }, 2000);
   };
@@ -242,8 +258,6 @@ const Header = () => {
   ];
 
   const [isHovered, setIsHovered] = useState(false);
-  const { cartTotalQuantity } = useSelector((state) => state.cart);
-
   return (
     <header className="bg-white shadow-md">
       <LoadingOverlay isVisible={isLoggingOut} />
@@ -268,23 +282,7 @@ const Header = () => {
         {/* mobile menu button & cart*/}
         <div className="flex items-center space-x-4 md:hidden ml-auto">
           {/* cart */}
-          <div
-            className="relative mx-5 mt-1 cart-dialog"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            <button
-              className="text-brown cursor-pointer focus:outline-none relative"
-              onClick={() => navigate("/cart")}
-            >
-              <FaShoppingCart className="text-2xl" />
-              <span className="absolute -top-1 -right-2 bg-green-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                {cartTotalQuantity}
-              </span>
-            </button>
-            {isHovered && <DialogCart />}
-          </div>
-
+          <CartButton idUser={user.id} />
           {/* menu button */}
           <button
             className="md:hidden text-gray-700 focus:outline-none ml-auto cursor-pointer relative"
@@ -368,22 +366,8 @@ const Header = () => {
                 </>
               )}
               {/* cart */}
-              <div
-                className="relative mx-5 mt-1 cart-dialog"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                <button
-                  className="text-brown cursor-pointer focus:outline-none relative"
-                  onClick={() => navigate("/cart")}
-                >
-                  <FaShoppingCart className="text-2xl" />
-                  <span className="absolute -top-1 -right-2 bg-green-400 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                    {cartTotalQuantity}
-                  </span>
-                </button>
-                {isHovered && <DialogCart />}
-              </div>
+              <CartButton idUser={user.id} />
+
             </div>
           </>
         )}

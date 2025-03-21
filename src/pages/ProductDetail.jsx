@@ -20,6 +20,7 @@ import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import { IoMdCart } from "react-icons/io"
+import Breadcrumb2 from "../components/Breadcrumb2";
 
 
 const services = [
@@ -113,7 +114,7 @@ const ProductDetail = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
   const { productDetail, items:products } = useSelector((state) => state.products)
-
+  console.log(productDetail)
   useEffect(()=>{
     dispatch(fetchProducts())
   }, [dispatch])
@@ -150,19 +151,15 @@ const ProductDetail = () => {
           ))
         }
       </ul>
-      <div className="relative">
-        <img className="h-32 md:w-full md:h-full" src={image1} alt="" />
-        <div className="absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 text-base md:text-[20px] text-white font-bold text-center">
-          <h1 className="mb-4 text-2xl hidden md:block">{productDetail.name}</h1>
-          <div>
-            <Link to="/" className="hover:text-[#c49a6c]">Trang chủ</Link> 
-            <span> &gt; </span>
-            <Link to="/shop-meo" className="hover:text-[#c49a6c]">Shop cho mèo</Link>
-            <span> &gt; </span>
-            <span className="text-[#C49A6C] font-semibold">Bát ăn nghiêng chống gù cho chó mèo</span>
-          </div>
-        </div>
-      </div>
+      <Breadcrumb2
+        links={[
+          { label: "Trang chủ", href: "/" },
+          { label: "Shop cho mèo", href: "/shop-meo" },
+          { label: productDetail.name, href: `#` },
+        ]}
+        banner={null}
+      />
+
       <div className="max-w-[1350px] mx-auto flex flex-col gap-5 px-5">
         <div className="flex gap-5 mt-5">
           <div className="w-8/10 grid grid-cols-2 gap-5">

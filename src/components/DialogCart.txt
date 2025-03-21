@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 import cart1 from "../assets/images/cart1.png";
 import axiosInstance from "../utils/axiosInstance";
+// import { useDispatch } from "react-redux";
+// import { removeFromCart, clearCart } from "../stores/cartSlice";
+// // import { removeFromCart } from "../stores/cartSlice";
 
 const DialogCart = ({ cartItems = [], idUser, onUpdateCart }) => {
   const navigate = useNavigate();
