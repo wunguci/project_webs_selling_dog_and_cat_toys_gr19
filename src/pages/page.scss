@@ -24,7 +24,7 @@
 .input-container input:not(:placeholder-shown) ~ label {
   transform: translateY(-40px);
   font-size: 0.85rem;
-  color: #c4925c;
+  color: #e17100;
 }
 
 .input-container label {
@@ -58,7 +58,7 @@
   border-bottom: 2px solid #ccc;
   outline: none;
   transition: border-color 0.3s ease, background-size 0.3s ease;
-  background: linear-gradient(to right, #c4925c, #c4925c) no-repeat left bottom;
+  background: linear-gradient(to right, #e17100, #e17100) no-repeat left bottom;
   background-size: 0% 2px;
   font-size: 1rem;
   color: #333;
@@ -73,7 +73,7 @@
 .input-container input[type="date"]:valid ~ label {
   transform: translateY(-30px);
   font-size: 0.85rem;
-  color: #c4925c;
+  color: #e17100;
 }
 
 /* Ẩn nút tăng/giảm của input type="number" */
@@ -88,28 +88,28 @@
 }
 
 .bg-brown {
-  background: #c49a6c;
+  background: #e17100;
 }
 
 .bg-brown-hover:hover {
-  background: #c4925c;
+  background: #d06a03;
 }
 
 .text-brown {
-  color: #c49a6c;
+  color: #e17100;
 }
 
 .text-brown-hover:hover {
-  color: #c4925c;
+  color: #d06a03;
 }
 
 .border-brown {
   border: none;
-  border-bottom: 3px solid #c49a6c;
+  border-bottom: 3px solid #e17100;
 }
 
 .border-brown-hover:hover {
-  background-color: #c4925c;
+  background-color: #e17100;
 }
 
 .text-white-hover:hover {
@@ -122,4 +122,32 @@
 }
 .border-blue-0 {
   border: 1px solid #338dbc;
+}
+//dialog cart
+.cart-dialog::before {
+  content: "";
+  border-width: 30px 40px;
+  border-style: solid;
+  border-image: initial;
+  border-color: red;
+  position: absolute;
+  right: -26px;
+  top: 20px;
+  transform: translateY(-50%);
+  border-color: transparent transparent transparent transparent;
+}
+@keyframes growth {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.cart-dialog-animation {
+  transform-origin: 90% top;
+  animation: growth ease-in 0.3s;
+  will-change: opacity, transform;
 }

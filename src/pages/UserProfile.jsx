@@ -33,7 +33,6 @@ const UserProfile = () => {
   });
 
   const [orders, setOrders] = useState([]);
-  const [completedOrders, setCompletedOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -46,11 +45,20 @@ const UserProfile = () => {
   const [orderStats, setOrderStats] = useState({
     totalOrders: 0,
     pendingOrders: 0,
+    processingOrders: 0,
+    shippingOrders: 0,
+    deliveredOrders: 0,
     completedOrders: 0,
+    canceledOrders: 0,
     totalSpent: 0,
   });
+  const [pendingOrders, setPendingOrders] = useState([]);
+  const [processingOrders, setProcessingOrders] = useState([]);
+  const [shippingOrders, setShippingOrders] = useState([]);
+  const [deliveredOrders, setDeliveredOrders] = useState([]);
+  const [completedOrders, setCompletedOrders] = useState([]);
+  const [canceledOrders, setCanceledOrders] = useState([]);
 
-  // Format date to YYYY-MM-DD
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -60,7 +68,6 @@ const UserProfile = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Format date to display format
   const formatDisplayDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -76,6 +83,7 @@ const UserProfile = () => {
   const convertBase64ToImage = (base64) => {
     return `data:image/jpeg;base64,${base64}`;
   };
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -103,47 +111,57 @@ const UserProfile = () => {
     fetchUserData();
   }, [navigate]);
 
+
   const fetchUserOrders = async (userId) => {
     try {
-      const response = await axiosInstance.post(`/api/orders`);
-      const allOrders = response.data;
+      const response = await axiosInstance.get(`/api/orders?user_id=${userId}`);
+      const userOrders = response.data;
 
-      // Filter orders for current user
-      const userOrders = allOrders.filter(
-        (order) => order.user_id._id === userId
+      // Tạo các biến theo các trạng thái
+      const pendingOrders = userOrders.filter(
+        (order) => order.status === "Chờ xử lý"
+      );
+      const processingOrders = userOrders.filter(
+        (order) => order.status === "Đang xử lý"
+      );
+      const shippingOrders = userOrders.filter(
+        (order) => order.status === "Đang giao hàng"
+      );
+      const deliveredOrders = userOrders.filter(
+        (order) => order.status === "Đã giao hàng"
+      );
+      const completedOrders = userOrders.filter(
+        (order) => order.status === "Hoàn tất"
+      );
+      const canceledOrders = userOrders.filter(
+        (order) => order.status === "Đã hủy"
       );
 
-      const pending = userOrders.filter(
-        (order) => order.status !== "Delivered" && order.status !== "Completed"
-      ).length;
-      const completed = userOrders.filter(
-        (order) => order.status === "Delivered" || order.status === "Completed"
-      ).length;
+      // Tính tổng số tiền đã chi tiêu
       const totalSpent = userOrders.reduce(
         (sum, order) => sum + order.total_price,
         0
       );
 
+      // Cập nhật trạng thái đơn hàng
       setOrderStats({
         totalOrders: userOrders.length,
-        pendingOrders: pending,
-        completedOrders: completed,
+        pendingOrders: pendingOrders.length,
+        processingOrders: processingOrders.length,
+        shippingOrders: shippingOrders.length,
+        deliveredOrders: deliveredOrders.length,
+        completedOrders: completedOrders.length,
+        canceledOrders: canceledOrders.length,
         totalSpent: totalSpent,
       });
 
-      // Separate current and completed orders
-      setOrders(
-        userOrders.filter(
-          (order) =>
-            order.status !== "Delivered" && order.status !== "Completed"
-        )
-      );
-      setCompletedOrders(
-        userOrders.filter(
-          (order) =>
-            order.status === "Delivered" || order.status === "Completed"
-        )
-      );
+      // Cập nhật danh sách đơn hàng theo trạng thái
+      setPendingOrders(pendingOrders);
+      setProcessingOrders(processingOrders);
+      setShippingOrders(shippingOrders);
+      setDeliveredOrders(deliveredOrders);
+      setCompletedOrders(completedOrders);
+      setCanceledOrders(canceledOrders);
 
       setLoading(false);
     } catch (err) {
@@ -279,13 +297,12 @@ const UserProfile = () => {
       if (!confirmed) return;
 
       const response = await axiosInstance.put(`/api/orders/${orderId}`,
-        { status: "Cancelled" }
+        { status: "Đã hủy" }
       );
 
       if (response.status === 200) {
         toast.success("Đã hủy đơn hàng thành công");
 
-        // Refetch orders to update the list
         const user = JSON.parse(localStorage.getItem("user"));
         fetchUserOrders(user._id);
       }
@@ -302,40 +319,24 @@ const UserProfile = () => {
 
   const getStatusClass = (status) => {
     switch (status) {
-      case "Pending":
+      case "Chờ xử lý":
         return "text-yellow-500";
-      case "Processing":
+      case "Đang xử lý":
         return "text-blue-500";
-      case "Shipping":
+      case "Đang giao hàng":
         return "text-purple-500";
-      case "Delivered":
-      case "Completed":
+      case "Đã giao hàng":
+        return "text-indigo-500";
+      case "Hoàn tất":
         return "text-green-500";
-      case "Cancelled":
+      case "Đã hủy":
         return "text-red-500";
       default:
         return "text-gray-500";
     }
   };
 
-  const getVietnameseStatus = (status) => {
-    switch (status) {
-      case "Pending":
-        return "Chờ xử lý";
-      case "Processing":
-        return "Đang xử lý";
-      case "Shipping":
-        return "Đang giao hàng";
-      case "Delivered":
-        return "Đã giao hàng";
-      case "Completed":
-        return "Hoàn tất";
-      case "Cancelled":
-        return "Đã hủy";
-      default:
-        return status;
-    }
-  };
+
 
   if (loading) return <LoadingOverlay isVisible={true} />;
   if (error)
@@ -595,92 +596,267 @@ const UserProfile = () => {
             {activeTab === "orders" && (
               <div>
                 <h1 className="text-2xl font-bold mb-4">Đơn hàng của bạn</h1>
-                {orders.length === 0 ? (
+                {pendingOrders.length === 0 &&
+                processingOrders.length === 0 &&
+                shippingOrders.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <p>Bạn chưa có đơn hàng nào đang xử lý.</p>
                     <Link
                       to="/products"
-                      className="mt-4 inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                      className="mt-4 inline-block bg-[#e17100] text-white py-2 px-4 rounded-lg hover:bg-[#d06a03]"
                     >
                       Mua sắm ngay
                     </Link>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white">
-                      <thead className="bg-gray-100">
-                        <tr>
-                          <th className="py-2 px-4 border-b text-left">
-                            Mã đơn hàng
-                          </th>
-                          <th className="py-2 px-4 border-b text-left">
-                            Ngày đặt
-                          </th>
-                          <th className="py-2 px-4 border-b text-left">
-                            Tổng tiền
-                          </th>
-                          <th className="py-2 px-4 border-b text-left">
-                            Trạng thái
-                          </th>
-                          <th className="py-2 px-4 border-b text-left">
-                            Thao tác
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {orders.map((order) => (
-                          <tr key={order._id} className="hover:bg-gray-50">
-                            <td className="py-2 px-4 border-b">
-                              {order._id
-                                .substring(order._id.length - 6)
-                                .toUpperCase()}
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              {formatDisplayDate(order.order_date)}
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              {order.total_price.toLocaleString()} VNĐ
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              <span
-                                className={`px-2 py-1 rounded-full text-xs ${getStatusClass(
-                                  order.status
-                                )}`}
-                              >
-                                {getVietnameseStatus(order.status)}
-                              </span>
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              <div className="flex space-x-2">
-                                <button
-                                  onClick={() => handleViewOrder(order)}
-                                  className="p-1 text-blue-500 hover:text-blue-700"
-                                  title="Xem chi tiết"
+                  <div className="space-y-6">
+                    {/* Đơn hàng chờ xử lý */}
+                    {pendingOrders.length > 0 && (
+                      <div>
+                        <h2 className="text-xl font-bold mb-4">Chờ xử lý</h2>
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full bg-white">
+                            <thead className="bg-gray-100">
+                              <tr>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Mã đơn hàng
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Ngày đặt
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Tổng tiền
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Trạng thái
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Thao tác
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {pendingOrders.map((order) => (
+                                <tr
+                                  key={order._id}
+                                  className="hover:bg-gray-50"
                                 >
-                                  <FaEye />
-                                </button>
-                                {order.status === "Pending" && (
-                                  <button
-                                    onClick={() => handleCancelOrder(order._id)}
-                                    className="p-1 text-red-500 hover:text-red-700"
-                                    title="Hủy đơn hàng"
-                                  >
-                                    <FaTrash />
-                                  </button>
-                                )}
-                                <button
-                                  onClick={() => hanldeGenerateInvoice(order)}
-                                  className="p-1 text-green-500 hover:text-green-700"
-                                  title="Tải hóa đơn"
+                                  <td className="py-2 px-4 border-b">
+                                    {order._id
+                                      .substring(order._id.length - 6)
+                                      .toUpperCase()}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {formatDisplayDate(order.order_date)}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {order.total_price.toLocaleString()} VNĐ
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    <span
+                                      className={`px-2 py-1 rounded-full text-sm ${getStatusClass(
+                                        order.status
+                                      )}`}
+                                    >
+                                      {order.status}
+                                    </span>
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    <div className="flex space-x-2">
+                                      <button
+                                        onClick={() => handleViewOrder(order)}
+                                        className="p-1 text-blue-500 hover:text-blue-700 cursor-pointer"
+                                        title="Xem chi tiết"
+                                      >
+                                        <FaEye />
+                                      </button>
+                                      <button
+                                        onClick={() =>
+                                          handleCancelOrder(order._id)
+                                        }
+                                        className="p-1 text-red-500 hover:text-red-700 cursor-pointer"
+                                        title="Hủy đơn hàng"
+                                      >
+                                        <FaTrash />
+                                      </button>
+                                      <button
+                                        onClick={() =>
+                                          hanldeGenerateInvoice(order)
+                                        }
+                                        className="p-1 text-green-500 hover:text-green-700 cursor-pointer"
+                                        title="Tải hóa đơn"
+                                      >
+                                        <FaFileDownload />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Đơn hàng đang xử lý */}
+                    {processingOrders.length > 0 && (
+                      <div>
+                        <h2 className="text-xl font-bold mb-4">Đang xử lý</h2>
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full bg-white">
+                            <thead className="bg-gray-100">
+                              <tr>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Mã đơn hàng
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Ngày đặt
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Tổng tiền
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Trạng thái
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Thao tác
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {processingOrders.map((order) => (
+                                <tr
+                                  key={order._id}
+                                  className="hover:bg-gray-50"
                                 >
-                                  <FaFileDownload />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                                  <td className="py-2 px-4 border-b">
+                                    {order._id
+                                      .substring(order._id.length - 6)
+                                      .toUpperCase()}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {formatDisplayDate(order.order_date)}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {order.total_price.toLocaleString()} VNĐ
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    <span
+                                      className={`px-2 py-1 rounded-full text-sm ${getStatusClass(
+                                        order.status
+                                      )}`}
+                                    >
+                                      {order.status}
+                                    </span>
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    <div className="flex space-x-2">
+                                      <button
+                                        onClick={() => handleViewOrder(order)}
+                                        className="p-1 text-blue-500 hover:text-blue-700 cursor-pointer"
+                                        title="Xem chi tiết"
+                                      >
+                                        <FaEye />
+                                      </button>
+                                      <button
+                                        onClick={() =>
+                                          hanldeGenerateInvoice(order)
+                                        }
+                                        className="p-1 text-green-500 hover:text-green-700 cursor-pointer"
+                                        title="Tải hóa đơn"
+                                      >
+                                        <FaFileDownload />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Đơn hàng đang giao hàng */}
+                    {shippingOrders.length > 0 && (
+                      <div>
+                        <h2 className="text-xl font-bold mb-4">
+                          Đang giao hàng
+                        </h2>
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full bg-white">
+                            <thead className="bg-gray-100">
+                              <tr>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Mã đơn hàng
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Ngày đặt
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Tổng tiền
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Trạng thái
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Thao tác
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {shippingOrders.map((order) => (
+                                <tr
+                                  key={order._id}
+                                  className="hover:bg-gray-50"
+                                >
+                                  <td className="py-2 px-4 border-b">
+                                    {order._id
+                                      .substring(order._id.length - 6)
+                                      .toUpperCase()}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {formatDisplayDate(order.order_date)}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {order.total_price.toLocaleString()} VNĐ
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    <span
+                                      className={`px-2 py-1 rounded-full text-sm ${getStatusClass(
+                                        order.status
+                                      )}`}
+                                    >
+                                      {order.status}
+                                    </span>
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    <div className="flex space-x-2">
+                                      <button
+                                        onClick={() => handleViewOrder(order)}
+                                        className="p-1 text-blue-500 hover:text-blue-700 cursor-pointer"
+                                        title="Xem chi tiết"
+                                      >
+                                        <FaEye />
+                                      </button>
+                                      <button
+                                        onClick={() =>
+                                          hanldeGenerateInvoice(order)
+                                        }
+                                        className="p-1 text-green-500 hover:text-green-700 cursor-pointer"
+                                        title="Tải hóa đơn"
+                                      >
+                                        <FaFileDownload />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -688,87 +864,264 @@ const UserProfile = () => {
             {activeTab === "history" && (
               <div>
                 <h1 className="text-2xl font-bold mb-4">Lịch sử mua hàng</h1>
-                {completedOrders.length === 0 ? (
+                {deliveredOrders.length === 0 &&
+                completedOrders.length === 0 &&
+                canceledOrders.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <p>Bạn chưa có đơn hàng nào đã hoàn thành.</p>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white">
-                      <thead className="bg-gray-100">
-                        <tr>
-                          <th className="py-2 px-4 border-b text-left">
-                            Mã đơn hàng
-                          </th>
-                          <th className="py-2 px-4 border-b text-left">
-                            Ngày đặt
-                          </th>
-                          <th className="py-2 px-4 border-b text-left">
-                            Ngày hoàn thành
-                          </th>
-                          <th className="py-2 px-4 border-b text-left">
-                            Tổng tiền
-                          </th>
-                          <th className="py-2 px-4 border-b text-left">
-                            Trạng thái
-                          </th>
-                          <th className="py-2 px-4 border-b text-left">
-                            Thao tác
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {completedOrders.map((order) => (
-                          <tr key={order._id} className="hover:bg-gray-50">
-                            <td className="py-2 px-4 border-b">
-                              {order._id
-                                .substring(order._id.length - 6)
-                                .toUpperCase()}
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              {formatDisplayDate(order.order_date)}
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              {formatDisplayDate(order.updatedAt)}
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              {order.total_price.toLocaleString()} VNĐ
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              <span
-                                className={`px-2 py-1 rounded-full text-xs ${getStatusClass(
-                                  order.status
-                                )}`}
-                              >
-                                {getVietnameseStatus(order.status)}
-                              </span>
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              <div className="flex space-x-2">
-                                <button
-                                  onClick={() => handleViewOrder(order)}
-                                  className="p-1 text-blue-500 hover:text-blue-700"
-                                  title="Xem chi tiết"
+                  <div className="space-y-6">
+                    {/* Đơn hàng đã giao hàng */}
+                    {deliveredOrders.length > 0 && (
+                      <div>
+                        <h2 className="text-xl font-bold mb-4">Đã giao hàng</h2>
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full bg-white">
+                            <thead className="bg-gray-100">
+                              <tr>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Mã đơn hàng
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Ngày đặt
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Ngày hoàn thành
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Tổng tiền
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Trạng thái
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Thao tác
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {deliveredOrders.map((order) => (
+                                <tr
+                                  key={order._id}
+                                  className="hover:bg-gray-50"
                                 >
-                                  <FaEye />
-                                </button>
-                                <button
-                                  onClick={() => handleGenerateInvoice(order)}
-                                  className="p-1 text-green-500 hover:text-green-700"
-                                  title="Tải hóa đơn"
+                                  <td className="py-2 px-4 border-b">
+                                    {order._id
+                                      .substring(order._id.length - 6)
+                                      .toUpperCase()}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {formatDisplayDate(order.order_date)}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {formatDisplayDate(order.updatedAt)}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {order.total_price.toLocaleString()} VNĐ
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    <span
+                                      className={`px-2 py-1 rounded-full text-sm ${getStatusClass(
+                                        order.status
+                                      )}`}
+                                    >
+                                      {order.status}
+                                    </span>
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    <div className="flex space-x-2">
+                                      <button
+                                        onClick={() => handleViewOrder(order)}
+                                        className="p-1 text-blue-500 hover:text-blue-700 cursor-pointer"
+                                        title="Xem chi tiết"
+                                      >
+                                        <FaEye />
+                                      </button>
+                                      <button
+                                        onClick={() =>
+                                          hanldeGenerateInvoice(order)
+                                        }
+                                        className="p-1 text-green-500 hover:text-green-700 cursor-pointer"
+                                        title="Tải hóa đơn"
+                                      >
+                                        <FaFileDownload />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Đơn hàng hoàn tất */}
+                    {completedOrders.length > 0 && (
+                      <div>
+                        <h2 className="text-xl font-bold mb-4">Hoàn tất</h2>
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full bg-white">
+                            <thead className="bg-gray-100">
+                              <tr>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Mã đơn hàng
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Ngày đặt
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Ngày hoàn thành
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Tổng tiền
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Trạng thái
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Thao tác
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {completedOrders.map((order) => (
+                                <tr
+                                  key={order._id}
+                                  className="hover:bg-gray-50"
                                 >
-                                  <FaFileDownload />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                                  <td className="py-2 px-4 border-b">
+                                    {order._id
+                                      .substring(order._id.length - 6)
+                                      .toUpperCase()}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {formatDisplayDate(order.order_date)}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {formatDisplayDate(order.updatedAt)}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {order.total_price.toLocaleString()} VNĐ
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    <span
+                                      className={`px-2 py-1 rounded-full text-sm ${getStatusClass(
+                                        order.status
+                                      )}`}
+                                    >
+                                      {order.status}
+                                    </span>
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    <div className="flex space-x-2">
+                                      <button
+                                        onClick={() => handleViewOrder(order)}
+                                        className="p-1 text-blue-500 hover:text-blue-700 cursor-pointer"
+                                        title="Xem chi tiết"
+                                      >
+                                        <FaEye />
+                                      </button>
+                                      <button
+                                        onClick={() =>
+                                          hanldeGenerateInvoice(order)
+                                        }
+                                        className="p-1 text-green-500 hover:text-green-700 cursor-pointer"
+                                        title="Tải hóa đơn"
+                                      >
+                                        <FaFileDownload />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Đơn hàng đã hủy */}
+                    {canceledOrders.length > 0 && (
+                      <div>
+                        <h2 className="text-xl font-bold mb-4">Đã hủy</h2>
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full bg-white">
+                            <thead className="bg-gray-100">
+                              <tr>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Mã đơn hàng
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Ngày đặt
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Ngày hủy
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Tổng tiền
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Trạng thái
+                                </th>
+                                <th className="py-2 px-4 border-b text-left">
+                                  Thao tác
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {canceledOrders.map((order) => (
+                                <tr
+                                  key={order._id}
+                                  className="hover:bg-gray-50"
+                                >
+                                  <td className="py-2 px-4 border-b">
+                                    {order._id
+                                      .substring(order._id.length - 6)
+                                      .toUpperCase()}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {formatDisplayDate(order.order_date)}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {formatDisplayDate(order.updatedAt)}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {order.total_price.toLocaleString()} VNĐ
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    <span
+                                      className={`px-2 py-1 rounded-full text-sm ${getStatusClass(
+                                        order.status
+                                      )}`}
+                                    >
+                                      {order.status}
+                                    </span>
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    <div className="flex space-x-2">
+                                      <button
+                                        onClick={() => handleViewOrder(order)}
+                                        className="p-1 text-blue-500 hover:text-blue-700 cursor-pointer"
+                                        title="Xem chi tiết"
+                                      >
+                                        <FaEye />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             )}
+
             {/* Order Details Modal */}
             {showOrderModal && selectedOrder && (
               <Modal onClose={() => setShowOrderModal(false)}>
@@ -803,7 +1156,7 @@ const UserProfile = () => {
                           selectedOrder.status
                         )}`}
                       >
-                        {getVietnameseStatus(selectedOrder.status)}
+                        {selectedOrder.status}
                       </p>
                     </div>
                     <div>
