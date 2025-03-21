@@ -28,7 +28,6 @@ function ListProduct({title, products}) {
     href: `/categories/${category.slug}`,
   }));
 
-  console.log(collections);
   return (
     // <div className={`flex flex-col gap-4 ${style ? "md:flex-row-reverse" : "md:flex-row"}`}>
     //   <div className="hidden lg:w-1/3 lg:flex flex-col items-center border-2 gap-5 border-[#c49a6c]">
