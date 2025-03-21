@@ -10,6 +10,7 @@ import UserProfile from "./pages/UserProfile";
 import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
 import NotFoundPage from "./pages/NotFoundPage";
+import UserManagement from "./pages/UserManagement";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { featchProductSale, fetchProductsByCategory } from "./stores/productSlice";
@@ -46,6 +47,7 @@ function App() {
         <Route path="/userProfile" element={<UserProfile />} />
         <Route path="/blogs/news" element={<News />} />
         <Route path="/blogs/news/:slug" element={<NewsDetail />} />
+        <Route path="/user-management" element={<UserManagement/>}/>
       </Routes>
     </BrowserRouter>
   );
