@@ -11,7 +11,7 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { IoMdMenu, IoIosClose } from "react-icons/io";
-import { RiMenu3Fill } from "react-icons/ri";
+import { RiMenu3Fill, RiAdminFill } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import PopupMenu from "./PopupMenu";
 import HoverPopupMenu from "./HoverPopupMenu";
@@ -26,9 +26,11 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState({
     name: "",
     avatar: "",
+    role: ""
   });
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -80,7 +82,13 @@ const Header = () => {
           setUser({
             name: userData.fullName,
             avatar: userData.avatar,
+            role: userData.role,
           });
+          
+          if (user.role == "admin") {
+            setIsAdmin(true);
+          }
+
           setLoggedIn(true);
         } catch (err) {
           console.error("API Error:", err.response?.data || err.message);
@@ -90,6 +98,7 @@ const Header = () => {
     fetchUserData();
   }, []);
 
+  // fetch tìm kiếm
   const fetchSearchResults = async (query) => {
     if (!query.trim()) {
       setSearchResults([]);
@@ -111,6 +120,7 @@ const Header = () => {
     }
   };
 
+
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       if (searchTerm.trim()) {
@@ -123,6 +133,7 @@ const Header = () => {
     return () => clearTimeout(debounceTimer);
   }, [searchTerm]);
 
+
   useEffect(() => {
     const savedHistory = localStorage.getItem("searchHistory");
     if (savedHistory) {
@@ -134,6 +145,7 @@ const Header = () => {
       }
     }
   }, []);
+
 
   // Xử lý khi người dùng click ra ngoài popup
   useEffect(() => {
@@ -149,6 +161,7 @@ const Header = () => {
     };
   }, []);
 
+
   // Lưu từ khóa tìm kiếm vào lịch sử
   const saveToHistory = (term) => {
     if (!term.trim()) return;
@@ -161,6 +174,7 @@ const Header = () => {
     setSearchHistory(newHistory);
     localStorage.setItem("searchHistory", JSON.stringify(newHistory));
   };
+
 
   // Đăng xuất
   const handleLogout = () => {
@@ -223,6 +237,34 @@ const Header = () => {
       label: "Tài khoản của bạn",
       icon: <FaUser className="mr-2" />,
       href: `/userProfile/`,
+    },
+    {
+      label: "Đơn hàng của bạn",
+      icon: <FaShoppingBag className="mr-2" />,
+      href: "/userProfile",
+    },
+    {
+      label: "Lịch sử mua hàng",
+      icon: <FaHistory className="mr-2" />,
+      href: "/userProfile",
+    },
+    {
+      label: "Đăng xuất",
+      icon: <FaSignOutAlt className="mr-2" />,
+      onClick: handleLogout,
+    },
+  ];
+
+  const menuOptionsAdmin = [
+    {
+      label: "Tài khoản của bạn",
+      icon: <FaUser className="mr-2" />,
+      href: `/userProfile/`,
+    },
+    {
+      label: "Quản lý người dùng",
+      icon: <RiAdminFill className="mr-2" />,
+      href: `/user-management`,
     },
     {
       label: "Đơn hàng của bạn",
@@ -330,25 +372,49 @@ const Header = () => {
             {/* user */}
             <div className="flex items-center space-x-4 cursor-pointer">
               {loggedIn ? (
-                <PopupMenu
-                  trigger={
-                    <div className="flex items-center space-x-2 cursor-pointer">
-                      <img
-                        src={user.avatar}
-                        alt="User avatar"
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                      <span
-                        className="text-gray-700 text-sm font-medium text-brown-hover"
-                        style={{ fontSize: "1.1rem" }}
-                      >
-                        {user.name}
-                      </span>
-                    </div>
-                  }
-                  options={menuOptionsUser}
-                  menuType="menuOptionsUser"
-                />
+                isAdmin ? (
+                  <PopupMenu
+                    trigger={
+                      <div className="flex items-center space-x-2 cursor-pointer">
+                        <img
+                          src={user.avatar}
+                          alt="User avatar"
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <span
+                          className="text-gray-700 text-sm font-medium text-brown-hover"
+                          style={{ fontSize: "1.1rem" }}
+                        >
+                          {user.name}
+                        </span>
+                      </div>
+                    }
+                    options={menuOptionsAdmin}
+                    menuType="menuOptionsUser"
+                  />
+                ) : (
+                  <>
+                    <PopupMenu
+                      trigger={
+                        <div className="flex items-center space-x-2 cursor-pointer">
+                          <img
+                            src={user.avatar}
+                            alt="User avatar"
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                          <span
+                            className="text-gray-700 text-sm font-medium text-brown-hover"
+                            style={{ fontSize: "1.1rem" }}
+                          >
+                            {user.name}
+                          </span>
+                        </div>
+                      }
+                      options={menuOptionsUser}
+                      menuType="menuOptionsUser"
+                    />
+                  </>
+                )
               ) : (
                 <>
                   {/* đăng ký, đăng nhập  */}
@@ -435,44 +501,25 @@ const Header = () => {
             )}
           </li>
           {loggedIn ? (
-            <li className="py-3">
-              <div className="flex items-center space-x-2 cursor-pointer">
-                <img
-                  src={user.avatar}
-                  alt="User avatar"
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <span
-                  className="text-gray-700 text-sm font-medium text-brown-hover text-xl"
-                  style={{ fontSize: "1.1rem" }}
-                >
-                  {user.name}
-                </span>
-              </div>
-              <div className="mt-2">
-                {menuOptionsUser.map((option, index) => (
-                  <div key={index} className="py-2">
-                    {option.onClick ? (
-                      <button
-                        onClick={option.onClick}
-                        className="flex items-center text-gray-700 hover:text-brown"
-                      >
-                        {option.icon}
-                        {option.label}
-                      </button>
-                    ) : (
-                      <Link
-                        to={option.href}
-                        className="flex items-center text-gray-700 hover:text-brown"
-                      >
-                        {option.icon}
-                        {option.label}
-                      </Link>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </li>
+            <PopupMenu
+              trigger={
+                <div className="flex items-center space-x-2 cursor-pointer">
+                  <img
+                    src={user.avatar}
+                    alt="User avatar"
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <span
+                    className="text-gray-700 text-sm font-medium text-brown-hover"
+                    style={{ fontSize: "1.1rem" }}
+                  >
+                    {user.name}
+                  </span>
+                </div>
+              }
+              options={menuOptionsUser}
+              menuType="menuOptionsUser"
+            />
           ) : (
             <>
               <li className="py-3">
@@ -494,39 +541,39 @@ const Header = () => {
             </>
           )}
 
-          <li className="py-3">
-            <a
+          <li className="pt-5">
+            <Link
               href="#"
               className="text-gray-700 flex items-center text-brown-hover"
             >
               SHOP CHO CÚN
               <FaCaretDown className="ml-2 text-lg" />
-            </a>
+            </Link>
           </li>
-          <li className="py-3">
-            <a
+          <li className="py-1">
+            <Link
               href="#"
               className="text-gray-700 flex items-center text-brown-hover"
             >
               SHOP CHO MÈO
               <FaCaretDown className="ml-2 text-lg" />
-            </a>
+            </Link>
           </li>
-          <li className="py-3">
-            <a
+          <li className="py-1">
+            <Link
               href="#"
               className="block text-gray-700 text-sm text-brown-hover"
             >
               KHUYẾN MÃI
-            </a>
+            </Link>
           </li>
-          <li className="py-3">
-            <a
+          <li className="py-1">
+            <Link
               href="/blogs/news"
               className="block text-gray-700 text-sm text-brown-hover"
             >
               TIN TỨC
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
