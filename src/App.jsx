@@ -17,6 +17,7 @@ import { featchProductSale, fetchProducts, fetchProductsByCategory } from "./sto
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Category from "./pages/Category";
+import { CartProvider } from "./context/CartContext";
 
 function App() {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ function App() {
   return (
     <BrowserRouter>
       <ToastContainer />
+      <CartProvider>
       <Routes>
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/" element={<Home />} />
@@ -55,6 +57,7 @@ function App() {
         <Route path="/categories/:slug" element={<Category/>}/>
         <Route path="/user-management" element={<UserManagement/>}/>
       </Routes>
+      </CartProvider>
     </BrowserRouter>
   );
 }

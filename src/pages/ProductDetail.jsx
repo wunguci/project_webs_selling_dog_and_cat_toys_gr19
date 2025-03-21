@@ -116,7 +116,7 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { productDetail, items:products } = useSelector((state) => state.products)
-
+  console.log(productDetail)
   useEffect(()=>{
     dispatch(fetchProducts())
   }, [dispatch])

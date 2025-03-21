@@ -5,22 +5,61 @@ import DialogProduct from "./DialogProduct";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../stores/cartSlice";
+import axiosInstance from "../utils/axiosInstance";
+import { ToastContainer, toast } from "react-toastify";
+import { useCart } from "../context/CartContext";
 
-function Product({ product }) {
+function Product({ product}) {
   const [open, setOpen] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate()
+  // const dispatch = useDispatch();
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
   
+  // const handleAddToCart = async (product) => {
+  //   const user = JSON.parse(localStorage.getItem("user"));
+  //   const userId = user?._id;
+  //   if (!userId) {
+  //     alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+  //     return;
+  //   }
+  
+  //   try {
+  //     const response = await axiosInstance.post("/api/carts/add", {
+  //       user_id: userId,
+  //       product_id: product._id,
+  //       quantity: 1,
+  //     });
+  
+  //     if (response.status === 201) {
+  //       toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
+  //       onCartUpdate();
+  //     }
+  //   } catch (error) {
+  //     console.error("Lỗi khi thêm vào giỏ hàng:", error);
+  //     alert(error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!");
+  //   }
+  // };
+  const user = JSON.parse(localStorage.getItem("user"));
+  const handleAddToCart = async () => {
+    if (!user?._id) {
+      navigate("/login");
+      return;
+    }
 
-  const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
+    const result = await addToCart(user._id, product._id, 1);
+    
+    if (result.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
   };
+  
 
   const handleBuyNow = (product) => {
     dispatch(addToCart(product))
     navigate("/cart")
   }
-
   return (
     <div>
       <div className="flex flex-col gap-1 border-1 border-[#c49a6c] rounded-[5px] overflow-hidden">
@@ -39,8 +78,8 @@ function Product({ product }) {
             >
               <MdOutlineRemoveRedEye className="hover:text-white" size={25} />
             </button>
-            <button
-              onClick={() => handleAddToCart(product)}
+            <button 
+        onClick={handleAddToCart}
               className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400"
             >
               <IoMdCart className="hover:text-white" size={25} />
