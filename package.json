@@ -34,6 +34,7 @@
     "sass": "^1.85.1",
     "slick-carousel": "^1.8.1",
     "slugify": "^1.6.6",
+    "sweetalert2": "^11.17.2",
     "swiper": "^11.2.4",
     "tailwindcss": "^4.0.9"
   },

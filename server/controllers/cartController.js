@@ -142,10 +142,9 @@ export const deleteProductFromCart = async (req, res) => {
           message: "Không tìm thấy giỏ hàng",
         });
       }
-  
-      // Tìm sản phẩm cần xóa trong giỏ hàng
-      const itemIndex = cart.items.findIndex((item) =>
-        item.product_id.equals(product_id)
+
+      const itemIndex = cart.items.findIndex(
+        (item) => item._id.toString() === product_id
       );
   
       if (itemIndex === -1) {
