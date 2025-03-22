@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import MainLayout from "../layout/mainLayout";
 import Breadcrumb2 from "../components/Breadcrumb2";
 import { FaTrash } from "react-icons/fa";
-import cart1 from "../assets/images/cart1.png";
-import cart2 from "../assets/images/cart2.png";
+import { useCart } from "../context/CartContext";
 
 const links = [
   { label: "Trang chủ", href: "/" },
@@ -12,46 +10,16 @@ const links = [
 ];
 
 const CartShop = () => {
-  const [cart, setCart] = useState([
-    {
-      id: 1,
-      name: "Sữa tắm JOYCE & DOLLS hương trà xanh cho chó mèo",
-      price: 175000,
-      quantity: 1,
-      image: cart1,
-      slug: "sua-tam-joyce-dolls-huong-tra-xanh-cho-cho-meo",
-    },
-    {
-      id: 2,
-      name: "Yếm cổ đáng yêu cho chó mèo",
-      price: 35000,
-      quantity: 1,
-      image: cart2,
-      slug: "yem-co-dang-yeu-cho-cho-meo",
-    },
-  ]);
-
-  // Cập nhật số lượng sản phẩm
-  const updateQuantity = (id, newQuantity) => {
-    if (newQuantity < 1) return;
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  // Xóa sản phẩm khỏi giỏ hàng
-  const removeItem = (id) => {
-    setCart(cart.filter((item) => item.id !== id));
-  };
+  // Sử dụng CartContext để lấy dữ liệu giỏ hàng và các hàm cần thiết
+  const { cartItems, updateCartItemQuantity, removeFromCart } = useCart();
 
   // Tính tổng tiền
-  const totalPrice = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + (item.product_id?.price || 0) * item.quantity,
     0
   );
-
+  const user = JSON.parse(localStorage.getItem("user"));
+  
   return (
     <MainLayout>
       {/* Breadcrumb */}
@@ -65,7 +33,7 @@ const CartShop = () => {
 
         {/* Khung chứa cả danh sách sản phẩm & tổng tiền */}
         <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
-          {cart.length > 0 ? (
+          {cartItems.length > 0 ? (
             <>
               {/* Danh sách sản phẩm */}
               <table className="w-full text-left border-collapse">
@@ -79,30 +47,28 @@ const CartShop = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {cart.map((item) => (
+                  {cartItems.map((item) => (
                     <tr
-                      key={item.id}
+                      key={item._id}
                       className="border-b border-gray-200 transition-all duration-300 min-h-[80px]"
                     >
                       <td className="p-5 flex items-center gap-6">
                         {/* Link đến trang chi tiết sản phẩm */}
                         <Link
-                          to={`/product/${item.slug}`}
-                          className="flex items-center gap-6"
+                          to={`/product/${item.product_id?.slug}`}
+                          className="flex items-center gap-6 hover:text-[#c49a6c] transition-colors duration-200"
                         >
                           <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-20 h-20 rounded-md shadow-sm border border-gray-200"
+                            src={item.product_id?.images[0]}
+                            alt={item.product_id?.name}
+                            className="w-20 h-20 rounded-md shadow-sm border border-gray-200 object-cover"
                           />
-                          <span className="text-brown-hover transition-all duration-300">
-                            {item.name}
-                          </span>
+                          <span>{item.product_id?.name}</span>
                         </Link>
                       </td>
 
                       <td className="p-5 text-gray-700 w-32">
-                        {item.price.toLocaleString()}đ
+                        {(item.product_id?.price || 0).toLocaleString()}đ
                       </td>
 
                       <td className="p-5 w-32 text-center">
@@ -111,12 +77,12 @@ const CartShop = () => {
                           <button
                             onClick={() => {
                               if (item.quantity === 1) {
-                                removeItem(item.id);
+                                removeFromCart(user._id, item._id);
                               } else {
-                                updateQuantity(item.id, item.quantity - 1);
+                                updateCartItemQuantity(user._id, item._id, item.quantity - 1);
                               }
                             }}
-                            className="px-3 py-2 text-gray-700 rounded-l-lg cursor-pointer"
+                            className="px-3 py-2 text-gray-700 rounded-l-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200"
                           >
                             -
                           </button>
@@ -128,11 +94,11 @@ const CartShop = () => {
                             onChange={(e) => {
                               const value = e.target.value;
                               if (value === "") {
-                                updateQuantity(item.id, ""); // Nếu rỗng thì chờ nhập số
+                                updateCartItemQuantity(user._id, item._id, ""); // Nếu rỗng thì chờ nhập số
                               } else {
                                 const newQuantity = parseInt(value, 10);
                                 if (!isNaN(newQuantity) && newQuantity >= 1) {
-                                  updateQuantity(item.id, newQuantity);
+                                  updateCartItemQuantity(user._id, item._id, newQuantity);
                                 }
                               }
                             }}
@@ -141,7 +107,7 @@ const CartShop = () => {
                                 !e.target.value ||
                                 parseInt(e.target.value, 10) < 1
                               ) {
-                                updateQuantity(item.id, 1);
+                                updateCartItemQuantity(user._id, item._id, 1);
                               }
                             }}
                             className="w-10 text-center border-x border-gray-300 bg-white text-gray-800 appearance-none custom-number-input"
@@ -150,9 +116,9 @@ const CartShop = () => {
                           {/* Nút Tăng */}
                           <button
                             onClick={() =>
-                              updateQuantity(item.id, item.quantity + 1)
+                              updateCartItemQuantity(user._id, item._id, item.quantity + 1)
                             }
-                            className="w-10 h-10 text-gray-700 rounded-r-lg cursor-pointer flex items-center justify-center"
+                            className="px-3 py-2 text-gray-700 rounded-r-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200"
                           >
                             +
                           </button>
@@ -160,12 +126,12 @@ const CartShop = () => {
                       </td>
 
                       <td className="p-5 w-32 text-center">
-                        {(item.price * item.quantity).toLocaleString()}đ
+                        {((item.product_id?.price || 0) * item.quantity).toLocaleString()}đ
                       </td>
 
                       <td className="p-5 w-16 text-center">
                         <button
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeFromCart(user._id, item._id)}
                           className="text-red-500 hover:text-red-700 transition text-lg"
                         >
                           <FaTrash />

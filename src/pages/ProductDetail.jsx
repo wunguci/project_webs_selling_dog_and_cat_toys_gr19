@@ -22,6 +22,8 @@ import 'swiper/css/thumbs';
 import { IoMdCart } from "react-icons/io"
 import { addToCart } from "../stores/cartSlice"
 import { ScaleLoader } from "react-spinners"
+import { useCart } from "../context/CartContext";
+import {toast } from "react-toastify";
 
 
 const services = [
@@ -91,6 +93,8 @@ const ProductDetail = () => {
 
   const [quantity, setQuantity] = useState(1);
   const [open, setOpen] = useState(false);
+  const { addToCart } = useCart();
+  
   const handleDecrease = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -116,7 +120,6 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { productDetail, items:products } = useSelector((state) => state.products)
-  console.log(productDetail)
   useEffect(()=>{
     dispatch(fetchProducts())
   }, [dispatch])
@@ -137,10 +140,25 @@ const ProductDetail = () => {
     navigate("/checkout");
   };
 
-  const handleAddToCart = () => {
-    dispatch(addToCart({ ...productDetail, cartQuantity: quantity }));
-    navigate("/cart")
-  };
+  // const handleAddToCart = () => {
+  //   dispatch(addToCart({ ...productDetail, cartQuantity: quantity }));
+  //   navigate("/cart")
+  // };
+  const user = JSON.parse(localStorage.getItem("user"));
+  const handleAddToCart = async () => {
+      if (!user?._id) {
+        navigate("/login");
+        return;
+      }
+  
+      const result = await addToCart(user._id, productDetail._id, quantity);
+      
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    };
 
 
   if(!productDetail){
