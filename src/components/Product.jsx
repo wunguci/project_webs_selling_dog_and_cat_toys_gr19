@@ -3,10 +3,7 @@ import { IoMdCart } from "react-icons/io";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import DialogProduct from "./DialogProduct";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../stores/cartSlice";
-import axiosInstance from "../utils/axiosInstance";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import { useCart } from "../context/CartContext";
 
 function Product({ product}) {

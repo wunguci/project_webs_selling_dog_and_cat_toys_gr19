@@ -2,11 +2,13 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 import cart1 from "../assets/images/cart1.png";
-import axiosInstance from "../utils/axiosInstance";
+import { useCart } from "../context/CartContext";
+import {toast } from "react-toastify";
 
 const DialogCart = ({ cartItems = [], idUser, onUpdateCart }) => {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  const { removeFromCart } = useCart();
+  
   // Xử lý xóa sản phẩm
   const removeItem = async (itemId) => {
     if (!idUser) {
@@ -19,28 +21,11 @@ const DialogCart = ({ cartItems = [], idUser, onUpdateCart }) => {
       return;
     }
 
-    const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?");
-    if (!confirmDelete) return;
-
-    try {
-      const response = await axiosInstance.delete(`/api/carts/${idUser}/${itemId}`);
-
-      if (response.status === 200) {
-        onUpdateCart?.(); // Cập nhật giỏ hàng sau khi xóa thành công
-      }
-    } catch (error) {
-      console.error("Lỗi khi xóa sản phẩm:", error);
-      if (error.response?.status === 404) {
-        alert(error.response?.data?.message || "Sản phẩm không tồn tại trong giỏ hàng.");
-      } else {
-        alert("Đã xảy ra lỗi khi xóa sản phẩm. Vui lòng thử lại.");
-      }
+    const removeResult = await removeFromCart(idUser, itemId);
+    if (!removeResult.success) {
+      toast.error(removeResult.message);
     }
   };
-
-  // const removeItem = (productId) => {
-  //   dispatch(removeFromCart(idUser, productId));
-  // };
 
   // Tính tổng tiền (useMemo để tối ưu hiệu suất)
   const totalPrice = useMemo(() => {
@@ -77,7 +62,7 @@ const DialogCart = ({ cartItems = [], idUser, onUpdateCart }) => {
                 </div>
                 <button
                   className="text-gray-400 hover:text-red-500"
-                  onClick={() => removeItem(item.product_id?._id)}
+                  onClick={() => removeItem(item._id)}
                 >
                   <FaTimes />
                 </button>

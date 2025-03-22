@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { toast } from "react-toastify";
 
 const categories = [
   {
@@ -33,6 +35,8 @@ function DialogProduct({ open, setOpen, product }) {
     setSelectedImage(image.image);
   };
 
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
 
   const handleDecrease = () => {
@@ -49,6 +53,23 @@ function DialogProduct({ open, setOpen, product }) {
     const value = parseInt(e.target.value, 10);
     if (!isNaN(value) && value >= 1) {
       setQuantity(value);
+    }
+  };
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const handleAddToCart = async () => {
+    if (!user?._id) {
+      navigate("/login");
+      return;
+    }
+
+    const result = await addToCart(user._id, product._id, quantity);
+    
+    if (result.success) {
+      setOpen(false);
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
     }
   };
 
@@ -113,7 +134,7 @@ function DialogProduct({ open, setOpen, product }) {
                 </button>
               </div>
             </div>
-            <button className="w-60 border-2 text-white border-[#c49a6c] bg-[#c49a6c] hover:bg-transparent rounded-[5px] hover:border-[#c49a6c] hover:text-[#c49a6c] py-2 transition-colors duration-200">Thêm vào giỏ hàng</button>
+            <button onClick={handleAddToCart} className="w-60 border-2 text-white border-[#c49a6c] bg-[#c49a6c] hover:bg-transparent rounded-[5px] hover:border-[#c49a6c] hover:text-[#c49a6c] py-2 transition-colors duration-200">Thêm vào giỏ hàng</button>
             <button className="w-60 border-2 text-white border-[#c49a6c] bg-[#c49a6c] hover:bg-transparent rounded-[5px] hover:border-[#c49a6c] hover:text-[#c49a6c] py-2 transition-colors duration-200">Mua ngay</button>
           </div>
         </div>
