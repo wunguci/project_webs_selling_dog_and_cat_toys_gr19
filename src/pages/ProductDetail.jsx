@@ -22,6 +22,8 @@ import 'swiper/css/thumbs';
 import { IoMdCart } from "react-icons/io"
 import { addToCart } from "../stores/cartSlice"
 import { ScaleLoader } from "react-spinners"
+import { useCart } from "../context/CartContext";
+import {toast } from "react-toastify";
 
 
 const services = [
@@ -91,6 +93,8 @@ const ProductDetail = () => {
 
   const [quantity, setQuantity] = useState(1);
   const [open, setOpen] = useState(false);
+  const { addToCart } = useCart();
+  
   const handleDecrease = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -116,7 +120,6 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { productDetail, items:products } = useSelector((state) => state.products)
-
   useEffect(()=>{
     dispatch(fetchProducts())
   }, [dispatch])
@@ -137,10 +140,25 @@ const ProductDetail = () => {
     navigate("/checkout");
   };
 
-  const handleAddToCart = () => {
-    dispatch(addToCart({ ...productDetail, cartQuantity: quantity }));
-    navigate("/cart")
-  };
+  // const handleAddToCart = () => {
+  //   dispatch(addToCart({ ...productDetail, cartQuantity: quantity }));
+  //   navigate("/cart")
+  // };
+  const user = JSON.parse(localStorage.getItem("user"));
+  const handleAddToCart = async () => {
+      if (!user?._id) {
+        navigate("/login");
+        return;
+      }
+  
+      const result = await addToCart(user._id, productDetail._id, quantity);
+      
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    };
 
 
   if(!productDetail){
@@ -176,7 +194,7 @@ const ProductDetail = () => {
             <span> &gt; </span>
             <Link to="/shop-meo" className="hover:text-[#c49a6c]">{productDetail.category_id.type}</Link>
             <span> &gt; </span>
-            <span className="text-[#C49A6C] font-semibold">{productDetail.name}</span>
+            <span className="text-[#e17100] font-semibold">{productDetail.name}</span>
           </div>
         </div>
       </div>
@@ -329,7 +347,7 @@ const ProductDetail = () => {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-2 text-sm font-medium ${
-                  activeTab === tab.id ? "bg-blue-400" : "text-gray-500"
+                  activeTab === tab.id ? "bg-brown" : "text-gray-500"
                 }`}
               >
                 {tab.label}
@@ -417,7 +435,7 @@ const ProductDetail = () => {
               products.map((product, index) => (
                 <div key={index} className="p-3">
                   <div>
-                    <div className="flex flex-col gap-1 border-1 border-[#c49a6c] rounded-[5px] overflow-hidden bg-white">
+                    <div className="flex flex-col gap-1 border-1 border-[#e17100] rounded-[5px] overflow-hidden bg-white">
                       <div className="relative group hover:cursor-pointer">
                         <Link to={`/product/${product.slug}`}>
                           <img className={`hover:opacity-70 w-screen`} src={product.images[0]} alt="" />
@@ -426,7 +444,7 @@ const ProductDetail = () => {
                           <button onClick={() => handleViewProduct(product)}  className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
                             <MdOutlineRemoveRedEye className="hover:text-white" size={25}/>
                           </button>
-                          <button onClick={()=> handleAddToCart(product)} className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
+                          <button onClick={()=> handleAddToCart(product)} className="bg-brown p-2 rounded-[5px] group hover:bg-gray-400">
                             <IoMdCart className="hover:text-white" size={25}/>
                           </button>
                         </div>
@@ -436,7 +454,7 @@ const ProductDetail = () => {
                         <span className="text-1xl text-[#c49a6c] text-start">
                           {product.price.toLocaleString('vi-VN') + '₫'}
                         </span>
-                        <button className='bg-[#c49a6c] border-2 border-[#c49a6c] duration-200 transition-colors hover:bg-white hover:text-[#c49a6c] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
+                        <button className='bg-[#e17100] border-2 border-[#e17100] duration-200 transition-colors hover:bg-white hover:text-[#e17100] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
                       </div>
                     </div>
                   </div>

@@ -2,7 +2,6 @@
 import { Link } from "react-router-dom"
 import Product from "./Product"
 import { useEffect, useState } from "react"
-import axios from "axios"
 import axiosInstance from "../utils/axiosInstance";
 
 function ListProduct({title, products}) {
@@ -28,7 +27,6 @@ function ListProduct({title, products}) {
     href: `/categories/${category.slug}`,
   }));
 
-  console.log(collections);
   return (
     // <div className={`flex flex-col gap-4 ${style ? "md:flex-row-reverse" : "md:flex-row"}`}>
     //   <div className="hidden lg:w-1/3 lg:flex flex-col items-center border-2 gap-5 border-[#c49a6c]">
@@ -66,10 +64,10 @@ function ListProduct({title, products}) {
     //     </div>
     //   </div>
     // </div>
-    <div className="border-1 border-gray-400 p-5">
-      <div className="flex flex-row justify-between border-b-2 border-[#c49a6c]">
+    <div className="border-1 border-[#e17100] p-5">
+      <div className="flex flex-row justify-between border-b-2 border-[#e17100]">
         <div>
-          <div className="bg-[#c49a6c] w-44 text-center p-1 skew-x-[-15deg] ml-1">
+          <div className="bg-brown w-44 text-center p-1 skew-x-[-15deg] ml-1">
             <h2 className="text-2xl text-white">{title}</h2>
           </div>
         </div>

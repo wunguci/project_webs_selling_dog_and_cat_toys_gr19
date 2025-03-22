@@ -122,7 +122,7 @@ const Home = () => {
       <div className="max-w-[1200px] mx-auto flex flex-col gap-10 px-5">
         <ListProduct products={productCategory["shop-cho-cun"]} title={"Shop cho cún"} />
 
-        <div className="bg-red-400 p-5 rounded-[10px]">
+        <div className="bg-brown p-5 rounded-[10px]">
           <div className="flex flex-col md:flex-row gap-3 md:gap-7 mb-5">
             <div className="flex justify-center items-center gap-3">
               <img
@@ -146,7 +146,7 @@ const Home = () => {
 
         <div className="flex flex-row justify-between border-b-2 border-[#c49a6c]">
           <div>
-            <div className="bg-[#c49a6c] w-44 text-center p-1 skew-x-[-15deg] ml-1">
+            <div className="bg-[#e17100] w-44 text-center p-1 skew-x-[-15deg] ml-1">
               <h2 className="text-2xl text-white">Tin tức</h2>
             </div>
           </div>

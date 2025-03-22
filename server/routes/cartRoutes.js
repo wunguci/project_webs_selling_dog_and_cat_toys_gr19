@@ -5,6 +5,7 @@ import {
     deleteProductFromCart,
     deleteCart,
     updateCart,
+    updateCartItemQuantity,
     getCartByUserId,
     addToCart
 } from '../controllers/cartController.js';
@@ -12,13 +13,16 @@ import {
 const router = express.Router();
 
 // Thêm sản phẩm vào giỏ hàng
-router.post('/', addToCart);
+router.post('/add', addToCart);
 
 // Lấy giỏ hàng theo user_id
 router.get('/:user_id', getCartByUserId);
 
 // Cập nhật giỏ hàng
 router.put('/:user_id', updateCart);
+
+// Cập nhật số lượng sản phẩm trong giỏ hàng
+router.put("/:userId/:itemId", updateCartItemQuantity);
 
 // Xóa sản phẩm khỏi giỏ hàng
 router.delete('/:user_id/:product_id', deleteProductFromCart);

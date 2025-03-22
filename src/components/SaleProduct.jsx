@@ -7,156 +7,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../stores/cartSlice';
 
-
-const products =  [
-  {
-  "_id": 1,
-  "name": "Bát ăn nghiêng chống gù cho chó mèo",
-  "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
-  "price": 45000,
-  "category": {
-    "name": "Shop cho chó",
-    "description": "Bát ăn"
-  },
-  "stock": 20,
-  "sold": 10,
-  "images": [
-    "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/cc3a9b0c-02fb-4d77-9d94-38043e3cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/ef0ba1ee-5367-4413-9254-9d4fb013e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
-  ],
-  "__v": 0
-},
-{
-  "_id": 2,
-  "name": "Bát ăn nghiêng chống gù cho chó mèo",
-  "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
-  "price": 45000,
-  "category": {
-    "name": "Shop cho chó",
-    "description": "Bát ăn"
-  },
-  "stock": 20,
-  "sold": 10,
-  "images": [
-    "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/c…cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/e…3e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
-  ],
-  "__v": 0
-},
-{
-  "_id": 3,
-  "name": "Bát ăn nghiêng chống gù cho chó mèo",
-  "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
-  "price": 45000,
-  "category": {
-    "name": "Shop cho chó",
-    "description": "Bát ăn"
-  },
-  "stock": 20,
-  "sold": 10,
-  "images": [
-    "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/c…cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/e…3e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
-  ],
-  "__v": 0
-},
-{
-  "_id": 4,
-  "name": "Bát ăn nghiêng chống gù cho chó mèo",
-  "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
-  "price": 45000,
-  "category": {
-    "name": "Shop cho chó",
-    "description": "Bát ăn"
-  },
-  "stock": 20,
-  "sold": 10,
-  "images": [
-    "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/c…cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/e…3e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
-  ],
-  "__v": 0
-},
-{
-  "_id": 5,
-  "name": "Bát ăn nghiêng chống gù cho chó mèo",
-  "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
-  "price": 45000,
-  "category": {
-    "name": "Shop cho chó",
-    "description": "Bát ăn"
-  },
-  "stock": 20,
-  "sold": 10,
-  "images": [
-    "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/c…cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/e…3e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
-  ],
-  "__v": 0
-},
-{
-  "_id": 6,
-  "name": "Bát ăn nghiêng chống gù cho chó mèo",
-  "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
-  "price": 45000,
-  "category": {
-    "name": "Shop cho chó",
-    "description": "Bát ăn"
-  },
-  "stock": 20,
-  "sold": 10,
-  "images": [
-    "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/c…cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/e…3e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
-  ],
-  "__v": 0
-},
-{
-  "_id": 7,
-  "name": "Bát ăn nghiêng chống gù cho chó mèo",
-  "description": "Đối với các bé trưởng thành, bát thức ăn bệt gây tác hại mỏi xương cổ, ảnh hương xương sống. Quá trình nhai nuốt cũng không hiệu quả do phải cúi thấp. Bát thức ăn nâng cao và điều chỉnh được độ nghiêng 15 độ là giải pháp an toàn cho vật nuôi. Tư thế thoải mái, dễ chịu khi nhai nuốt sẽ làm vật nuôi dễ dàng hấp thụ thức ăn. Tránh tác động xấu về lâu dài lên hệ cơ xương và tiêu hóa",
-  "price": 45000,
-  "category": {
-    "name": "Shop cho chó",
-    "description": "Bát ăn"
-  },
-  "stock": 20,
-  "sold": 10,
-  "images": [
-    "https://product.hstatic.net/200000521195/product/cc7ab594-27c0-41b4-b35f-dac71034e395_84ce728c1e344bd785ca78e2f686e237_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/d06520e7-5981-4317-bf4d-8083ba5680b9_6f3d0e13c40e4f3393001bb2d20c997e_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/c…cf497_8bb7b957c5be4b38bf9c26de21eae461_small.jpeg",
-    "https://product.hstatic.net/200000521195/product/e…3e4ef_6bb710948d0144488e9a245d5f19209d_small.jpeg"
-  ],
-  "__v": 0
-}
-]
-
 function SaleProduct({productSale}) {
 
   const CustomPrevArrow = (props) => {
     const { onClick } = props;
     return (
-      <MdOutlineArrowBackIos className="absolute top-1/2 -left-5 -translate-y-1/2 z-10 hover:cursor-pointer" size={30} onClick={onClick} />
+      <MdOutlineArrowBackIos className="absolute top-1/2 text-white -left-5 -translate-y-1/2 z-10 hover:cursor-pointer" size={30} onClick={onClick} />
     );
   };
 
   const CustomNextArrow = (props) => {
     const { onClick } = props;
     return (
-      <MdOutlineArrowForwardIos className="absolute top-1/2 -right-5 -translate-y-1/2 hover:cursor-pointer" size={30} onClick={onClick} />
+      <MdOutlineArrowForwardIos className="absolute top-1/2 text-white -right-5 -translate-y-1/2 hover:cursor-pointer" size={30} onClick={onClick} />
     );
   };
 
@@ -219,7 +82,7 @@ function SaleProduct({productSale}) {
           productSale?.map((product, index) => (
             <div key={index} className="px-3">
               <div>
-                <div className="flex flex-col gap-1 border-1 border-[#c49a6c] rounded-[5px] overflow-hidden bg-white">
+                <div className="flex flex-col gap-1 border-1 border-[#e17100] rounded-[5px] overflow-hidden bg-white">
                   <div className="relative group hover:cursor-pointer">
                     <Link to={`/product/${product.slug}`}>
                       <img className={`hover:opacity-70 w-screen`} src={product.images[0]} alt="" />
@@ -238,7 +101,7 @@ function SaleProduct({productSale}) {
                     <span className="text-1xl text-[#c49a6c] text-start">
                       {product.price.toLocaleString('vi-VN') + '₫'}
                     </span>
-                    <button onClick={()=>handleBuyNow(product)} className='bg-[#c49a6c] border-2 border-[#c49a6c] duration-200 transition-colors hover:bg-white hover:text-[#c49a6c] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
+                    <button onClick={()=>handleBuyNow(product)} className='bg-[#e17100] border-2 border-[#e17100] duration-200 transition-colors hover:bg-white hover:text-[#e17100] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
                   </div>
                 </div>
               </div>

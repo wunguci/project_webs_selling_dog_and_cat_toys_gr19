@@ -8,50 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchCategoryBySlug } from "../stores/catetorySlice";
 
-
-// const categories = [
-//   {
-//     image: "https://file.hstatic.net/200000521195/collection/thuoc___dinh_duong-01_b86104361469466a84bd4a47032f8b97.png",
-//     title: "Thuốc và dinh dưỡng",
-//     link: "thuoc-va-dinh-duong"
-//   },
-//   {
-//     image: "https://file.hstatic.net/200000521195/collection/sua_tam-01_2e492eb398844bf49c676a64678c0cdc.png",
-//     title: "Sữa tắm & dụng cụ vệ sinh",
-//     link: "sua-tam-va-dung-cu-ve-sinh"
-//   },
-//   {
-//     image: "https://file.hstatic.net/200000521195/collection/chuong_nem_tui_van_chuyen-01_8c478a611c05450283dda864d916af07.png",
-//     title: "Chuồng, nệm & túi",
-//     link: "chuong-nem-tui"
-//   },
-//   {
-//     image: "https://file.hstatic.net/200000521195/collection/chau_cat-01_094e50e82c09499498134d589f23df53.png",
-//     title: "Chậu & cát vệ sinh",
-//     link: "chau-cat-ve-sinh"
-//   },
-//   {
-//     image: "	https://file.hstatic.net/200000521195/collection/do_choi-01_6c51b9adb01840ee9c4667da96db1541.png",
-//     title: "Đồ chơi thú cưng",
-//     link: "do-choi-thu-cung"
-//   },
-//   {
-//     image: "	https://file.hstatic.net/200000521195/collection/quan_ao-01_ccb5384888f6479da97581d369f804d2.png",
-//     title: "Thời trang thú cưng",
-//     link: "thoi-trang-thu-cung"
-//   },
-//   {
-//     image: "https://file.hstatic.net/200000521195/collection/cat_food-01_b8365c67529245b3bb3b5dcf7f8e3af3.png",
-//     title: "Thức ăn cho mèo",
-//     link: "thuc-dan-cho-meo"
-//   },
-//   {
-//     image: "https://file.hstatic.net/200000521195/collection/vong_co_day_dan-01_3218c94db3b14ef29f692b9d92b9c851.png",
-//     title: "Vòng cổ dây dắt",
-//     link: "vong-co-day-dat"
-//   }
-// ];
-
 function SliderCategory() {
 
   const navigate = useNavigate();
@@ -65,14 +21,14 @@ function SliderCategory() {
   const CustomPrevArrow = (props) => {
     const { onClick } = props;
     return (
-      <MdOutlineArrowBackIos className="absolute top-1/2 left-0 -translate-y-1/2 z-10 hover:cursor-pointer" size={30} onClick={onClick}/>
+      <MdOutlineArrowBackIos className="absolute text-[#e17100] top-1/2 left-0 -translate-y-1/2 z-10 hover:cursor-pointer" size={30} onClick={onClick}/>
     );
   };
 
   const CustomNextArrow = (props) => {
     const { onClick } = props;
     return (
-      <MdOutlineArrowForwardIos className="absolute top-1/2 right-0 -translate-y-1/2 hover:cursor-pointer" size={30} onClick={onClick}/>
+      <MdOutlineArrowForwardIos className="absolute text-[#e17100] top-1/2 right-0 -translate-y-1/2 hover:cursor-pointer" size={30} onClick={onClick}/>
     );
   };
 

@@ -7,7 +7,7 @@ const Breadcrumb = ({ links, banner }) => {
       {/* Banner */}
       <img
         src={banner || defaultBanner}
-        className="w-full h-full object-cover"
+        className="h-32 md:w-full md:h-full object-cover"
         alt="Banner"
       />
 

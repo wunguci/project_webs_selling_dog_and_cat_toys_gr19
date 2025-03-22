@@ -2,13 +2,13 @@
 import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
-import { addToCart } from "../stores/cartSlice";
 import { useDispatch } from "react-redux";
+import { useCart } from "../context/CartContext";
+import { toast } from "react-toastify";
+
 
 function DialogProduct({ open, setOpen, product }) {
   if (!open) return null;
-
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const [selectedImage, setSelectedImage] = useState(product.images[0]);
@@ -16,6 +16,8 @@ function DialogProduct({ open, setOpen, product }) {
     setSelectedImage(image.image);
   };
 
+  const { addToCart } = useCart();
+  const navigate = useNavigate()
   const [quantity, setQuantity] = useState(1);
 
   const handleDecrease = () => {
@@ -41,17 +43,28 @@ function DialogProduct({ open, setOpen, product }) {
       window.scrollTo(0, 0);
     };
   
-    const handleAddToCart = () => {
-      dispatch(addToCart({ ...product, cartQuantity: quantity }));
-      navigate("/cart")
-      window.scrollTo(0, 0);
-    };
+  const user = JSON.parse(localStorage.getItem("user"));
+  const handleAddToCart = async () => {
+    if (!user?._id) {
+      navigate("/login");
+      return;
+    }
+
+    const result = await addToCart(user._id, product._id, quantity);
+    
+    if (result.success) {
+      setOpen(false);
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex justify-center items-center z-50">
       <div className="absolute inset-0 bg-black opacity-50" onClick={() => setOpen(false)}></div>
 
-      <div className="bg-amber-50 p-6 rounded-lg shadow-lg w-[900px] relative z-10">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[900px] relative z-10">
         <IoIosCloseCircle className="size-6 absolute -top-3 -right-3 text-amber-50" onClick={()=>setOpen(false)}/>
 
         <div className="flex gap-5">

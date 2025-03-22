@@ -32,10 +32,10 @@ const Filter = () => {
   return (
     <div className=" bg-white shadow-md">
       <div className="mb-4">
-        <h2 className="bg-[#C49A6C] text-white px-3 py-2 font-semibold">DANH MỤC</h2>
+        <h2 className="bg-brown text-white px-3 py-2 font-semibold">DANH MỤC</h2>
         <div className="bg-white border rounded p-2 flex flex-col gap-2">
           {allCategory?.map((category, index) => (
-            <div key={index} className="hover:text-[#C49A6C]">
+            <div key={index} className="hover:text-[#e17100]">
               <Link to={`/categories/${category.slug}`}>{category.name}</Link>
             </div>
           ))}
@@ -43,7 +43,7 @@ const Filter = () => {
       </div>
 
       <div>
-        <h2 className="bg-[#C49A6C] text-white px-3 py-2 font-semibold">KHOẢNG GIÁ</h2>
+        <h2 className="bg-brown text-white px-3 py-2 font-semibold">KHOẢNG GIÁ</h2>
         <div className="bg-white border rounded p-2">
           {priceRanges.map((price, index) => (
             <label key={index} className="flex items-center space-x-2 py-1">
@@ -52,7 +52,7 @@ const Filter = () => {
                 value={price}
                 checked={selectedPrices.includes(price)}
                 onChange={() => handlePriceChange(price)}
-                className="accent-[#C49A6C]"
+                className="accent-[#e17100]"
               />
               <span>{price}</span>
             </label>
