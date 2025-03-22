@@ -1,32 +1,15 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
-import { Link } from "react-router-dom";
-
-const categories = [
-  {
-    image: "https://file.hstatic.net/200000521195/collection/thuoc___dinh_duong-01_b86104361469466a84bd4a47032f8b97.png",
-    title: "Thuốc và dinh dưỡng",
-    link: "thuoc-va-dinh-duong"
-  },
-  {
-    image: "https://file.hstatic.net/200000521195/collection/sua_tam-01_2e492eb398844bf49c676a64678c0cdc.png",
-    title: "Sữa tắm & dụng cụ vệ sinh",
-    link: "sua-tam-va-dung-cu-ve-sinh"
-  },
-  {
-    image: "https://file.hstatic.net/200000521195/collection/chuong_nem_tui_van_chuyen-01_8c478a611c05450283dda864d916af07.png",
-    title: "Chuồng, nệm & túi",
-    link: "chuong-nem-tui"
-  },
-  {
-    image: "https://file.hstatic.net/200000521195/collection/chau_cat-01_094e50e82c09499498134d589f23df53.png",
-    title: "Chậu & cát vệ sinh",
-    link: "chau-cat-ve-sinh"
-  }
-];
+import { Link, useNavigate } from "react-router-dom";
+import { addToCart } from "../stores/cartSlice";
+import { useDispatch } from "react-redux";
 
 function DialogProduct({ open, setOpen, product }) {
   if (!open) return null;
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const [selectedImage, setSelectedImage] = useState(product.images[0]);
   const handleImageClick = (image) => {
@@ -51,6 +34,18 @@ function DialogProduct({ open, setOpen, product }) {
       setQuantity(value);
     }
   };
+
+  const handleBuyNow = () => {
+      dispatch(addToCart({ ...product, cartQuantity: quantity }));
+      navigate("/checkout");
+      window.scrollTo(0, 0);
+    };
+  
+    const handleAddToCart = () => {
+      dispatch(addToCart({ ...product, cartQuantity: quantity }));
+      navigate("/cart")
+      window.scrollTo(0, 0);
+    };
 
   return (
     <div className="fixed inset-0 flex justify-center items-center z-50">
@@ -113,8 +108,8 @@ function DialogProduct({ open, setOpen, product }) {
                 </button>
               </div>
             </div>
-            <button className="w-60 border-2 text-white border-[#c49a6c] bg-[#c49a6c] hover:bg-transparent rounded-[5px] hover:border-[#c49a6c] hover:text-[#c49a6c] py-2 transition-colors duration-200">Thêm vào giỏ hàng</button>
-            <button className="w-60 border-2 text-white border-[#c49a6c] bg-[#c49a6c] hover:bg-transparent rounded-[5px] hover:border-[#c49a6c] hover:text-[#c49a6c] py-2 transition-colors duration-200">Mua ngay</button>
+            <button onClick={()=>handleAddToCart()} className="w-60 border-2 text-white border-[#c49a6c] bg-[#c49a6c] hover:bg-transparent rounded-[5px] hover:border-[#c49a6c] hover:text-[#c49a6c] py-2 transition-colors duration-200">Thêm vào giỏ hàng</button>
+            <button onClick={()=>handleBuyNow()} className="w-60 border-2 text-white border-[#c49a6c] bg-[#c49a6c] hover:bg-transparent rounded-[5px] hover:border-[#c49a6c] hover:text-[#c49a6c] py-2 transition-colors duration-200">Mua ngay</button>
           </div>
         </div>
         

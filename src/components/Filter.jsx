@@ -30,7 +30,7 @@ const Filter = () => {
   }, [dispatch])
 
   return (
-    <div className="w-64 bg-white shadow-md p-4">
+    <div className=" bg-white shadow-md">
       <div className="mb-4">
         <h2 className="bg-[#C49A6C] text-white px-3 py-2 font-semibold">DANH MỤC</h2>
         <div className="bg-white border rounded p-2 flex flex-col gap-2">

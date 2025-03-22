@@ -3,7 +3,7 @@ import { MdOutlineArrowBackIos, MdOutlineArrowForwardIos, MdOutlineRemoveRedEye 
 import Slider from 'react-slick'
 import { IoMdCart } from 'react-icons/io';
 import DialogProduct from './DialogProduct';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../stores/cartSlice';
 
@@ -195,6 +195,7 @@ function SaleProduct({productSale}) {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const handleAddToCart = (product) => {
     dispatch(addToCart(product))
@@ -203,6 +204,12 @@ function SaleProduct({productSale}) {
   const handleViewProduct = (product) => {
     setSelectedProduct(product)
     setOpen(true)
+  }
+
+  const handleBuyNow = (product) => {
+    dispatch(addToCart(product))
+    navigate("/cart")
+    window.scroll(0,0)
   }
 
   return (
@@ -231,7 +238,7 @@ function SaleProduct({productSale}) {
                     <span className="text-1xl text-[#c49a6c] text-start">
                       {product.price.toLocaleString('vi-VN') + '₫'}
                     </span>
-                    <button className='bg-[#c49a6c] border-2 border-[#c49a6c] duration-200 transition-colors hover:bg-white hover:text-[#c49a6c] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
+                    <button onClick={()=>handleBuyNow(product)} className='bg-[#c49a6c] border-2 border-[#c49a6c] duration-200 transition-colors hover:bg-white hover:text-[#c49a6c] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
                   </div>
                 </div>
               </div>

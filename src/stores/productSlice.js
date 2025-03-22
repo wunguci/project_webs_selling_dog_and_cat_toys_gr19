@@ -35,8 +35,10 @@ export const featchProductSale = createAsyncThunk(
 
 export const featchProductByCategoryName = createAsyncThunk(
   "products/featchProductByCategoryName", 
-  async (slug) => {
-    const response = await axiosInstance.get(`api/categories/name/${slug}`)
+  async ({slug, currentPage, limit = 8}) => {
+    console.log('currentPage: ', currentPage);
+    
+    const response = await axiosInstance.get(`api/categories/name/${slug}?page=${currentPage}&limit=${limit}`)
     return response.data
   }
 )
@@ -50,10 +52,16 @@ const productSlice = createSlice({
     productSale: [],
     productDetail: null,
     productByCateoty: [],
+    currentPage: 1,
+    totalPages: 0,
     load: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
+    }
+  },
   extraReducers: (builder) => {
 
     // All product
@@ -103,9 +111,11 @@ const productSlice = createSlice({
     })
 
     builder.addCase(featchProductByCategoryName.fulfilled, (state, action)=>{
-      state.productByCateoty = action.payload
+      state.productByCateoty = action.payload.products;
+      state.totalPages = action.payload.totalPages;
     })
   },
 });
 
-export default productSlice.reducer;
+export const { setCurrentPage, setPageSize } = productSlice.actions
+export default productSlice.reducer

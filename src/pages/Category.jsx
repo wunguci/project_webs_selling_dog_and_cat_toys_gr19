@@ -1,28 +1,53 @@
-import { Link, useParams } from 'react-router-dom'
-import MainLayout from '../layout/mainLayout'
-import image1 from '../assets/images/image1.jpg'
-import SliderCategory from '../components/SliderCategory'
-import Filter from '../components/Filter'
-import { useDispatch, useSelector } from 'react-redux'
-import Product from '../components/Product'
-import { useEffect } from 'react'
-import { featchProductByCategoryName } from '../stores/productSlice'
+import { Link, useParams } from 'react-router-dom';
+import MainLayout from '../layout/mainLayout';
+import image1 from '../assets/images/image1.jpg';
+import SliderCategory from '../components/SliderCategory';
+import Filter from '../components/Filter';
+import { useDispatch, useSelector } from 'react-redux';
+import Product from '../components/Product';
+import { useEffect } from 'react';
+import { featchProductByCategoryName, setCurrentPage } from '../stores/productSlice';
+import { Pagination } from 'antd';
 
 function Category() {
-  const { productByCateoty: products } = useSelector((state) => state.products)
-  const { slug } = useParams()
-  const dispatch = useDispatch()
+  const { productByCateoty: products, currentPage, totalPages, pageSize } = useSelector((state) => state.products);
+  const { allCategory } = useSelector(state => state.categories);
+  const { slug } = useParams();
+  const dispatch = useDispatch();
+
+  console.log(currentPage);
+  
 
   useEffect(() => {
-    dispatch(featchProductByCategoryName(slug))
-  }, [dispatch, slug])
+    dispatch(featchProductByCategoryName({slug, currentPage}));
+  }, [dispatch, slug, currentPage]);
 
-  if (!products) {
+  const handlePageChange = (page) => {
+    dispatch(setCurrentPage(page));
+  };
+
+  // if (load) {
+  //   return (
+  //     <div className="flex justify-center items-center min-h-[300px]">
+  //       <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
+  //     </div>
+  //   );
+  // }
+
+  // if (error) {
+  //   return (
+  //     <div className="flex justify-center items-center min-h-[300px]">
+  //       <h1 className="text-red-500">Đã xảy ra lỗi: {error}</h1>
+  //     </div>
+  //   );
+  // }
+
+  if (!products || !allCategory) {
     return (
       <div className="flex justify-center items-center min-h-[300px]">
         <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
       </div>
-    )
+    );
   }
 
   return (
@@ -60,10 +85,25 @@ function Category() {
               ))}
             </div>
           )}
+
+          {
+            totalPages>1?(
+              <div className='py-5'>
+                <Pagination
+                  current={currentPage}
+                  total={totalPages*10}
+                  align='center'
+                  onChange={handlePageChange}
+                />
+               </div>
+            ):""
+          }
+
+          
         </div>
       </div>
     </MainLayout>
-  )
+  );
 }
 
-export default Category
+export default Category;

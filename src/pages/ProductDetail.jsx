@@ -182,7 +182,7 @@ const ProductDetail = () => {
       </div>
       <div className="max-w-[1350px] mx-auto flex flex-col gap-5 px-5">
         <div className="flex gap-5 mt-5">
-          <div className="w-8/10 grid grid-cols-2 gap-5">
+          <div className="w-full md:w-8/10 grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="bg-white shadow-md rounded-lg p-4">
               <Swiper
                 style={{
@@ -282,7 +282,7 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
-          <div className="w-2/10 bg-white shadow-md rounded-lg overflow-hidden">
+          <div className="hidden md:block md:w-2/10 bg-white shadow-md rounded-lg overflow-hidden">
             <div className="border-b-2 border-gray-200 p-6">
               <h1 className="text-xl font-semibold text-gray-800 mb-4">Liên hệ</h1>
               <p className="text-sm text-gray-600 mb-2">

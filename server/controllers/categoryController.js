@@ -125,19 +125,46 @@ export const getCategoryByType = async (req, res) => {
 
 
 export const getProductByCatetoryName = async (req, res) => {
-  try{
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 8;
+  const skip = (page - 1) * limit;
+
+  console.log(req.query);
+  
+  
+
+  if (page < 1 || limit < 1) {
+    return res.status(400).json({ message: "Page và limit phải là số nguyên dương" });
+  }
+
+  try {
     const { slug } = req.params;
-    const categorys = await Category.find({
-      slug: { $regex: slug, $options: 'i' }
-    });
-    if (categorys===0) {
+    if (!slug) {
+      return res.status(400).json({ message: "Thiếu tham số slug" });
+    }
+
+    const categorys = await Category.find({ slug: { $regex: slug, $options: 'i' } });
+    if (categorys.length === 0) {
       return res.status(404).json({ message: "Danh mục không tồn tại" });
     }
+
     const categoryIds = categorys.map(category => category._id);
-    
-    const products = await Product.find({ category_id: { $in: categoryIds } }).populate('category_id');
-    res.status(200).json(products)
-  } catch(err) {
-    res.status(500).json({ message: err.message });
+    const [products, totalProducts] = await Promise.all([
+      Product.find({ category_id: { $in: categoryIds } })
+        .populate('category_id')
+        .skip(skip)
+        .limit(limit),
+      Product.countDocuments({ category_id: { $in: categoryIds } })
+    ]);
+
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    res.status(200).json({
+      products,
+      totalPages
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Lỗi server khi lấy danh sách sản phẩm" });
   }
 }
