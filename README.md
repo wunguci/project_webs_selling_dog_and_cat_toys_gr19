@@ -1,8 +1,63 @@
-# React + Vite
+# 🐶🐱 Pet Station Shop - Build a Website for Pet Toys
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 👥 Team Members
+- **[Tran Long Vu]** - Team Leader
+- **[Mach Ngoc Xuan]** - Member
+- **[Vo Ngoc Thuy Vy]** - Member
+- **[Phan Nguuyen Vu]** - Member
 
-Currently, two official plugins are available:
+## 🏪 Introduction to Pet Station Shop
+**Pet Station Shop** is an e-commerce website specializing in pet toys for dogs and cats. Our platform provides a seamless shopping experience, offering a variety of high-quality toys that ensure your furry friends stay happy and entertained.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 🌟 Features:
+- 🛒 Online shopping for pet toys
+- 🔎 Search and filter products
+- 🏷️ Exclusive discounts and promotions
+- ⭐ User reviews and ratings
+- 🚚 Fast and secure checkout process
+- 📦 Order tracking and history
+
+## 🛠️ Technologies Used
+
+### 🎨 Front-end
+- ⚛ **ReactJS** - Modern UI framework
+- ⚡ **Vite** - Fast development and bundling
+- 💅 **Tailwind CSS** - Utility-first CSS framework
+
+### 🗄️ Back-end
+- 🍃 **MongoDB** - NoSQL database
+- 🚀 **Express.js** - Backend framework for handling API requests
+- 🔐 **JWT Authentication** - Secure user authentication
+
+### 📦 State Management
+- 🛠 **Redux Toolkit** - Advanced state management
+- 📌 **Context API** - Lightweight state handling
+
+### 🚦 Routing
+- 🌍 **React Router** - Client-side routing for seamless navigation
+
+### 🔗 API
+- 📡 **RESTful API** - Data communication between frontend and backend
+- 🔄 **Axios** - HTTP requests handling
+
+## 📸 Screenshots
+_(Coming soon)_
+
+## 🚀 Getting Started
+```bash
+# Clone the repository
+git clone https://github.com/your-repo/pet-station-shop.git
+
+# Install dependencies
+cd pet-station-shop
+npm install
+
+# Run the development server
+npm run dev
+```
+
+## 📩 Contact
+For any inquiries or collaborations, feel free to contact us at **your-email@example.com**.
+
+---
+🐾 *Happy Shopping for Your Furry Friends!* 🐾
