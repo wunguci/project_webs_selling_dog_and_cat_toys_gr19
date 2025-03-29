@@ -42,21 +42,21 @@ function App() {
     <BrowserRouter>
       <ToastContainer />
       <CartProvider>
-      <Routes>
-        <Route path="*" element={<NotFoundPage />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/product/:slug" element={<ProductDetail />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/cart" element={<CartShop />} />
-        <Route path="/checkout" element={<CheckOut />} />
-        <Route path="/userProfile" element={<UserProfile />} />
-        <Route path="/blogs/news" element={<News />} />
-        <Route path="/blogs/news/:slug" element={<NewsDetail />} />
-        <Route path="/categories/:slug" element={<Category/>}/>
-        <Route path="/user-management" element={<UserManagement/>}/>
-      </Routes>
+        <Routes>
+          <Route path="*" element={<NotFoundPage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/product/:slug" element={<ProductDetail />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/cart" element={<CartShop />} />
+          <Route path="/checkout" element={<CheckOut />} />
+          <Route path="/userProfile" element={<UserProfile />} />
+          <Route path="/blogs/news" element={<News />} />
+          <Route path="/blogs/news/:slug" element={<NewsDetail />} />
+          <Route path="/categories/:slug" element={<Category />} />
+          <Route path="/user-management" element={<UserManagement />} />
+        </Routes>
       </CartProvider>
     </BrowserRouter>
   );
