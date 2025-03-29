@@ -35,7 +35,7 @@ const Header = () => {
     name: "",
     avatar: "",
     role: "",
-    id: ""
+    id: "",
   });
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -89,9 +89,9 @@ const Header = () => {
             name: userData.fullName,
             avatar: userData.avatar,
             role: userData.role,
-            id: userData._id
+            id: userData._id,
           });
-          
+
           if (user.role == "admin") {
             setIsAdmin(true);
           }
@@ -105,13 +105,11 @@ const Header = () => {
     fetchUserData();
   }, []);
 
-
   useEffect(() => {
     if (user?._id) {
       fetchCart(user._id);
     }
   }, [user?._id, fetchCart]);
-
 
   const fetchSearchResults = async (query) => {
     if (!query.trim()) {
@@ -134,7 +132,6 @@ const Header = () => {
     }
   };
 
-
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       if (searchTerm.trim()) {
@@ -147,7 +144,6 @@ const Header = () => {
     return () => clearTimeout(debounceTimer);
   }, [searchTerm]);
 
-
   useEffect(() => {
     const savedHistory = localStorage.getItem("searchHistory");
     if (savedHistory) {
@@ -159,22 +155,6 @@ const Header = () => {
       }
     }
   }, []);
-
-
-  // Xử lý khi người dùng click ra ngoài popup
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowPopupSearch(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
 
   // Lưu từ khóa tìm kiếm vào lịch sử
   const saveToHistory = (term) => {
@@ -189,6 +169,34 @@ const Header = () => {
     localStorage.setItem("searchHistory", JSON.stringify(newHistory));
   };
 
+  // hàm xóa lịch sử tìm kiếm
+  const handleClearHistory = () => {
+    localStorage.removeItem("searchHistory");
+    setSearchHistory([]);
+    console.log("Sau khi xóa history:", localStorage.getItem("searchHistory"));
+  };
+
+  // useEffect(() => {
+  //   console.log("Lịch sử tìm kiếm sau khi update:", searchHistory);
+  // }, [searchHistory]);
+
+  // Xử lý khi người dùng click ra ngoài popup
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target) &&
+        !event.target.closest(".popup-search-container")
+      ) {
+        setShowPopupSearch(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Đăng xuất
   const handleLogout = () => {
@@ -213,20 +221,39 @@ const Header = () => {
   };
 
   const handleSearchResultClick = (result) => {
-    saveToHistory(result.name);
-    setSearchTerm(result.name);
+    if (!result) return;
+
+    if (result.name) {
+      saveToHistory(result.name);
+      setSearchTerm(result.name);
+    }
+
+    if (
+      result.price !== undefined ||
+      (result.images && result.images.length > 0)
+    ) {
+      navigate(`/product/${result.slug}`);
+    } else if (result.category_id && result.category_id.slug) {
+      navigate(`/categories/${result.category_id.slug}`);
+    } else if (result.slug) {
+      navigate(`/categories/${result.slug}`);
+    }
+
     setShowPopupSearch(false);
-    navigate(
-      result.type === "product"
-        ? `/products/${result.slug}`
-        : `/categories/${result.slug}`
-    );
   };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter" && searchTerm.trim()) {
+      handleSearch(searchTerm);
+    }
+  };
+
 
   const handleHistoryItemClick = (term) => {
     setSearchTerm(term);
     fetchSearchResults(term);
   };
+
 
   const menuOptionsCategories = categories.map((category) => ({
     label: category.name,
@@ -346,6 +373,7 @@ const Header = () => {
                 className="w-full px-4 py-2 border-brown rounded-l-full focus:outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
                 onFocus={() => setShowPopupSearch(true)}
               />
               <Link to="/search" className="">
@@ -362,6 +390,7 @@ const Header = () => {
                   searchHistory={searchHistory}
                   onSearch={handleSearchResultClick}
                   onHistoryItemClick={handleHistoryItemClick}
+                  onClearHistory={handleClearHistory}
                 />
               )}
             </div>
@@ -432,7 +461,6 @@ const Header = () => {
               )}
               {/* cart */}
               <CartButton idUser={user.id} />
-
             </div>
           </>
         )}
@@ -462,9 +490,10 @@ const Header = () => {
               <input
                 type="text"
                 placeholder="Nhập từ khóa tìm kiếm"
-                className="w-full px-4 py-2 border-brown rounded-full focus:outline-none"
+                className="w-full px-4 py-2 border-brown rounded-l-full focus:outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
                 onFocus={() => setShowPopupSearch(true)}
               />
               <button
@@ -480,6 +509,7 @@ const Header = () => {
                 searchHistory={searchHistory}
                 onSearch={handleSearchResultClick}
                 onHistoryItemClick={handleHistoryItemClick}
+                onClearHistory={handleClearHistory}
               />
             )}
           </li>
