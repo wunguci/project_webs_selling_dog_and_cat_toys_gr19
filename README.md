@@ -46,10 +46,10 @@ _(Coming soon)_
 ## 🚀 Getting Started
 ```bash
 # Clone the repository
-git clone https://github.com/your-repo/pet-station-shop.git
+git clone [https://github.com/your-repo/pet-station-shop.git](https://github.com/penguinguci/project_webs_selling_dog_and_cat_toys_gr19)
 
 # Install dependencies
-cd pet-station-shop
+cd project_webs_selling_dog_and_cat_toys_gr19
 npm install
 
 # Run the development server
