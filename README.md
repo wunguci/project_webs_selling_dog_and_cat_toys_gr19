@@ -57,7 +57,7 @@ npm run dev
 ```
 
 ## 📩 Contact
-For any inquiries or collaborations, feel free to contact us at **your-email@example.com**.
+For any inquiries or collaborations, feel free to contact us at **vutkd23405@gmail.com**.
 
 ---
 🐾 *Happy Shopping for Your Furry Friends!* 🐾
