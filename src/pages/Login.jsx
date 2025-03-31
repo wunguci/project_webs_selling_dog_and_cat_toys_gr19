@@ -40,9 +40,9 @@ const Login = () => {
       ...prevData,
       [name]: value,
     }));
-    setErrors((preErros) => ({
-      ...preErros,
-      [name]: null, // xóa lỗi khi người dùng bắt đầu nhập lại
+    setErrors((preErrors) => ({
+      ...preErrors,
+      [name]: null,
     }));
   };
 
@@ -64,19 +64,6 @@ const Login = () => {
 
     return newErrors;
   };
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const data = await axiosInstance.get("/api/users");
-        console.log("All users:", data);
-      } catch (err) {
-        console.error("Error fetching users:", err);
-      }
-    };
-
-    fetchUsers();
-  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -112,16 +99,34 @@ const Login = () => {
       }, 2000);
     } catch (err) {
       console.error("API Error:", err.response?.data || err.message);
-      // Kiểm tra mã lỗi từ phản hồi
-    if (err.response && err.response.status === 401) {
-      setErrors({
-        general: "Số điện thoại hoặc mật khẩu không chính xác.",
-      });
-    } else {
-      setErrors({
-        general: err.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.",
-      });
+      if (err.response && err.response.status === 401) {
+        setErrors({
+          general: "Số điện thoại hoặc mật khẩu không chính xác.",
+        });
+      } else {
+        setErrors({
+          general:
+            err.response?.data?.message ||
+            "Đã có lỗi xảy ra. Vui lòng thử lại.",
+        });
+      }
     }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) return;
+
+      await axiosInstance.post("/api/users/logout", { userId: user._id });
+      localStorage.removeItem("user");
+      toast.success("Đăng xuất thành công!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (err) {
+      console.error("Logout Error:", err.response?.data || err.message);
+      toast.error("Đăng xuất thất bại!");
     }
   };
 
@@ -137,7 +142,6 @@ const Login = () => {
           <h1 className="text-2xl font-semibold text-center mb-4">
             Đăng nhập với
           </h1>
-          {/* social login */}
           <div className="flex justify-center gap-4 mb-6">
             <button className="flex items-center gap-2 bg-gray-100 px-6 py-3 rounded-md hover:bg-gray-200 shadow-sm cursor-pointer">
               <FcGoogle className="text-4xl" />
@@ -153,14 +157,14 @@ const Login = () => {
             <span className="mx-4 text-gray-500">hoặc</span>
             <hr className="flex-grow border-gray-300" />
           </div>
-          {
-            errors.general && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-10" role="alert">
-                {errors.general}
-              </div>
-            )
-          }
-          {/* form */}
+          {errors.general && (
+            <div
+              className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-10"
+              role="alert"
+            >
+              {errors.general}
+            </div>
+          )}
           <form onSubmit={handleLogin}>
             <div className="space-y-6">
               <div className="input-container">
@@ -203,7 +207,7 @@ const Login = () => {
               Đăng nhập
             </button>
           </form>
-
+          
           <p className="text-center text-gray-600 mt-6">
             Bạn chưa có tài khoản?{" "}
             <Link to="/register" className="text-brown font-semibold">

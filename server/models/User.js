@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema({
   avatar: { type: String },
   gender: { type: Boolean, default: false },
   address: { type: String },
+  status: { type: String, default: 'Inactive', enum: ['Active', 'Inactive'] }, 
+  lastActive: { type: Date, default: null }, 
 }, { collection: 'users' });
 
 const User = mongoose.model('User', userSchema);

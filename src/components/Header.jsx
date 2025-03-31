@@ -23,6 +23,7 @@ import PopupSearch from "./PopupSearch";
 import axios from "axios";
 import CartButton from "./CartButton";
 import { useCart } from "../context/CartContext";
+import { toast } from "react-toastify"; // Thêm toast để thông báo
 
 const Header = () => {
   const { fetchCart } = useCart();
@@ -58,11 +59,10 @@ const Header = () => {
   }, []);
 
   const convertBase64ToImage = (base64) => {
-    if (!base64) return "/avarar.png";
+    if (!base64) return "/avatar.png";
     return `data:image/jpeg;base64,${base64}`;
   };
 
-  // tetch danh mục sản phẩm từ API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -92,7 +92,7 @@ const Header = () => {
             id: userData._id,
           });
 
-          if (user.role == "admin") {
+          if (userData.role === "admin") {
             setIsAdmin(true);
           }
 
@@ -106,10 +106,10 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    if (user?._id) {
-      fetchCart(user._id);
+    if (user?.id) {
+      fetchCart(user.id);
     }
-  }, [user?._id, fetchCart]);
+  }, [user?.id, fetchCart]);
 
   const fetchSearchResults = async (query) => {
     if (!query.trim()) {
@@ -156,7 +156,6 @@ const Header = () => {
     }
   }, []);
 
-  // Lưu từ khóa tìm kiếm vào lịch sử
   const saveToHistory = (term) => {
     if (!term.trim()) return;
 
@@ -169,18 +168,11 @@ const Header = () => {
     localStorage.setItem("searchHistory", JSON.stringify(newHistory));
   };
 
-  // hàm xóa lịch sử tìm kiếm
   const handleClearHistory = () => {
     localStorage.removeItem("searchHistory");
     setSearchHistory([]);
-    console.log("Sau khi xóa history:", localStorage.getItem("searchHistory"));
   };
 
-  // useEffect(() => {
-  //   console.log("Lịch sử tìm kiếm sau khi update:", searchHistory);
-  // }, [searchHistory]);
-
-  // Xử lý khi người dùng click ra ngoài popup
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -198,19 +190,35 @@ const Header = () => {
     };
   }, []);
 
-  // Đăng xuất
-  const handleLogout = () => {
+  // Đăng xuất với cập nhật trạng thái trong backend
+  const handleLogout = async () => {
     setIsLoggingOut(true);
-    localStorage.removeItem("user");
-    setUser({ name: "", avatar: "", id: "" });
-    setLoggedIn(false);
-    setTimeout(() => {
-      navigate("/");
-      setIsLoggingOut(false); // tắt loading sau khi chuyển hướng
-    }, 2000);
+    try {
+      const userData = JSON.parse(localStorage.getItem("user"));
+      if (userData && userData._id) {
+        // Gọi API để cập nhật trạng thái
+        await axiosInstance.post("/api/users/logout", { userId: userData._id });
+      }
+
+      // Xóa dữ liệu localStorage và reset state
+      localStorage.removeItem("user");
+      setUser({ name: "", avatar: "", role: "", id: "" });
+      setLoggedIn(false);
+      setIsAdmin(false);
+
+      // Chuyển hướng sau khi đăng xuất
+      setTimeout(() => {
+        toast.success("Đăng xuất thành công!"); // Thông báo thành công
+        navigate("/");
+        setIsLoggingOut(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Logout Error:", err.response?.data || err.message);
+      toast.error("Đăng xuất thất bại. Vui lòng thử lại!"); // Thông báo lỗi
+      setIsLoggingOut(false);
+    }
   };
 
-  // Tìm kiếm
   const handleSearch = (term) => {
     if (!term.trim()) return;
 
@@ -248,12 +256,10 @@ const Header = () => {
     }
   };
 
-
   const handleHistoryItemClick = (term) => {
     setSearchTerm(term);
     fetchSearchResults(term);
   };
-
 
   const menuOptionsCategories = categories.map((category) => ({
     label: category.name,
@@ -325,7 +331,6 @@ const Header = () => {
     },
   ];
 
-  const [isHovered, setIsHovered] = useState(false);
   return (
     <header className="bg-white shadow-md">
       <LoadingOverlay isVisible={isLoggingOut} />
@@ -347,11 +352,9 @@ const Header = () => {
           </div>
         </div>
 
-        {/* mobile menu button & cart*/}
+        {/* mobile menu button & cart */}
         <div className="flex items-center space-x-4 md:hidden ml-auto">
-          {/* cart */}
           <CartButton idUser={user.id} />
-          {/* menu button */}
           <button
             className="md:hidden text-gray-700 focus:outline-none ml-auto cursor-pointer relative"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -419,31 +422,28 @@ const Header = () => {
                     menuType="menuOptionsUser"
                   />
                 ) : (
-                  <>
-                    <PopupMenu
-                      trigger={
-                        <div className="flex items-center space-x-2 cursor-pointer">
-                          <img
-                            src={user.avatar}
-                            alt="User avatar"
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
-                          <span
-                            className="text-gray-700 text-sm font-medium text-brown-hover"
-                            style={{ fontSize: "1.1rem" }}
-                          >
-                            {user.name}
-                          </span>
-                        </div>
-                      }
-                      options={menuOptionsUser}
-                      menuType="menuOptionsUser"
-                    />
-                  </>
+                  <PopupMenu
+                    trigger={
+                      <div className="flex items-center space-x-2 cursor-pointer">
+                        <img
+                          src={user.avatar}
+                          alt="User avatar"
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <span
+                          className="text-gray-700 text-sm font-medium text-brown-hover"
+                          style={{ fontSize: "1.1rem" }}
+                        >
+                          {user.name}
+                        </span>
+                      </div>
+                    }
+                    options={menuOptionsUser}
+                    menuType="menuOptionsUser"
+                  />
                 )
               ) : (
                 <>
-                  {/* đăng ký, đăng nhập  */}
                   <Link
                     to="/register"
                     className="text-gray-700 text-sm text-brown-hover"
@@ -459,7 +459,6 @@ const Header = () => {
                   </Link>
                 </>
               )}
-              {/* cart */}
               <CartButton idUser={user.id} />
             </div>
           </>
@@ -594,7 +593,6 @@ const Header = () => {
       {/* Navigation Bar */}
       <nav className={`border-none ${isMobile ? "hidden" : ""}`}>
         <div className="container mx-auto flex flex-wrap items-center justify-evenly px-4 py-2 lg:px-16">
-          {/* Danh mục sản phẩm */}
           <div className="relative group">
             <PopupMenu
               trigger={
@@ -610,7 +608,6 @@ const Header = () => {
             />
           </div>
 
-          {/* Links */}
           <div className="hidden lg:flex space-x-8">
             <HoverPopupMenu
               trigger={
@@ -648,7 +645,6 @@ const Header = () => {
             </a>
           </div>
 
-          {/* Hotline */}
           <div className="flex items-center space-x-2 mt-4 lg:mt-0">
             <FaPhone className="text-lg text-brown" />
             <span className="font-medium">
