@@ -13,7 +13,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import LoadingOverlay from "../components/LoadingOverlay";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import Modal from "../components/Modal";
@@ -75,15 +74,12 @@ const UserProfile = () => {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-      // hour: "2-digit",
-      // minute: "2-digit",
     });
   };
 
   const convertBase64ToImage = (base64) => {
     return `data:image/jpeg;base64,${base64}`;
   };
-
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -94,8 +90,7 @@ const UserProfile = () => {
           return;
         }
 
-        const res = await axiosInstance.get(`/api/users/${user._id}`
-        );
+        const res = await axiosInstance.get(`/api/users/${user._id}`);
 
         const userData = res.data;
         userData.avatar = convertBase64ToImage(userData.avatar);
@@ -111,13 +106,11 @@ const UserProfile = () => {
     fetchUserData();
   }, [navigate]);
 
-
   const fetchUserOrders = async (userId) => {
     try {
       const response = await axiosInstance.get(`/api/orders?user_id=${userId}`);
       const userOrders = response.data;
 
-      // Tạo các biến theo các trạng thái
       const pendingOrders = userOrders.filter(
         (order) => order.status === "Chờ xử lý"
       );
@@ -137,13 +130,11 @@ const UserProfile = () => {
         (order) => order.status === "Đã hủy"
       );
 
-      // Tính tổng số tiền đã chi tiêu
       const totalSpent = userOrders.reduce(
         (sum, order) => sum + order.total_price,
         0
       );
 
-      // Cập nhật trạng thái đơn hàng
       setOrderStats({
         totalOrders: userOrders.length,
         pendingOrders: pendingOrders.length,
@@ -155,7 +146,6 @@ const UserProfile = () => {
         totalSpent: totalSpent,
       });
 
-      // Cập nhật danh sách đơn hàng theo trạng thái
       setPendingOrders(pendingOrders);
       setProcessingOrders(processingOrders);
       setShippingOrders(shippingOrders);
@@ -171,14 +161,28 @@ const UserProfile = () => {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsLoggingOut(true);
-    localStorage.removeItem("user");
-    setTimeout(() => {
-      navigate("/");
-      setLoggedIn(false);
+    try {
+      const userData = JSON.parse(localStorage.getItem("user"));
+      if (userData && userData._id) {
+        // Gọi API logout
+        await axiosInstance.post("/api/users/logout", { userId: userData._id });
+        toast.success("Đăng xuất thành công!");
+      }
+
+      // Xóa dữ liệu localStorage và chuyển hướng
+      localStorage.removeItem("user");
+      setTimeout(() => {
+        navigate("/");
+        setLoggedIn(false);
+        setIsLoggingOut(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Logout Error:", err.response?.data || err.message);
+      toast.error("Đăng xuất thất bại. Vui lòng thử lại!");
       setIsLoggingOut(false);
-    }, 2000);
+    }
   };
 
   const handleAvatarChange = async (file) => {
@@ -194,7 +198,8 @@ const UserProfile = () => {
             avatar: avatarBinary.split(",")[1],
           };
 
-          const res = await axiosInstance.put(`/api/users/${user._id}`,
+          const res = await axiosInstance.put(
+            `/api/users/${user._id}`,
             updateUser,
             {
               headers: {
@@ -239,7 +244,8 @@ const UserProfile = () => {
   const handleUpdateProfile = async () => {
     try {
       const storedUser = JSON.parse(localStorage.getItem("user"));
-      const res = await axiosInstance.put(`/api/users/${storedUser._id}`,
+      const res = await axiosInstance.put(
+        `/api/users/${storedUser._id}`,
         {
           fullName: user.fullName,
           email: user.email,
@@ -296,9 +302,9 @@ const UserProfile = () => {
       );
       if (!confirmed) return;
 
-      const response = await axiosInstance.put(`/api/orders/${orderId}`,
-        { status: "Đã hủy" }
-      );
+      const response = await axiosInstance.put(`/api/orders/${orderId}`, {
+        status: "Đã hủy",
+      });
 
       if (response.status === 200) {
         toast.success("Đã hủy đơn hàng thành công");
@@ -312,7 +318,6 @@ const UserProfile = () => {
     }
   };
 
-  // xử lý người dùng nhấn nút tạo hóa đơn
   const hanldeGenerateInvoice = (order) => {
     generateInvoice(order, formatDisplayDate);
   };
@@ -336,8 +341,6 @@ const UserProfile = () => {
     }
   };
 
-
-
   if (loading) return <LoadingOverlay isVisible={true} />;
   if (error)
     return (
@@ -350,7 +353,6 @@ const UserProfile = () => {
       <LoadingOverlay isVisible={isLoggingOut} />
       <div className="container mx-auto p-4 flex justify-center">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-          {/* Sidebar */}
           <div className="md:col-span-1 bg-white shadow-md rounded-lg p-6">
             <div className="flex flex-col items-center">
               <img
@@ -426,9 +428,7 @@ const UserProfile = () => {
             </ul>
           </div>
 
-          {/* Main Content */}
           <div className="md:col-span-4 bg-white shadow-md rounded-lg p-6">
-            {/* Tab Navigation */}
             <div className="flex space-x-4 border-b mb-6">
               <button
                 onClick={() => handleTabChange("profile")}
@@ -461,7 +461,7 @@ const UserProfile = () => {
                 Lịch sử mua hàng
               </button>
             </div>
-            {/* Tab Content */}
+
             {activeTab === "profile" && (
               <div>
                 <h1 className="text-2xl font-bold mb-4">Thông tin cá nhân</h1>
@@ -553,13 +553,12 @@ const UserProfile = () => {
                   </div>
                   <button
                     onClick={handleUpdateProfile}
-                    className=" cursor-pointer bg-brown text-white py-2 px-4 rounded-lg bg-brown-hover"
+                    className="cursor-pointer bg-brown text-white py-2 px-4 rounded-lg bg-brown-hover"
                   >
                     Cập nhật thông tin
                   </button>
                 </div>
 
-                {/* Order Statistics Dashboard */}
                 <div className="mt-8">
                   <h2 className="text-xl font-bold mb-4">Thống kê đơn hàng</h2>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -602,7 +601,7 @@ const UserProfile = () => {
                   <div className="text-center py-8 text-gray-500">
                     <p>Bạn chưa có đơn hàng nào đang xử lý.</p>
                     <Link
-                      to="/products"
+                      to="/"
                       className="mt-4 inline-block bg-[#e17100] text-white py-2 px-4 rounded-lg hover:bg-[#d06a03]"
                     >
                       Mua sắm ngay
@@ -610,7 +609,6 @@ const UserProfile = () => {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {/* Đơn hàng chờ xử lý */}
                     {pendingOrders.length > 0 && (
                       <div>
                         <h2 className="text-xl font-bold mb-4">Chờ xử lý</h2>
@@ -698,7 +696,6 @@ const UserProfile = () => {
                       </div>
                     )}
 
-                    {/* Đơn hàng đang xử lý */}
                     {processingOrders.length > 0 && (
                       <div>
                         <h2 className="text-xl font-bold mb-4">Đang xử lý</h2>
@@ -777,7 +774,6 @@ const UserProfile = () => {
                       </div>
                     )}
 
-                    {/* Đơn hàng đang giao hàng */}
                     {shippingOrders.length > 0 && (
                       <div>
                         <h2 className="text-xl font-bold mb-4">
@@ -872,7 +868,6 @@ const UserProfile = () => {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {/* Đơn hàng đã giao hàng */}
                     {deliveredOrders.length > 0 && (
                       <div>
                         <h2 className="text-xl font-bold mb-4">Đã giao hàng</h2>
@@ -957,7 +952,6 @@ const UserProfile = () => {
                       </div>
                     )}
 
-                    {/* Đơn hàng hoàn tất */}
                     {completedOrders.length > 0 && (
                       <div>
                         <h2 className="text-xl font-bold mb-4">Hoàn tất</h2>
@@ -1042,7 +1036,6 @@ const UserProfile = () => {
                       </div>
                     )}
 
-                    {/* Đơn hàng đã hủy */}
                     {canceledOrders.length > 0 && (
                       <div>
                         <h2 className="text-xl font-bold mb-4">Đã hủy</h2>
@@ -1122,7 +1115,6 @@ const UserProfile = () => {
               </div>
             )}
 
-            {/* Order Details Modal */}
             {showOrderModal && selectedOrder && (
               <Modal onClose={() => setShowOrderModal(false)}>
                 <div className="p-6">

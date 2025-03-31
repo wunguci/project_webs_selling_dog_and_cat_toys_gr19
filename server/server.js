@@ -1,13 +1,13 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import userRoutes from './routes/userRoutes.js';
-import productRoutes from './routes/productRoutes.js';
-import categoryRoutes from './routes/categoryRoutes.js';
-import orderRoutes from './routes/orderRoutes.js';
-import dotenv from 'dotenv';
-import cartRoutes from './routes/cartRoutes.js';
-
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import userRoutes from "./routes/userRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js";
+import settingRoutes from "./routes/settingRoutes.js"; // Thêm settingRoutes
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -30,11 +30,12 @@ app.get("/api", (req, res) => {
   res.json({ message: "Welcome to the API!" });
 });
 
-app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/carts', cartRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/carts", cartRoutes);
+app.use("/api/settings", settingRoutes);
 
 // Start the server
 app.listen(PORT, () => {

@@ -18,6 +18,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Category from "./pages/Category";
 import { CartProvider } from "./context/CartContext";
+import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
 
 function App() {
   const dispatch = useDispatch();
@@ -56,6 +58,8 @@ function App() {
           <Route path="/blogs/news/:slug" element={<NewsDetail />} />
           <Route path="/categories/:slug" element={<Category />} />
           <Route path="/user-management" element={<UserManagement />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </CartProvider>
     </BrowserRouter>
