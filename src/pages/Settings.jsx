@@ -13,7 +13,7 @@ const Settings = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  // Trạng thái cài đặt
+  // trạng thái cài đặt
   const [settings, setSettings] = useState({
     notificationsEnabled: true,
     timezone: "UTC",
@@ -35,14 +35,14 @@ const Settings = () => {
         err.response?.data || err.message
       );
       setCurrentUser({
-        fullName: "Admin User",
-        email: "admin@example.com",
+        fullName: "",
+        email: "",
         avatar: "",
       });
     }
   }, []);
 
-  // Fetch settings từ server
+  // fetch settings từ server
   const fetchSettings = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -62,12 +62,12 @@ const Settings = () => {
     fetchSettings();
   }, [fetchCurrentUser, fetchSettings]);
 
-  // Handle settings change
+  // change
   const handleSettingsChange = (key, value) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
   };
-
-  // Save settings
+  
+  // save
   const handleSaveSettings = async () => {
     try {
       await axiosInstance.put("api/settings", settings);
@@ -101,10 +101,10 @@ const Settings = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                  Settings
+                  Cài đặt
                 </h2>
                 <p className="text-gray-600 dark:text-gray-600 mt-1">
-                  Configure system settings
+                  Cấu hình cài đặt hệ thống
                 </p>
               </div>
               <button
@@ -112,7 +112,7 @@ const Settings = () => {
                 className="bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 flex items-center shadow-sm transition-colors mt-4 md:mt-0"
               >
                 <Save size={18} className="mr-2" />
-                Save Settings
+                Lưu cài đặt
               </button>
             </div>
 
@@ -129,7 +129,7 @@ const Settings = () => {
                     onClick={fetchSettings}
                     className="mt-4 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 cursor-pointer transition-colors"
                   >
-                    Retry
+                    Thử lại
                   </button>
                 </div>
               ) : (
@@ -137,12 +137,12 @@ const Settings = () => {
                   {/* General Settings */}
                   <div className="mb-8">
                     <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-600 mb-4">
-                      General Settings
+                      Cài đặt chung
                     </h3>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <label className="text-gray-700 dark:text-gray-500">
-                          Enable Notifications
+                          Bật thông báo
                         </label>
                         <input
                           type="checkbox"
@@ -158,7 +158,7 @@ const Settings = () => {
                       </div>
                       <div className="flex items-center justify-between">
                         <label className="text-gray-700 dark:text-gray-500">
-                          Email Notifications
+                          Thông báo qua Email
                         </label>
                         <input
                           type="checkbox"
@@ -174,7 +174,7 @@ const Settings = () => {
                       </div>
                       <div className="flex items-center justify-between">
                         <label className="text-gray-700 dark:text-gray-500">
-                          Maintenance Mode
+                          Chế độ bảo trì
                         </label>
                         <input
                           type="checkbox"
@@ -194,7 +194,7 @@ const Settings = () => {
                   {/* Timezone Settings */}
                   <div className="mb-8">
                     <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-600 mb-4">
-                      Timezone
+                      Múi giờ
                     </h3>
                     <select
                       value={settings.timezone}
@@ -210,14 +210,13 @@ const Settings = () => {
                     </select>
                   </div>
 
-                  {/* Additional Settings (có thể mở rộng) */}
+                  {/* Additional Settings (có thể mở  rộng) */}
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-600 mb-4">
-                      Advanced Settings
+                      Cài đặt nâng cao
                     </h3>
                     <p className="text-gray-600 dark:text-gray-500">
-                      More settings can be added here (e.g., API keys, backup
-                      options).
+                      Đang phát triển thêm...
                     </p>
                   </div>
                 </div>
