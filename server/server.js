@@ -6,7 +6,8 @@ import productRoutes from "./routes/productRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
-import settingRoutes from "./routes/settingRoutes.js"; // Thêm settingRoutes
+import settingRoutes from "./routes/settingRoutes.js"; 
+import dashboadRoutes from "./routes/dashboardRoutes.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/settings", settingRoutes);
+app.use("/api/dashboard", dashboadRoutes);
 
 // Start the server
 app.listen(PORT, () => {

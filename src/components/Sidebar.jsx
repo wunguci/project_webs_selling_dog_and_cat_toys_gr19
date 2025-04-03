@@ -101,7 +101,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, currentUser }) => {
           )}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="sidebar-toggle-btn"
+            className="sidebar-toggle-btn cursor-pointer"
           >
             {sidebarOpen ? <FaChevronLeft /> : <FaChevronRight />}
           </button>

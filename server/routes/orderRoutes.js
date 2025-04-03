@@ -5,6 +5,8 @@ import {
     getOrderById,
     updateOrder,
     deleteOrder,
+    getOrderStats,
+    getRecentOrders
 } from "../controllers/orderController.js";
 
 const router = express.Router();
@@ -14,6 +16,12 @@ router.post("/", createOrder);
 
 // Lấy tất cả đơn hàng
 router.get("/", getOrders);
+
+// Lấy thống kê đơn hàng
+router.get("/stats", getOrderStats);
+
+// Lấy đơn hàng gần đây
+router.get("/recent", getRecentOrders);
 
 // Lấy đơn hàng theo ID
 router.get("/:id", getOrderById);

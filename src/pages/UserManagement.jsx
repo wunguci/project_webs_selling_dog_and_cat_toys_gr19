@@ -8,7 +8,7 @@ import Modal from "../components/Modal";
 import UserForm from "../components/UserForm";
 import axiosInstance from "../utils/axiosInstance";
 import LoadingSpinner from "../components/LoadingSpinner";
-import SearchAndFilter from "../components/SearchAndFilter"; // Đổi tên từ SearchAndFilters thành SearchAndFilter
+import SearchAndFilter from "../components/SearchAndFilter";
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
 import { toast } from "react-toastify";
 
@@ -95,7 +95,7 @@ const UserManagement = () => {
       setIsLoading(true);
       const params = {};
       if (searchTerm) params.searchTerm = searchTerm;
-      if (statusFilter !== "all") params.status = statusFilter; // Gửi "Active" hoặc "Inactive"
+      if (statusFilter !== "all") params.status = statusFilter; 
       if (roleFilter !== "all") params.role = roleFilter;
 
       const response = await axiosInstance.get("api/users/search", { params });
@@ -104,7 +104,7 @@ const UserManagement = () => {
         : [];
       setUsers(usersData);
       setFilteredUsers(usersData);
-      setTotalPages(1); // Khi search, không phân trang
+      setTotalPages(1); 
       setCurrentPage(1);
 
       setStats({
@@ -260,24 +260,24 @@ const UserManagement = () => {
             {currentView === "list" && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="p-4 rounded-lg shadow-sm card bg-white dark:bg-gray-800">
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Total Users
+                  <p className="text-gray-800 dark:text-gray-800">
+                    Tổng Người Dùng
                   </p>
-                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-800">
                     {stats.total}
                   </p>
                 </div>
                 <div className="p-4 rounded-lg shadow-sm card bg-white dark:bg-gray-800">
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Active Users
+                  <p className="text-gray-800 dark:text-gray-800">
+                    Người Dùng Hoạt Động
                   </p>
                   <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                     {stats.active}
                   </p>
                 </div>
                 <div className="p-4 rounded-lg shadow-sm card bg-white dark:bg-gray-800">
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Inactive Users
+                  <p className="text-gray-800 dark:text-gray-800">
+                    Người Dùng Không Hoạt Động
                   </p>
                   <p className="text-2xl font-bold text-red-600 dark:text-red-400">
                     {stats.inactive}
@@ -288,12 +288,14 @@ const UserManagement = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                  {currentView === "list" ? "User List" : "User Details"}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300 mt-1">
                   {currentView === "list"
-                    ? "Manage all system users"
-                    : "View and edit user details"}
+                    ? "Danh sách người dùng"
+                    : "Chi tiết người dùng"}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-600 mt-1">
+                  {currentView === "list"
+                    ? "Quản lý tất cả người dùng hệ thống"
+                    : "Xem và chỉnh sửa thông tin chi tiết của người dùng"}
                 </p>
               </div>
               {currentView === "list" && (
@@ -303,11 +305,11 @@ const UserManagement = () => {
                     className="bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 flex items-center shadow-sm transition-colors"
                   >
                     <UserPlus size={18} className="mr-2" />
-                    Add User
+                    Thêm người dùng
                   </button>
                   <button
                     onClick={exportUsersToCSV}
-                    className="bg-gray-600 text-white px-4 py-2.5 rounded-lg hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center shadow-sm transition-colors"
+                    className="bg-gray-600 text-white px-4 py-2.5 rounded-lg hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center shadow-sm transition-colors cursor-pointer"
                   >
                     <Download size={18} className="mr-2" />
                     Export CSV
@@ -347,7 +349,7 @@ const UserManagement = () => {
                     }
                     className="mt-4 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100"
                   >
-                    Retry
+                    Thử lại
                   </button>
                 </div>
               ) : currentView === "list" ? (
@@ -356,13 +358,13 @@ const UserManagement = () => {
                     <div className="text-lg font-medium text-gray-800 dark:text-gray-100">
                       {filteredUsers.length >= 0
                         ? `${filteredUsers.length} ${
-                            filteredUsers.length === 1 ? "User" : "Users"
-                          } Found`
-                        : "Loading users..."}
+                            filteredUsers.length === 1 ? "người dùng" : "người dùng"
+                          } được tìm thấy`
+                        : "Đang tải danh sách người dùng..."}
                     </div>
                     {!isSearching && (
                       <div className="text-sm text-gray-500 dark:text-gray-300">
-                        Page {currentPage} of {totalPages}
+                        Trang {currentPage} / {totalPages}
                       </div>
                     )}
                   </div>
@@ -374,16 +376,17 @@ const UserManagement = () => {
                         className="mx-auto h-40 mb-4"
                       />
                       <h3 className="text-lg font-medium text-gray-800 dark:text-gray-100 mb-1">
-                        No users found
+                        Không tìm thấy người dùng
                       </h3>
                       <p className="text-gray-600 dark:text-gray-300 mb-4">
-                        Try adjusting your search or filters
+                        Hãy thử điều chỉnh tìm kiếm hoặc bộ lọc của bạn
                       </p>
                       <button
                         onClick={addNewUser}
                         className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
                       >
-                        Add New User
+                        <UserPlus size={18} className="mr-2" />
+                        Thêm người dùng
                       </button>
                     </div>
                   ) : (
@@ -407,7 +410,7 @@ const UserManagement = () => {
                             disabled={currentPage === 1}
                             className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg disabled:opacity-50 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100"
                           >
-                            Previous
+                            Trước
                           </button>
                           <div className="flex gap-2">
                             {Array.from(
@@ -432,7 +435,7 @@ const UserManagement = () => {
                             disabled={currentPage === totalPages}
                             className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg disabled:opacity-50 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100"
                           >
-                            Next
+                            Tiếp
                           </button>
                         </div>
                       )}

@@ -80,3 +80,82 @@ export const deleteOrder = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+export const getOrderStats = async (req, res) => {
+    try {
+        const { timeFilter = "7days" } = req.query;
+        let startDate = new Date();
+        
+        switch (timeFilter) {
+            case "7days":
+                startDate.setDate(startDate.getDate() - 7);
+                break;
+            case "30days":
+                startDate.setDate(startDate.getDate() - 30);
+                break;
+            case "90days":
+                startDate.setDate(startDate.getDate() - 90);
+                break;
+            case "year":
+                startDate = new Date(startDate.getFullYear(), 0, 1); 
+                break;
+            case "all":
+                startDate = new Date(2000, 0, 1); 
+                break;
+            default:
+                startDate.setDate(startDate.getDate() - 7);
+        }
+
+        const orders = await Order.find({
+            order_date: { $gte: startDate }
+        });
+
+        const totalRevenue = orders.reduce((sum, order) => sum + order.total_price, 0);
+        
+        const monthlyStartDate = new Date();
+        monthlyStartDate.setDate(monthlyStartDate.getDate() - 30);
+        const monthlyRevenue = orders
+            .filter(order => new Date(order.order_date) >= monthlyStartDate)
+            .reduce((sum, order) => sum + order.total_price, 0);
+       
+        const weeklyStartDate = new Date();
+        weeklyStartDate.setDate(weeklyStartDate.getDate() - 7);
+        const weeklyRevenue = orders
+            .filter(order => new Date(order.order_date) >= weeklyStartDate)
+            .reduce((sum, order) => sum + order.total_price, 0);
+        
+        const averageOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0;
+
+        res.status(200).json({
+            totalRevenue,
+            monthlyRevenue,
+            weeklyRevenue,
+            averageOrderValue
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const getRecentOrders = async (req, res) => {
+    try {
+        const { limit = 5 } = req.query;
+        
+        const orders = await Order.find()
+            .sort({ order_date: -1 })
+            .limit(parseInt(limit))
+            .populate('user_id', 'fullName');
+        
+        const formattedOrders = orders.map(order => ({
+            id: order._id,
+            customer: order.user_id ? order.user_id.fullName : "Unknown Customer",
+            total: order.total_price,
+            status: order.status,
+            date: order.order_date
+        }));
+        
+        res.status(200).json(formattedOrders);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

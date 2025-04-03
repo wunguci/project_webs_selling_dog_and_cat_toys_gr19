@@ -39,7 +39,7 @@ const UserTable = ({ users, onView, onEdit, onDelete }) => (
                 <div className="flex items-center space-x-3">
                   <UserAvatar src={user.avatar} alt={user.fullName} />
                   <div>
-                    <div className="font-medium">{user.fullName}</div>
+                    <div className="font-medium dark:text-gray-400">{user.fullName}</div>
                     <div className="text-xs text-gray-500">{user.gender}</div>
                   </div>
                 </div>
