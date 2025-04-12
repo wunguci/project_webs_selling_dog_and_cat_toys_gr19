@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MainLayout from "../layout/mainLayout";
 import Breadcrumb from "../components/Breadcrumb";
-import { useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
 import "./page.scss";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 const CheckOut = () => {
   const [deliveryOption, setDeliveryOption] = useState("delivery");
@@ -10,8 +13,13 @@ const CheckOut = () => {
   const [shippingCost, setShippingCost] = useState(0);
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedMethod, setSelectedMethod] = useState("cod");
-  const cartItems = useSelector((state) => state.cart.cartItems);
-  const subtotal = cartItems.reduce((total, item) => total + item.price, 0);
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+  const { cartItems, clearCart } = useCart();
+  const subtotal = cartItems.reduce(
+    (total, item) => total + (item.product_id?.price || 0) * item.quantity,
+    0
+  );
   const calculateTotal = () => {
     return deliveryOption === "pickup" ? subtotal : subtotal + shippingCost;
   };
@@ -98,7 +106,46 @@ const CheckOut = () => {
     }
     setShippingCost(cost);
   };
+  const validateForm = () => {
+    const newErrors = {};
 
+    if (!formData.fullName) {
+      newErrors.fullName = "Vui lòng nhập họ và tên.";
+    }
+
+    if (!formData.email) {
+      newErrors.email = "Vui lòng nhập email.";
+    } else if (
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)
+    ) {
+      newErrors.email = "Email không hợp lệ.";
+    }
+
+    if (!formData.phone) {
+      newErrors.phone = "Vui lòng nhập số điện thoại.";
+    } else if (!/^\d{10}$/.test(formData.phone)) {
+      newErrors.phone = "Số điện thoại không hợp lệ.";
+    }
+
+    if (deliveryOption === "delivery" && !formData.address) {
+      newErrors.address = "Vui lòng nhập địa chỉ.";
+    }
+    if (deliveryOption === "delivery" && !selectedProvince) {
+      newErrors.province = "Vui lòng chọn tỉnh/thành phố.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const handleValid = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      console.log("Order submitted:", {
+        ...formData,
+        deliveryOption,
+      });
+    }
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -111,12 +158,44 @@ const CheckOut = () => {
     setDeliveryOption(option);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Order submitted:", {
-      ...formData,
-      deliveryOption,
-    });
+    if (validateForm()) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        toast.error("Vui lòng đăng nhập để đặt hàng.");
+        navigate("/login");
+        return;
+      }
+
+      const orderData = {
+        ...formData,
+        user_id: user._id,
+        deliveryOption,
+        paymentMethod: selectedMethod,
+        totalPrice: calculateTotal(),
+        items: cartItems.map((item) => ({
+          product_id: item.product_id?._id || item.product_id,
+          quantity: item.quantity,
+          price: item.product_id?.price || 0,
+        })),
+        shippingCost: deliveryOption === "pickup" ? 0 : shippingCost,
+      };
+
+      try {
+        const response = await axios.post("/api/orders", orderData);
+        toast.success("Đặt hàng thành công!");
+
+        if (user._id) {
+          await clearCart(user._id);
+        }
+
+        navigate("/orders");
+      } catch (error) {
+        console.error("Error submitting order:", error);
+        toast.error("Có lỗi xảy ra khi đặt hàng.");
+      }
+    }
   };
 
   const storeLocations = [
@@ -126,28 +205,13 @@ const CheckOut = () => {
     },
   ];
 
-  const product = {
-    name: "Bát ăn nghiêng chống gù cho chó mèo",
-    color: "Màu đen",
-    price: 45000,
-    quantity: 1,
-  };
-
   const handlePaymentSelection = (method) => {
     setSelectedMethod(method);
-  };
-  const handleOrderCompletion = () => {
-    alert(
-      `Bạn đã chọn phương thức: ${
-        selectedMethod === "cod"
-          ? "Thanh toán khi giao hàng (COD)"
-          : "Chuyển khoản qua ngân hàng"
-      }`
-    );
   };
 
   return (
     <MainLayout>
+      <ToastContainer />
       <Breadcrumb items={links} />
       <div className="max-w-6xl mx-auto px-4 py-8 checkout-page">
         <h1 className="text-2xl font-bold text-gray-800 mb-2">Pet Station</h1>
@@ -173,6 +237,7 @@ const CheckOut = () => {
                   onChange={handleInputChange}
                   required
                 />
+                <p className="text-red-500 text-xs italic">{errors.fullName}</p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-4">
@@ -186,6 +251,7 @@ const CheckOut = () => {
                     onChange={handleInputChange}
                     required
                   />
+                  <p className="text-red-500 text-xs italic">{errors.email}</p>
                 </div>
                 <div className="flex-1">
                   <input
@@ -197,6 +263,7 @@ const CheckOut = () => {
                     onChange={handleInputChange}
                     required
                   />
+                  <p className="text-red-500 text-xs italic">{errors.phone}</p>
                 </div>
               </div>
 
@@ -275,6 +342,9 @@ const CheckOut = () => {
                       onChange={handleInputChange}
                       required={deliveryOption === "delivery"}
                     />
+                    <p className="text-red-500 text-xs italic">
+                      {errors.address}
+                    </p>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-4">
@@ -294,6 +364,9 @@ const CheckOut = () => {
                               </option>
                             ))}
                         </select>
+                        <p className="text-red-500 text-xs italic">
+                          {errors.province}
+                        </p>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                           <svg
                             className="fill-current h-4 w-4"
@@ -362,6 +435,7 @@ const CheckOut = () => {
                         </option>
                         <option value="hcm">TP Hồ Chí Minh</option>
                       </select>
+
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                         <svg
                           className="fill-current h-4 w-4"
@@ -461,12 +535,6 @@ const CheckOut = () => {
                   Giỏ hàng
                 </a>
               </span>
-              {/* <button
-                className="checkout-btn p-3"
-                onClick={handleOrderCompletion}
-              >
-                Hoàn tất đơn hàng
-              </button> */}
             </div>
           </div>
           {/* Right Checkout */}
@@ -479,18 +547,24 @@ const CheckOut = () => {
                   <div className="relative mr-4">
                     <div className="bg-gray-200 rounded w-16 h-16 flex items-center justify-center relative">
                       <img
-                        src={item.images[0]}
-                        alt={item.name}
+                        src={item.product_id?.images?.[0]}
+                        alt={item.product_id?.name}
                         className="h-12 w-12 object-contain"
                       />
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-sm">{item.name}</h3>
+                    <h3 className="text-sm px-1 ">{item.product_id?.name}</h3>
+                    <p className="text-gray-500 text-xs px-1">
+                      SL: {item.quantity}
+                    </p>
                   </div>
                   <div className="text-right">
-                    <span className="font-semibold">
-                      {item.price.toLocaleString()}₫
+                    <span className="font-semibold ">
+                      {(
+                        (item.product_id?.price || 0) * item.quantity
+                      ).toLocaleString()}
+                      ₫
                     </span>
                   </div>
                 </div>

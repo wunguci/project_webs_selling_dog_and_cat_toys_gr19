@@ -3,15 +3,15 @@ import { IoMdCart } from "react-icons/io";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import DialogProduct from "./DialogProduct";
 import { Link, useNavigate } from "react-router-dom";
-import {toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useCart } from "../context/CartContext";
 
-function Product({ product}) {
+function Product({ product }) {
   const [open, setOpen] = useState(false);
   // const dispatch = useDispatch();
   const { addToCart } = useCart();
   const navigate = useNavigate();
-  
+
   // const handleAddToCart = async (product) => {
   //   const user = JSON.parse(localStorage.getItem("user"));
   //   const userId = user?._id;
@@ -19,14 +19,14 @@ function Product({ product}) {
   //     alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
   //     return;
   //   }
-  
+
   //   try {
   //     const response = await axiosInstance.post("/api/carts/add", {
   //       user_id: userId,
   //       product_id: product._id,
   //       quantity: 1,
   //     });
-  
+
   //     if (response.status === 201) {
   //       toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
   //       onCartUpdate();
@@ -44,19 +44,18 @@ function Product({ product}) {
     }
 
     const result = await addToCart(user._id, product._id, 1);
-    
+
     if (result.success) {
       toast.success(result.message);
     } else {
       toast.error(result.message);
     }
   };
-  
 
   const handleBuyNow = (product) => {
-    dispatch(addToCart(product))
-    navigate("/cart")
-  }
+    dispatch(addToCart(product));
+    navigate("/cart");
+  };
   return (
     <div>
       <div className="flex flex-col gap-1 border-1 border-[#e17100] rounded-[5px] overflow-hidden">
@@ -75,22 +74,28 @@ function Product({ product}) {
             >
               <MdOutlineRemoveRedEye className="hover:text-white" size={25} />
             </button>
-            <button 
-        onClick={handleAddToCart}
+            <button
+              onClick={handleAddToCart}
               className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400"
             >
               <IoMdCart className="hover:text-white" size={25} />
             </button>
           </div>
         </div>
-        <div className='p-3 flex flex-col gap-1 justify-between h-full'>
-          <Link to={"/product/2"} className="line-clamp-1 hover:text-[#c49a6c] hover:cursor-pointer">{product.name}</Link>
+        <div className="p-3 flex flex-col gap-1 justify-between h-full">
+          <Link
+            to={"/product/2"}
+            className="line-clamp-1 hover:text-[#c49a6c] hover:cursor-pointer"
+          >
+            {product.name}
+          </Link>
           <span className="text-1xl text-[#c49a6c] text-start">
-            {product.price.toLocaleString('vi-VN') + '₫'}
+            {product.price.toLocaleString("vi-VN") + "₫"}
           </span>
           <button
             onClick={() => handleBuyNow(product)}
-            className='bg-[#e17100] text-white border-2 border-[#e17100] duration-200 transition-colors hover:bg-white hover:text-[#e17100] w-full py-2 rounded-[2px] font-medium'>
+            className="bg-[#e17100] text-white border-2 border-[#e17100] duration-200 transition-colors hover:bg-white hover:text-[#e17100] w-full py-2 rounded-[2px] font-medium"
+          >
             Mua ngay
           </button>
         </div>
