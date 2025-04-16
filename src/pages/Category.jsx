@@ -79,9 +79,9 @@ function Category() {
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {products.map((product, index) => (
-                <div key={index} className="hover:scale-105 transition-transform">
-                  <Product product={product} />
-                </div>
+                // <div key={index} className="hover:scale-105 transition-transform">
+                  <Product key={index} product={product} />
+                // </div>
               ))}
             </div>
           )}

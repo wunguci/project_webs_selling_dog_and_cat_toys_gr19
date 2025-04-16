@@ -61,7 +61,7 @@ function DialogProduct({ open, setOpen, product }) {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center z-50">
+    <div className="fixed inset-0 flex justify-center items-center z-[10000000]">
       <div className="absolute inset-0 bg-black opacity-50" onClick={() => setOpen(false)}></div>
 
       <div className="bg-white p-6 rounded-lg shadow-lg w-[900px] relative z-10">
