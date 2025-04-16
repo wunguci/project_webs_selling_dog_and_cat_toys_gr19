@@ -293,7 +293,7 @@ const ProductDetail = () => {
                     {new Intl.NumberFormat('vi-VN').format(quantity * productDetail.price)}đ
                   </span>
                   <div className="flex gap-5">
-                    <button onClick={()=>handleBuyNow(productDetail)} className="bg-amber-600 text-white w-full py-2 text-[20px] rounded-[10px] cursor-pointer border-2 hover:border-amber-600 hover:text-amber-600 hover:bg-transparent">Mua ngay</button>
+                    <button onClick={()=>handleBuyNow(productDetail)} className="bg-amber-600 text-white w-full py-2 text-[20px] rounded-[10px] cursor-pointer border-2 text-brown-hover hover:bg-transparent">Mua ngay</button>
                     <button onClick={()=>handleAddToCart(productDetail)} className="border-2 border-amber-600 w-full py-2 text-[20px] rounded-[10px] cursor-pointer hover:bg-amber-600 hover:text-white">Thêm vào giỏ hàng</button>
                   </div>
                 </div>
@@ -444,7 +444,7 @@ const ProductDetail = () => {
                           <button onClick={() => handleViewProduct(product)}  className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
                             <MdOutlineRemoveRedEye className="hover:text-white" size={25}/>
                           </button>
-                          <button onClick={()=> handleAddToCart(product)} className="bg-brown p-2 rounded-[5px] group hover:bg-gray-400">
+                          <button onClick={()=> handleAddToCart(product)} className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400 ">
                             <IoMdCart className="hover:text-white" size={25}/>
                           </button>
                         </div>
@@ -454,7 +454,7 @@ const ProductDetail = () => {
                         <span className="text-1xl text-[#c49a6c] text-start">
                           {product.price.toLocaleString('vi-VN') + '₫'}
                         </span>
-                        <button className='bg-[#e17100] border-2 border-[#e17100] duration-200 transition-colors hover:bg-white hover:text-[#e17100] w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
+                        <button className='bg-[#e17100] border-2 border-[#e17100] duration-200 transition-colors hover:bg-white text-brown-hover w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
                       </div>
                     </div>
                   </div>

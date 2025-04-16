@@ -59,7 +59,7 @@ function Product({ product}) {
   }
   return (
     <div>
-      <div className="flex flex-col gap-1 border-1 border-[#e17100] rounded-[5px] overflow-hidden">
+      <div className="flex flex-col gap-1 border-1 border-[#e17100] rounded-[5px] overflow-hidden hover:scale-103 transition-transform">
         <div className="relative group hover:cursor-pointer">
           <Link to={`/product/${product.slug}`}>
             <img
@@ -90,7 +90,8 @@ function Product({ product}) {
           </span>
           <button
             onClick={() => handleBuyNow(product)}
-            className='bg-[#e17100] text-white border-2 border-[#e17100] duration-200 transition-colors hover:bg-white hover:text-[#e17100] w-full py-2 rounded-[2px] font-medium'>
+            style={{  }}
+            className='bg-[#e17100] text-white border-2 border-[#e17100] duration-200 transition-colors hover:bg-white text-brown-hover w-full py-2 rounded-[2px] font-medium'>
             Mua ngay
           </button>
         </div>

@@ -43,6 +43,17 @@ export const featchProductByCategoryName = createAsyncThunk(
   }
 )
 
+export const featchProductFilterProduct = createAsyncThunk(
+  "products/featchProductFilterProduct", 
+  async (priceRanges) => {
+    console.log(priceRanges);
+    
+    const response = await axiosInstance.post(`/api/products/filterPrice`, { priceRanges });
+    return response.data;
+  }
+);
+
+
 
 const productSlice = createSlice({
   name: "products",
@@ -54,6 +65,7 @@ const productSlice = createSlice({
     productByCateoty: [],
     currentPage: 1,
     totalPages: 0,
+    filterPrice: [],
     load: false,
     error: null,
   },
@@ -113,6 +125,10 @@ const productSlice = createSlice({
     builder.addCase(featchProductByCategoryName.fulfilled, (state, action)=>{
       state.productByCateoty = action.payload.products;
       state.totalPages = action.payload.totalPages;
+    })
+
+    builder.addCase(featchProductFilterProduct.fulfilled, (state, action) => {
+      state.productByCateoty = action.payload
     })
   },
 });

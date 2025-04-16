@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 
 
 function DialogProduct({ open, setOpen, product }) {
+
   if (!open) return null;
   const dispatch = useDispatch()
 
@@ -19,6 +20,11 @@ function DialogProduct({ open, setOpen, product }) {
   const { addToCart } = useCart();
   const navigate = useNavigate()
   const [quantity, setQuantity] = useState(1);
+
+  const handleClick = () => {
+    navigate(`/product/${product.slug}`)
+    window.scrollTo(0, 0);
+  }
 
   const handleDecrease = () => {
     if (quantity > 1) {
@@ -95,9 +101,9 @@ function DialogProduct({ open, setOpen, product }) {
             </div>
           </div>
           <div className="w-1/2 flex flex-col gap-7">
-            <Link className="font-bold text-2xl text-[#333] hover:text-[#c49a6c] transition-colors duration-150">{product.name}</Link>
+            <Link to={`/product/${product.slug}`} className="font-bold text-2xl text-[#333] text-brown-hover transition-colors duration-150">{product.name}</Link>
             <span>Thương hiệu: Khác | Tình trạng: {product.sold === product.stock ? "Hết hàng":"Còn hàng"}</span>
-            <div className="bg-[#c49a6c] w-44 text-center p-1 skew-x-[-15deg] ml-1">
+            <div className="bg-brown w-44 text-center p-1 skew-x-[-15deg] ml-1">
               <h2 className="text-2xl text-white font-bold">
                 {new Intl.NumberFormat('vi-VN').format(quantity * product.price)}đ
               </h2>
@@ -121,8 +127,8 @@ function DialogProduct({ open, setOpen, product }) {
                 </button>
               </div>
             </div>
-            <button onClick={()=>handleAddToCart()} className="w-60 border-2 text-white border-[#c49a6c] bg-[#c49a6c] hover:bg-transparent rounded-[5px] hover:border-[#c49a6c] hover:text-[#c49a6c] py-2 transition-colors duration-200">Thêm vào giỏ hàng</button>
-            <button onClick={()=>handleBuyNow()} className="w-60 border-2 text-white border-[#c49a6c] bg-[#c49a6c] hover:bg-transparent rounded-[5px] hover:border-[#c49a6c] hover:text-[#c49a6c] py-2 transition-colors duration-200">Mua ngay</button>
+            <button onClick={()=>handleAddToCart()} className="w-60 border-2 text-white bg-brown hover:bg-white rounded-[5px] hover:border-[#d06a03] py-2 transition-colors duration-200">Thêm vào giỏ hàng</button>
+            <button onClick={()=>handleBuyNow()} className="w-60 border-2 text-white bg-brown hover:bg-white rounded-[5px] hover:border-[#d06a03] py-2 transition-colors duration-200">Mua ngay</button>
           </div>
         </div>
         

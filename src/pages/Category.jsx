@@ -67,7 +67,7 @@ function Category() {
         <SliderCategory />
       </div>
 
-      <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row gap-6 py-6">
+      <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row gap-6 py-3">
         <div className="w-full md:w-1/4">
           <Filter />
         </div>

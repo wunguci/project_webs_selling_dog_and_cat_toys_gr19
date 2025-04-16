@@ -7,6 +7,7 @@ import {
     deleteProduct,
     getProductsSale,
     searchProducts,
+    filterProductsByPrice,
 } from '../controllers/productController.js';
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router.post('/', createProduct);
 router.put('/:id', updateProduct);
 router.get('/:slug', getProductByName);
 router.delete('/:id', deleteProduct);
+router.post("/filterPrice", filterProductsByPrice)
 
 
 export default router;

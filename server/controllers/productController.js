@@ -98,3 +98,35 @@ export const searchProducts = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+
+export const filterProductsByPrice = async (req, res) => {
+  try {
+    const { priceRanges } = req.body;
+
+    if (!priceRanges || !Array.isArray(priceRanges)) {
+      return res.status(400).json({ error: 'Giá trị lọc không hợp lệ' });
+    }
+
+    const priceQueries = priceRanges.map(range => {
+      const query = {};
+      if (typeof range.min === 'number') {
+        query.$gte = range.min;
+      }
+      if (typeof range.max === 'number') {
+        query.$lte = range.max;
+      }
+      return { price: query };
+    });
+
+    const finalQuery = {
+      $or: priceQueries,
+    };
+
+    const products = await Product.find(finalQuery);
+
+    res.status(200).json(products)
+  } catch (error) {
+    console.error('Lỗi khi lọc sản phẩm:', error);
+    res.status(500).json({ error: 'Lỗi server khi lọc sản phẩm' });
+  }
+};
