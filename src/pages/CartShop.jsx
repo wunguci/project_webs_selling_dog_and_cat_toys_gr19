@@ -4,8 +4,8 @@ import MainLayout from "../layout/mainLayout";
 import Breadcrumb2 from "../components/Breadcrumb2";
 import { FaTrash } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
-import Swal from 'sweetalert2';
-import {toast } from "react-toastify";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const links = [
   { label: "Trang chủ", href: "/" },
@@ -14,7 +14,8 @@ const links = [
 
 const CartShop = () => {
   // Sử dụng CartContext để lấy dữ liệu giỏ hàng và các hàm cần thiết
-  const { cartItems, updateCartItemQuantity, removeFromCart, clearCart } = useCart();
+  const { cartItems, updateCartItemQuantity, removeFromCart, clearCart } =
+    useCart();
   const [isClearing, setIsClearing] = useState(false);
 
   // Tính tổng tiền
@@ -23,7 +24,7 @@ const CartShop = () => {
     0
   );
   const user = JSON.parse(localStorage.getItem("user"));
-  
+
   // Hàm xử lý xóa tất cả sản phẩm
   const handleClearCart = async () => {
     if (!user?._id) {
@@ -32,21 +33,21 @@ const CartShop = () => {
     }
 
     const result = await Swal.fire({
-      title: 'Bạn có chắc chắn?',
+      title: "Bạn có chắc chắn?",
       text: "Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng?",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Xác nhận',
-      cancelButtonText: 'Hủy'
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
     });
 
     if (result.isConfirmed) {
       setIsClearing(true); // Bật trạng thái loading
       const clearResult = await clearCart(user._id);
       setIsClearing(false); // Tắt trạng thái loading
-  
+
       if (!clearResult.success) {
         toast.error(clearResult.message);
       }
@@ -69,14 +70,14 @@ const CartShop = () => {
           {cartItems.length > 0 ? (
             <>
               {/* Nút Xóa Tất Cả */}
-      <div className="flex justify-end mb-4">
-        <button
-          onClick={handleClearCart} // Mở modal khi nhấn nút
-          className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors duration-200"
-        >
-          Xóa tất cả
-        </button>
-      </div>
+              <div className="flex justify-end mb-4">
+                <button
+                  onClick={handleClearCart} // Mở modal khi nhấn nút
+                  className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors duration-200"
+                >
+                  Xóa tất cả
+                </button>
+              </div>
               {/* Danh sách sản phẩm */}
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -121,7 +122,11 @@ const CartShop = () => {
                               if (item.quantity === 1) {
                                 removeFromCart(user._id, item._id);
                               } else {
-                                updateCartItemQuantity(user._id, item._id, item.quantity - 1);
+                                updateCartItemQuantity(
+                                  user._id,
+                                  item._id,
+                                  item.quantity - 1
+                                );
                               }
                             }}
                             className="px-3 py-2 text-gray-700 rounded-l-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200"
@@ -140,7 +145,11 @@ const CartShop = () => {
                               } else {
                                 const newQuantity = parseInt(value, 10);
                                 if (!isNaN(newQuantity) && newQuantity >= 1) {
-                                  updateCartItemQuantity(user._id, item._id, newQuantity);
+                                  updateCartItemQuantity(
+                                    user._id,
+                                    item._id,
+                                    newQuantity
+                                  );
                                 }
                               }
                             }}
@@ -158,7 +167,11 @@ const CartShop = () => {
                           {/* Nút Tăng */}
                           <button
                             onClick={() =>
-                              updateCartItemQuantity(user._id, item._id, item.quantity + 1)
+                              updateCartItemQuantity(
+                                user._id,
+                                item._id,
+                                item.quantity + 1
+                              )
                             }
                             className="px-3 py-2 text-gray-700 rounded-r-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200"
                           >
@@ -168,7 +181,10 @@ const CartShop = () => {
                       </td>
 
                       <td className="p-5 w-32 text-center">
-                        {((item.product_id?.price || 0) * item.quantity).toLocaleString()}đ
+                        {(
+                          (item.product_id?.price || 0) * item.quantity
+                        ).toLocaleString()}
+                        đ
                       </td>
 
                       <td className="p-5 w-16 text-center">
@@ -209,9 +225,12 @@ const CartShop = () => {
           >
             ← Tiếp tục mua hàng
           </Link>
-          <button className="bg-brown text-white py-2 px-4 rounded-lg shadow-md border-brown-hover transition">
+          <Link
+            to="/checkout"
+            className="bg-brown text-white py-2 px-4 rounded-lg shadow-md border-brown-hover transition"
+          >
             Tiến hành thanh toán →
-          </button>
+          </Link>
         </div>
       </div>
     </MainLayout>

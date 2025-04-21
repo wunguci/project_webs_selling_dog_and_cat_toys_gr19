@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MainLayout from "../layout/mainLayout";
 import Breadcrumb from "../components/Breadcrumb";
-import { useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
 import "./page.scss";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import axiosInstance from "../utils/axiosInstance";
+import boxCard from "../assets/images/box-card.png";
+import bankCard from "../assets/images/bank-card.png";
+import { CheckCheck, ChevronDown } from "lucide-react";
 
 const CheckOut = () => {
   const [deliveryOption, setDeliveryOption] = useState("delivery");
@@ -10,8 +16,13 @@ const CheckOut = () => {
   const [shippingCost, setShippingCost] = useState(0);
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedMethod, setSelectedMethod] = useState("cod");
-  const cartItems = useSelector((state) => state.cart.cartItems);
-  const subtotal = cartItems.reduce((total, item) => total + item.price, 0);
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+  const { cartItems, clearCart } = useCart();
+  const subtotal = cartItems.reduce(
+    (total, item) => total + (item.product_id?.price || 0) * item.quantity,
+    0
+  );
   const calculateTotal = () => {
     return deliveryOption === "pickup" ? subtotal : subtotal + shippingCost;
   };
@@ -98,7 +109,66 @@ const CheckOut = () => {
     }
     setShippingCost(cost);
   };
+  const validateForm = () => {
+    const newErrors = {};
 
+    // Kiểm tra họ tên
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Vui lòng nhập họ và tên.";
+    }
+
+    // Kiểm tra email
+    if (!formData.email.trim()) {
+      newErrors.email = "Vui lòng nhập email.";
+    } else if (
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)
+    ) {
+      newErrors.email = "Email không hợp lệ.";
+    }
+
+    // Kiểm tra số điện thoại
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Vui lòng nhập số điện thoại.";
+    } else if (!/^\d{10}$/.test(formData.phone)) {
+      newErrors.phone = "Số điện thoại không hợp lệ (cần đúng 10 số).";
+    }
+
+    // Kiểm tra địa chỉ nếu giao hàng tận nơi
+    if (deliveryOption === "delivery") {
+      if (!formData.address.trim()) {
+        newErrors.address = "Vui lòng nhập địa chỉ giao hàng.";
+      }
+
+      if (!selectedProvince) {
+        newErrors.province = "Vui lòng chọn tỉnh/thành phố.";
+      }
+    } else {
+      // Kiểm tra nếu là nhận tại cửa hàng
+      if (!formData.province) {
+        newErrors.province = "Vui lòng chọn chi nhánh nhận hàng.";
+      }
+    }
+
+    // Kiểm tra giỏ hàng có sản phẩm không
+    if (cartItems.length === 0) {
+      newErrors.cart = "Giỏ hàng của bạn đang trống.";
+      toast.error(
+        "Giỏ hàng của bạn đang trống, vui lòng thêm sản phẩm trước khi đặt hàng."
+      );
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const handleValid = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      console.log("Order submitted:", {
+        ...formData,
+        deliveryOption,
+      });
+    }
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -111,12 +181,81 @@ const CheckOut = () => {
     setDeliveryOption(option);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Order submitted:", {
-      ...formData,
-      deliveryOption,
-    });
+    if (validateForm()) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        toast.error("Vui lòng đăng nhập để đặt hàng.");
+        navigate("/login");
+        return;
+      }
+
+      const orderData = {
+        user_id: user._id,
+        items: cartItems.map((item) => ({
+          product_id: item.product_id?._id || item.product_id,
+          quantity: item.quantity,
+        })),
+        total_price: calculateTotal(),
+        status: "Chờ xử lý",
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        province: formData.province || selectedProvince,
+        deliveryOption: deliveryOption,
+        paymentMethod: selectedMethod,
+        shippingCost: deliveryOption === "pickup" ? 0 : shippingCost,
+      };
+
+      try {
+        // show loading toast
+        const loadingToastId = toast.loading("Đang xử lý đơn hàng...");
+
+        // call API đặt hàng
+        const response = await axiosInstance.post("/api/orders", orderData);
+
+        // update toast thành công
+        toast.update(loadingToastId, {
+          render: "Đặt hàng thành công!",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+
+        // clear all cart
+        if (user._id) {
+          await clearCart(user._id);
+        }
+
+        // Reset form
+        setFormData({
+          fullName: "",
+          email: "",
+          phone: "",
+          address: "",
+          province: "",
+          district: "",
+          couponCode: "",
+        });
+        setSelectedProvince("");
+        setShippingCost(0);
+        setDeliveryOption("delivery");
+        setSelectedMethod("cod");
+        setErrors({});
+
+        // move -> tab orders
+        navigate("/userProfile?tab=orders");
+      } catch (error) {
+        console.error("Error submitting order:", error);
+        toast.error(
+          error.response?.data?.message || "Có lỗi xảy ra khi đặt hàng."
+        );
+      }
+    } else {
+      toast.error("Vui lòng điền đầy đủ thông tin trước khi đặt hàng.");
+    }
   };
 
   const storeLocations = [
@@ -126,28 +265,13 @@ const CheckOut = () => {
     },
   ];
 
-  const product = {
-    name: "Bát ăn nghiêng chống gù cho chó mèo",
-    color: "Màu đen",
-    price: 45000,
-    quantity: 1,
-  };
-
   const handlePaymentSelection = (method) => {
     setSelectedMethod(method);
-  };
-  const handleOrderCompletion = () => {
-    alert(
-      `Bạn đã chọn phương thức: ${
-        selectedMethod === "cod"
-          ? "Thanh toán khi giao hàng (COD)"
-          : "Chuyển khoản qua ngân hàng"
-      }`
-    );
   };
 
   return (
     <MainLayout>
+      <ToastContainer />
       <Breadcrumb items={links} />
       <div className="max-w-6xl mx-auto px-4 py-8 checkout-page">
         <h1 className="text-2xl font-bold text-gray-800 mb-2">Pet Station</h1>
@@ -173,6 +297,7 @@ const CheckOut = () => {
                   onChange={handleInputChange}
                   required
                 />
+                <p className="text-red-500 text-xs italic">{errors.fullName}</p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-4">
@@ -186,6 +311,7 @@ const CheckOut = () => {
                     onChange={handleInputChange}
                     required
                   />
+                  <p className="text-red-500 text-xs italic">{errors.email}</p>
                 </div>
                 <div className="flex-1">
                   <input
@@ -197,6 +323,7 @@ const CheckOut = () => {
                     onChange={handleInputChange}
                     required
                   />
+                  <p className="text-red-500 text-xs italic">{errors.phone}</p>
                 </div>
               </div>
 
@@ -275,6 +402,9 @@ const CheckOut = () => {
                       onChange={handleInputChange}
                       required={deliveryOption === "delivery"}
                     />
+                    <p className="text-red-500 text-xs italic">
+                      {errors.address}
+                    </p>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-4">
@@ -294,14 +424,11 @@ const CheckOut = () => {
                               </option>
                             ))}
                         </select>
+                        <p className="text-red-500 text-xs italic">
+                          {errors.province}
+                        </p>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                          <svg
-                            className="fill-current h-4 w-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                          </svg>
+                          <ChevronDown />
                         </div>
                       </div>
                     </div>
@@ -321,19 +448,27 @@ const CheckOut = () => {
                     {!selectedProvince && (
                       <div className="flex items-center justify-center border border-gray-200 rounded p-8">
                         <div className="text-center">
-                          <div className="mb-4">
+                          <div className="mb-4 flex justify-center">
                             <svg
-                              className="w-24 h-24 mx-auto text-gray-400"
                               xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
+                              width="108"
+                              height="85"
+                              viewBox="24.1 -17 68 54"
+                              enable-background="new 24.1 -17 68 54"
                             >
                               <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1}
-                                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                                stroke="#B2B2B2"
+                                stroke-width="2"
+                                stroke-miterlimit="10"
+                                fill="none"
+                                d="M25.1-5h66M32.1 28h16M32.1 23h12"
+                              />
+                              <path
+                                stroke="#B2B2B2"
+                                stroke-width="2"
+                                stroke-miterlimit="10"
+                                d="M25.1-5.4l6.7-10.6h52.9l6.4 10.6v38.6c0 1.6-1.2 2.8-2.8 2.8h-60.4c-1.6 0-2.8-1.2-2.8-2.8v-38.6zM58.1-16v11"
+                                fill="none"
                               />
                             </svg>
                           </div>
@@ -362,14 +497,9 @@ const CheckOut = () => {
                         </option>
                         <option value="hcm">TP Hồ Chí Minh</option>
                       </select>
+
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg
-                          className="fill-current h-4 w-4"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                        </svg>
+                        <ChevronDown />
                       </div>
                     </div>
                   </div>
@@ -382,20 +512,7 @@ const CheckOut = () => {
                       {storeLocations.map((store) => (
                         <div key={store.id} className="flex items-center">
                           <div className="flex items-center justify-center w-6 h-6 bg-blue-0 rounded-full mr-2 text-white">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
+                            <CheckCheck size={16} color="white" />
                           </div>
                           <span className="text-gray-700">{store.name}</span>
                         </div>
@@ -424,11 +541,7 @@ const CheckOut = () => {
                 checked={selectedMethod === "cod"}
                 onChange={() => handlePaymentSelection("cod")}
               />
-              <img
-                src="https://img.icons8.com/ios/50/box.png"
-                alt="COD"
-                width="30"
-              />
+              <img src={boxCard} alt="COD" width="30" />
               <span>Thanh toán khi giao hàng (COD)</span>
             </div>
 
@@ -447,11 +560,7 @@ const CheckOut = () => {
                 checked={selectedMethod === "bank"}
                 onChange={() => handlePaymentSelection("bank")}
               />
-              <img
-                src="https://img.icons8.com/ios/50/bank-card-back-side.png"
-                alt="Bank"
-                width="30"
-              />
+              <img src={bankCard} alt="Bank" width="30" />
               <span>Chuyển khoản qua ngân hàng</span>
             </div>
 
@@ -461,12 +570,6 @@ const CheckOut = () => {
                   Giỏ hàng
                 </a>
               </span>
-              {/* <button
-                className="checkout-btn p-3"
-                onClick={handleOrderCompletion}
-              >
-                Hoàn tất đơn hàng
-              </button> */}
             </div>
           </div>
           {/* Right Checkout */}
@@ -479,71 +582,26 @@ const CheckOut = () => {
                   <div className="relative mr-4">
                     <div className="bg-gray-200 rounded w-16 h-16 flex items-center justify-center relative">
                       <img
-                        src={item.images[0]}
-                        alt={item.name}
+                        src={item.product_id?.images?.[0]}
+                        alt={item.product_id?.name}
                         className="h-12 w-12 object-contain"
                       />
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-sm">{item.name}</h3>
+                    <h3 className="text-sm">{item.product_id?.name}</h3>
+                    <p className="text-gray-500 text-xs">SL: {item.quantity}</p>
                   </div>
                   <div className="text-right">
                     <span className="font-semibold">
-                      {item.price.toLocaleString()}₫
+                      {(
+                        (item.product_id?.price || 0) * item.quantity
+                      ).toLocaleString()}
+                      ₫
                     </span>
                   </div>
                 </div>
               ))}
-            </div>
-
-            <div className="border-b border-gray-200 pb-6 mb-4">
-              {showCouponInput ? (
-                <div className="flex">
-                  <input
-                    type="text"
-                    name="couponCode"
-                    placeholder="Mã giảm giá"
-                    className="flex-1 border border-gray-300 rounded-l p-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    value={formData.couponCode}
-                    onChange={handleInputChange}
-                  />
-                  <button
-                    type="button"
-                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-r hover:bg-gray-300"
-                  >
-                    Sử dụng
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  className="text-blue-500 flex items-center text-sm"
-                  onClick={() => setShowCouponInput(true)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                    />
-                  </svg>
-                  Xem thêm mã giảm giá
-                </button>
-              )}
-
-              <div className="mt-3">
-                <span className="inline-block border border-blue-200 text-blue-500 rounded-md px-3 py-1 text-sm">
-                  Giảm Ship 100%
-                </span>
-              </div>
             </div>
 
             <div className="mb-6">
