@@ -23,8 +23,7 @@ import { IoMdCart } from "react-icons/io"
 import { addToCart } from "../stores/cartSlice"
 import { ScaleLoader } from "react-spinners"
 import { useCart } from "../context/CartContext";
-import {toast } from "react-toastify";
-
+import { toast } from "react-toastify";
 
 const services = [
   {
@@ -46,12 +45,41 @@ const services = [
 ]
 
 const ProductDetail = () => {
+  const [quantity, setQuantity] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("mo-ta");
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImageId, setSelectedImageId] = useState(0);
+
+  const { addToCart } = useCart();
+  const { slug } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { productDetail, items: products } = useSelector((state) => state.products);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetachProductByName(slug));
+  }, [slug, dispatch]);
+
+  useEffect(() => {
+    if (productDetail?.images?.length) {
+      setSelectedImage(productDetail.images[0]);
+    }
+  }, [productDetail]);
+
   const CustomPrevArrow = (props) => {
     const { onClick } = props;
     return (
       <MdOutlineArrowBackIos className="absolute top-1/2 -left-2 bg-amber-50 rounded-full p-2 -translate-y-1/2 z-10 hover:cursor-pointer" size={30} onClick={onClick} />
     );
   };
+
   const CustomNextArrow = (props) => {
     const { onClick } = props;
     return (
@@ -59,7 +87,7 @@ const ProductDetail = () => {
     );
   };
 
-  var settings = {
+  const settings = {
     infinite: true,
     slidesToShow: 5,
     slidesToScroll: 2,
@@ -91,100 +119,69 @@ const ProductDetail = () => {
     ],
   };
 
-  const [quantity, setQuantity] = useState(1);
-  const [open, setOpen] = useState(false);
-  const { addToCart } = useCart();
-  
   const handleDecrease = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
   };
+
   const handleIncrease = () => {
     setQuantity(quantity + 1);
   };
 
-  // const handleInputChange = (e) => {
-  //   const value = parseInt(e.target.value, 10);
-  //   if (!isNaN(value) && value >= 1) {
-  //     setQuantity(value);
-  //   }
-  // };
-
-  const [activeTab, setActiveTab] = useState("mo-ta");
-  const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-
-  const { slug } = useParams();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { productDetail, items:products } = useSelector((state) => state.products)
-  useEffect(()=>{
-    dispatch(fetchProducts())
-  }, [dispatch])
-  
-  
-  useEffect(()=>{
-    dispatch(fetachProductByName(slug))
-  }, [slug, dispatch])
-
+  const handleThumbnailClick = (image, index) => {
+    setSelectedImage(image);
+    setSelectedImageId(index);
+  };
 
   const handleViewProduct = (product) => {
-    setSelectedProduct(product)
-    setOpen(true)
-  }
+    setSelectedProduct(product);
+    setOpen(true);
+  };
 
   const handleBuyNow = () => {
     dispatch(addToCart({ ...productDetail, cartQuantity: quantity }));
     navigate("/checkout");
   };
 
-  // const handleAddToCart = () => {
-  //   dispatch(addToCart({ ...productDetail, cartQuantity: quantity }));
-  //   navigate("/cart")
-  // };
   const user = JSON.parse(localStorage.getItem("user"));
   const handleAddToCart = async () => {
-      if (!user?._id) {
-        navigate("/login");
-        return;
-      }
-  
-      const result = await addToCart(user._id, productDetail._id, quantity);
-      
-      if (result.success) {
-        toast.success(result.message);
-      } else {
-        toast.error(result.message);
-      }
-    };
+    if (!user?._id) {
+      navigate("/login");
+      return;
+    }
 
+    const result = await addToCart(user._id, productDetail._id, quantity);
+    
+    if (result.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
+  };
 
-  if(!productDetail){
+  if (!productDetail) {
     return (
       <div className="h-screen w-screen flex justify-center items-center">
         <ScaleLoader />
       </div>
-    )
+    );
   }
 
   return (
-    
     <MainLayout>
       <ul className="gap-10 border-b-[1px] justify-center border-[#c49a6c] items-center hidden md:flex">
         <Link className="font-bold text-blue-900">Cam kết</Link>
-        {
-          services.map((service, index)=>(
-            <li key={index} className="py-3">
-              <Link className="flex gap-2 justify-center items-center">
-                <span className="text-blue-600">{service.icon}</span>
-                <span className="text-black text-[15px]">{service.title}</span>
-              </Link>
-            </li>
-          ))
-        }
+        {services.map((service, index) => (
+          <li key={index} className="py-3">
+            <Link className="flex gap-2 justify-center items-center">
+              <span className="text-blue-600">{service.icon}</span>
+              <span className="text-black text-[15px]">{service.title}</span>
+            </Link>
+          </li>
+        ))}
       </ul>
+      
       <div className="relative">
         <img className="h-32 md:w-full md:h-full" src={image1} alt="" />
         <div className="absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 text-base md:text-[20px] text-white font-bold text-center">
@@ -192,12 +189,13 @@ const ProductDetail = () => {
           <div>
             <Link to="/" className="hover:text-[#c49a6c]">Trang chủ</Link> 
             <span> &gt; </span>
-            <Link to="/shop-meo" className="hover:text-[#c49a6c]">{productDetail.category_id.type}</Link>
+            <Link to="/shop-meo" className="hover:text-[#c49a6c]">{productDetail.category_id?.type}</Link>
             <span> &gt; </span>
             <span className="text-[#e17100] font-semibold">{productDetail.name}</span>
           </div>
         </div>
       </div>
+      
       <div className="max-w-[1350px] mx-auto flex flex-col gap-5 px-5">
         <div className="flex gap-5 mt-5">
           <div className="w-full md:w-8/10 grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -208,23 +206,28 @@ const ProductDetail = () => {
                   '--swiper-pagination-color': '#fff',
                 }}
                 spaceBetween={10}
-                thumbs={{ swiper: thumbsSwiper }}
                 navigation={true}
+                thumbs={{ swiper: thumbsSwiper }}
                 modules={[FreeMode, Navigation, Thumbs]}
-                onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+                onSlideChange={(swiper) => {
+                  setSelectedImage(productDetail.images[swiper.activeIndex]);
+                  setSelectedImageId(swiper.activeIndex);
+                }}
                 className="mySwiper2 h-[300px] md:h-[400px] w-full rounded-lg overflow-hidden"
               >
-                {productDetail?.images?.map((product, index) => (
+                {productDetail?.images?.map((image, index) => (
                   <SwiperSlide key={index} className="flex justify-center items-center bg-white">
                     <Image
-                      src={product}
+                      src={image}
                       className="block w-full h-full object-cover"
                       preview={{ mask: "Xem ảnh" }}
                     />
                   </SwiperSlide>
                 ))}
               </Swiper>
+              
               <hr className="my-5 opacity-10"/>
+              
               <Swiper
                 onSwiper={setThumbsSwiper}
                 spaceBetween={10}
@@ -234,42 +237,42 @@ const ProductDetail = () => {
                 modules={[FreeMode, Navigation, Thumbs]}
                 className="mySwiper h-[80px] md:h-[100px] box-border py-[10px] mt-4"
               >
-                {productDetail?.images?.map((product, index) => (
-                  <SwiperSlide key={index} className="w-[25%] h-full transition-opacity duration-200 cursor-pointer">
+                {productDetail?.images?.map((image, index) => (
+                  <SwiperSlide 
+                    key={index} 
+                    className={`w-[25%] h-full transition-opacity duration-200 cursor-pointer ${
+                      selectedImageId === index ? 'border-2 border-amber-500 rounded-lg' : 'border-2 border-transparent'
+                    }`}
+                    onClick={() => handleThumbnailClick(image, index)}
+                  >
                     <img
-                      src={product}
-                      className="block w-full h-full object-cover rounded-lg"
+                      src={image}
+                      className={`block w-full h-full object-cover rounded-lg ${
+                        selectedImageId === index ? 'opacity-100' : 'opacity-75 hover:opacity-100'
+                      }`}
+                      alt={`Thumbnail ${index}`}
                     />
                   </SwiperSlide>
                 ))}
               </Swiper>
             </div>
+            
             <div className="bg-white shadow-md rounded-lg">
               <div className="p-3 flex flex-col gap-3">
                 <div className="flex gap-5 items-center">
-                  {/* <div className="rounded-full bg-amber-800">
-                    <img src={pet} alt="" className="size-15 p-1" />
-                  </div>
-                  <div className="flex flex-col">
-                    <h1 className="font-medium">Pet shope</h1>
-                    <div className="flex items-center gap-2">
-                      <span>4.8</span>
-                      <MdOutlineStar className="text-yellow-300"/>
-                      <span>(100+ đánh giá)</span>
-                    </div>
-                  </div> */}
-
                   <div className="p-3 flex flex-col gap-3 rounded-[5px]">
                     <h1 className="text-[22px] font-semibold">{productDetail?.name}</h1>
                     <span className="opacity-50">Đã bán: {productDetail.sold}</span>
                     <div className="flex items-center gap-5">
-                      <h5 className="font-bold text-[25px] text-red-600">{new Intl.NumberFormat('vi-VN').format(productDetail.price)}đ</h5>
-                      {/* <span>-10%</span>
-                      <span className="line-through opacity-50">90.000đ</span> */}
+                      <h5 className="font-bold text-[25px] text-red-600">
+                        {new Intl.NumberFormat('vi-VN').format(productDetail.price)}đ
+                      </h5>
                     </div>
                   </div>
                 </div>
+                
                 <hr />
+                
                 <div className="flex flex-col gap-4">
                   <h1 className="font-semibold text-lg text-gray-800">Số lượng</h1>
                   <div className="flex items-center w-fit bg-white border border-gray-300 rounded-full shadow-sm">
@@ -288,18 +291,31 @@ const ProductDetail = () => {
                       +
                     </button>
                   </div>
+                  
                   <h1 className="font-semibold text-lg text-gray-800">Tổng tiền</h1>
                   <span className="font-semibold text-3xl text-gray-800">
                     {new Intl.NumberFormat('vi-VN').format(quantity * productDetail.price)}đ
                   </span>
+                  
                   <div className="flex gap-5">
-                    <button onClick={()=>handleBuyNow(productDetail)} className="bg-amber-600 text-white w-full py-2 text-[20px] rounded-[10px] cursor-pointer border-2 text-brown-hover hover:bg-transparent">Mua ngay</button>
-                    <button onClick={()=>handleAddToCart(productDetail)} className="border-2 border-amber-600 w-full py-2 text-[20px] rounded-[10px] cursor-pointer hover:bg-amber-600 hover:text-white">Thêm vào giỏ hàng</button>
+                    <button 
+                      onClick={() => handleBuyNow(productDetail)} 
+                      className="bg-amber-600 text-white w-full py-2 text-[20px] rounded-[10px] cursor-pointer border-2 text-brown-hover hover:bg-transparent"
+                    >
+                      Mua ngay
+                    </button>
+                    <button 
+                      onClick={() => handleAddToCart(productDetail)} 
+                      className="border-2 border-amber-600 w-full py-2 text-[20px] rounded-[10px] cursor-pointer hover:bg-amber-600 hover:text-white"
+                    >
+                      Thêm vào giỏ hàng
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          
           <div className="hidden md:block md:w-2/10 bg-white shadow-md rounded-lg overflow-hidden">
             <div className="border-b-2 border-gray-200 p-6">
               <h1 className="text-xl font-semibold text-gray-800 mb-4">Liên hệ</h1>
@@ -336,6 +352,7 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
+        
         <div className="p-3 bg-white shadow-md rounded-lg">
           <div className="flex border-b border-gray-500">
             {[
@@ -347,7 +364,7 @@ const ProductDetail = () => {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-2 text-sm font-medium ${
-                  activeTab === tab.id ? "bg-brown" : "text-gray-500"
+                  activeTab === tab.id ? "bg-brown text-white" : "text-gray-500"
                 }`}
               >
                 {tab.label}
@@ -428,45 +445,54 @@ const ProductDetail = () => {
             )}
           </div>
         </div>
+        
         <div className="p-3 bg-white shadow-md rounded-lg flex flex-col gap-2">
           <h3 className="font-medium text-2xl">Sản phẩm tương tự</h3>
           <Slider {...settings}>
-            {
-              products.map((product, index) => (
-                <div key={index} className="p-3">
-                  <div>
-                    <div className="flex flex-col gap-1 border-1 border-[#e17100] rounded-[5px] overflow-hidden bg-white">
-                      <div className="relative group hover:cursor-pointer">
-                        <Link to={`/product/${product.slug}`}>
-                          <img className={`hover:opacity-70 w-screen`} src={product.images[0]} alt="" />
-                        </Link>
-                        <div className="flex gap-3 absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100">
-                          <button onClick={() => handleViewProduct(product)}  className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400">
-                            <MdOutlineRemoveRedEye className="hover:text-white" size={25}/>
-                          </button>
-                          <button onClick={()=> handleAddToCart(product)} className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400 ">
-                            <IoMdCart className="hover:text-white" size={25}/>
-                          </button>
-                        </div>
+            {products.map((product, index) => (
+              <div key={index} className="p-3">
+                <div>
+                  <div className="flex flex-col gap-1 border-1 border-[#e17100] rounded-[5px] overflow-hidden bg-white">
+                    <div className="relative group hover:cursor-pointer">
+                      <Link to={`/product/${product.slug}`}>
+                        <img className="hover:opacity-70 w-full h-48 object-cover" src={product.images[0]} alt={product.name} />
+                      </Link>
+                      <div className="flex gap-3 absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100">
+                        <button 
+                          onClick={() => handleViewProduct(product)} 
+                          className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400"
+                        >
+                          <MdOutlineRemoveRedEye className="hover:text-white" size={25}/>
+                        </button>
+                        <button 
+                          onClick={() => handleAddToCart(product)} 
+                          className="bg-amber-50 p-2 rounded-[5px] group hover:bg-gray-400"
+                        >
+                          <IoMdCart className="hover:text-white" size={25}/>
+                        </button>
                       </div>
-                      <div className='p-3 flex flex-col gap-1'>
-                        <Link to={"/product/2"} className="line-clamp-1 hover:text-[#c49a6c] hover:cursor-pointer">{product.name}</Link>
-                        <span className="text-1xl text-[#c49a6c] text-start">
-                          {product.price.toLocaleString('vi-VN') + '₫'}
-                        </span>
-                        <button className='bg-[#e17100] border-2 border-[#e17100] duration-200 transition-colors hover:bg-white text-brown-hover w-full py-2 rounded-[2px] font-medium text-white'>Mua ngay</button>
-                      </div>
+                    </div>
+                    <div className='p-3 flex flex-col gap-1'>
+                      <Link to={`/product/${product.slug}`} className="line-clamp-1 hover:text-[#c49a6c] hover:cursor-pointer">
+                        {product.name}
+                      </Link>
+                      <span className="text-1xl text-[#c49a6c] text-start">
+                        {product.price.toLocaleString('vi-VN') + '₫'}
+                      </span>
+                      <button className='bg-[#e17100] border-2 border-[#e17100] duration-200 transition-colors hover:bg-white text-brown-hover w-full py-2 rounded-[2px] font-medium text-white'>
+                        Mua ngay
+                      </button>
                     </div>
                   </div>
                 </div>
-              ))
-            }
+              </div>
+            ))}
           </Slider>
           <DialogProduct open={open} product={selectedProduct} setOpen={setOpen}/>
         </div>
       </div>
     </MainLayout>
-  )
-}
+  );
+};
 
-export default ProductDetail
+export default ProductDetail;
