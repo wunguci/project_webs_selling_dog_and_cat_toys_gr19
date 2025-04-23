@@ -225,13 +225,17 @@ const CartShop = () => {
           >
             ← Tiếp tục mua hàng
           </Link>
-          <Link
-            to="/checkout"
-            className="bg-brown text-white py-2 px-4 rounded-lg shadow-md border-brown-hover transition"
-          >
-            Tiến hành thanh toán →
-          </Link>
+
+          {cartItems.length > 0 && (
+            <Link
+              to="/checkout"
+              className="bg-brown text-white py-2 px-4 rounded-lg shadow-md border-brown-hover transition"
+            >
+              Tiến hành thanh toán →
+            </Link>
+          )}
         </div>
+
       </div>
     </MainLayout>
   );
