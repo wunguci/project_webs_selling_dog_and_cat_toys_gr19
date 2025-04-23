@@ -384,7 +384,8 @@ const UserProfile = () => {
             </div>
             <ul className="mt-6 space-y-2">
               <li>
-                <a href="#thong-tin-ca-nhan"
+                <a
+                  href="#thong-tin-ca-nhan"
                   onClick={() => handleTabChange("profile")}
                   className={`text-brown-hover cursor-pointer w-full flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg ${
                     activeTab === "profile" ? "bg-blue-50 text-blue-500" : ""
@@ -395,7 +396,8 @@ const UserProfile = () => {
                 </a>
               </li>
               <li>
-                <a href="#don-hang-cua-ban"
+                <a
+                  href="#don-hang-cua-ban"
                   onClick={() => handleTabChange("orders")}
                   className={`text-brown-hover cursor-pointer w-full flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg ${
                     activeTab === "orders" ? "bg-blue-50 text-blue-500" : ""
@@ -406,7 +408,8 @@ const UserProfile = () => {
                 </a>
               </li>
               <li>
-                <a href="#lich-su-mua-hang"
+                <a
+                  href="#lich-su-mua-hang"
                   onClick={() => handleTabChange("history")}
                   className={`text-brown-hover cursor-pointer w-full flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg ${
                     activeTab === "history" ? "bg-blue-50 text-blue-500" : ""
@@ -430,7 +433,8 @@ const UserProfile = () => {
 
           <div className="md:col-span-4 bg-white shadow-md rounded-lg p-6">
             <div className="flex space-x-4 border-b mb-6">
-              <a href="#thong-tin-ca-nhan"
+              <a
+                href="#thong-tin-ca-nhan"
                 onClick={() => handleTabChange("profile")}
                 className={`cursor-pointer py-2 px-4 ${
                   activeTab === "profile"
@@ -441,7 +445,8 @@ const UserProfile = () => {
                 Thông tin cá nhân
               </a>
               <a
-                onClick={() => handleTabChange("orders")} href="#don-hang-cua-ban"
+                onClick={() => handleTabChange("orders")}
+                href="#don-hang-cua-ban"
                 className={`cursor-pointer py-2 px-4 ${
                   activeTab === "orders"
                     ? "border-b-2 border-brown text-brown"
@@ -450,7 +455,8 @@ const UserProfile = () => {
               >
                 Đơn hàng của bạn
               </a>
-              <a href="#lich-su-mua-hang"
+              <a
+                href="#lich-su-mua-hang"
                 onClick={() => handleTabChange("history")}
                 className={`cursor-pointer py-2 px-4 ${
                   activeTab === "history"
@@ -593,7 +599,7 @@ const UserProfile = () => {
               </div>
             )}
             {activeTab === "orders" && (
-              <div id="#don-hang-cua-ban"> 
+              <div id="#don-hang-cua-ban">
                 <h1 className="text-2xl font-bold mb-4">Đơn hàng của bạn</h1>
                 {pendingOrders.length === 0 &&
                 processingOrders.length === 0 &&
@@ -1116,7 +1122,10 @@ const UserProfile = () => {
             )}
 
             {showOrderModal && selectedOrder && (
-              <Modal onClose={() => setShowOrderModal(false)}>
+              <Modal
+                isOpen={showOrderModal}
+                onClose={() => setShowOrderModal(false)}
+              >
                 <div className="p-6">
                   <h2 className="flex gap-5 justify-center text-2xl font-bold mb-6 text-gray-800 text-center border-b pb-4">
                     <FaCartPlus className="w-10 h-10" />
