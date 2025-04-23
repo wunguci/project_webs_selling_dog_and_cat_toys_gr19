@@ -96,7 +96,7 @@ const Login = () => {
       toast.success("Đăng nhập thành công!");
       setTimeout(() => {
         navigate("/");
-      }, 2000);
+      }, 500);
     } catch (err) {
       console.error("API Error:", err.response?.data || err.message);
       if (err.response && err.response.status === 401) {
