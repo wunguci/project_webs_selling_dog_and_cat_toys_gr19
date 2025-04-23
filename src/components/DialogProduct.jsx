@@ -6,15 +6,22 @@ import { useDispatch } from "react-redux";
 import { useCart } from "../context/CartContext";
 import { toast } from "react-toastify";
 
-
 function DialogProduct({ open, setOpen, product }) {
-
   if (!open) return null;
   const dispatch = useDispatch()
 
-  const [selectedImage, setSelectedImage] = useState(product.images[0]);
+  // Tạo mảng images với id duy nhất cho mỗi ảnh
+  const imagesWithIds = product.images.map((image, index) => ({
+    id: `${product._id}-${index}`, // Tạo id duy nhất bằng product id + index
+    url: image
+  }));
+
+  const [selectedImage, setSelectedImage] = useState(imagesWithIds[0].url);
+  const [selectedImageId, setSelectedImageId] = useState(imagesWithIds[0].id);
+
   const handleImageClick = (image) => {
-    setSelectedImage(image.image);
+    setSelectedImage(image.url);
+    setSelectedImageId(image.id);
   };
 
   const { addToCart } = useCart();
@@ -83,17 +90,17 @@ function DialogProduct({ open, setOpen, product }) {
               />
             </div>
             <div className="flex justify-center gap-3 flex-wrap">
-              {product?.images?.map((image, index) => (
+              {imagesWithIds.map((image) => (
                 <div
-                  key={index}
+                  key={image.id}
                   className={`size-16 md:size-20 cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                    selectedImage === image ? "border-amber-500 scale-110" : "border-transparent hover:border-amber-300"
+                    selectedImageId === image.id ? "border-amber-500 scale-110" : "border-transparent hover:border-amber-300"
                   }`}
                   onClick={() => handleImageClick(image)}
                 >
                   <img
-                    src={image}
-                    alt={`Thumbnail ${index + 1}`}
+                    src={image.url}
+                    alt={`Thumbnail ${image.id}`}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -105,7 +112,8 @@ function DialogProduct({ open, setOpen, product }) {
             <span>Thương hiệu: Khác | Tình trạng: {product.sold === product.stock ? "Hết hàng":"Còn hàng"}</span>
             <div className="bg-brown w-44 text-center p-1 skew-x-[-15deg] ml-1">
               <h2 className="text-2xl text-white font-bold">
-                {new Intl.NumberFormat('vi-VN').format(quantity * product.price)}đ
+                {/* {new Intl.NumberFormat('vi-VN').format(quantity * product.price)}đ */}
+                {new Intl.NumberFormat('vi-VN').format(product.price)}đ
               </h2>
             </div>
             <div className="flex items-center gap-5">
@@ -131,7 +139,6 @@ function DialogProduct({ open, setOpen, product }) {
             <button onClick={()=>handleBuyNow()} className="w-60 border-2 text-white bg-brown hover:bg-white rounded-[5px] hover:border-[#d06a03] py-2 transition-colors duration-200">Mua ngay</button>
           </div>
         </div>
-        
       </div>
     </div>
   );

@@ -5,12 +5,13 @@ import DialogProduct from "./DialogProduct";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useCart } from "../context/CartContext";
+import { useDispatch } from "react-redux";
 
 function Product({ product }) {
   const [open, setOpen] = useState(false);
   const [openQuantityPopup, setOpenQuantityPopup] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { addToCart } = useCart();
   const navigate = useNavigate();
 
