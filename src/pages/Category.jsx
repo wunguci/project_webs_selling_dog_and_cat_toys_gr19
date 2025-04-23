@@ -15,7 +15,8 @@ function Category() {
   const { slug } = useParams();
   const dispatch = useDispatch();
 
-  console.log(currentPage);
+  console.log("jnkn: ", products);
+  
   
 
   useEffect(() => {
@@ -54,7 +55,7 @@ function Category() {
     <MainLayout>
       <div className="relative">
         <img className="h-32 md:w-full md:h-[300px] object-cover" src={image1} alt="" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+        <div className="absolute left-1/2 transform -translate-x-1/2 text-center top-20">
           {products.length > 0 && (
             <h1 className="mb-4 text-2xl font-bold text-white">{products[0]?.category_id?.name}</h1>
           )}
@@ -72,6 +73,7 @@ function Category() {
           <Filter />
         </div>
         <div className="w-full md:w-3/4">
+          <p className='text-2xl font-bold mb-5 py-1'>{products[0]?.category_id.name}</p>
           {products.length === 0 ? (
             <div className="text-center text-gray-600">
               <h1>Không có sản phẩm nào trong danh mục này.</h1>

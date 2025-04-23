@@ -5,10 +5,11 @@ import DialogProduct from "./DialogProduct";
 import { Link, useNavigate } from "react-router-dom";
 import {toast } from "react-toastify";
 import { useCart } from "../context/CartContext";
+import { useDispatch } from "react-redux";
 
 function Product({ product}) {
   const [open, setOpen] = useState(false);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { addToCart } = useCart();
   const navigate = useNavigate();
   
@@ -54,9 +55,11 @@ function Product({ product}) {
   
 
   const handleBuyNow = (product) => {
+    
     dispatch(addToCart(product))
     navigate("/cart")
   }
+
   return (
     <div>
       <div className="flex flex-col gap-1 border-1 border-[#e17100] rounded-[5px] overflow-hidden hover:scale-103 transition-transform">
@@ -91,7 +94,7 @@ function Product({ product}) {
           <button
             onClick={() => handleBuyNow(product)}
             style={{  }}
-            className='bg-[#e17100] text-white border-2 border-[#e17100] duration-200 transition-colors hover:bg-white text-brown-hover w-full py-2 rounded-[2px] font-medium'>
+            className='bg-[#e17100] cursor-pointer text-white border-2 border-[#e17100] duration-200 transition-colors hover:bg-white text-brown-hover w-full py-2 rounded-[2px] font-medium'>
             Mua ngay
           </button>
         </div>
