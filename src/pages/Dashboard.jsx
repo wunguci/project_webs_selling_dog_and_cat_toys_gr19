@@ -148,7 +148,7 @@ const Dashboard = () => {
   // Chart configurations
   const textColor = isDarkTheme
     ? getCSSVariable("--text-white") : getCSSVariable("--text-color");
-  const secondaryTextColor = isDarkTheme ? "#ccc" : "#666"; 
+  const secondaryTextColor = isDarkTheme ? "#666" : "#999"; 
 
   const barChartOptions = {
     chart: {
@@ -191,7 +191,7 @@ const Dashboard = () => {
       align: "center",
       style: {
         fontSize: "16px",
-        color: textColor, // Màu tiêu đề
+        color: isDarkTheme ? "#666" : "#999", // Màu tiêu đề
       },
     },
     dataLabels: { enabled: false },
@@ -200,7 +200,7 @@ const Dashboard = () => {
         fontSize: "12px",
         color: "#fff",
       },
-      theme: "dark", 
+      theme: "dark",
       y: {
         formatter: (val) => formatCurrency(val),
       },
@@ -210,7 +210,7 @@ const Dashboard = () => {
       align: "center",
       verticalAlign: "middle",
       style: {
-        color: secondaryTextColor, 
+        color: secondaryTextColor,
         fontSize: "14px",
       },
     },
@@ -488,10 +488,10 @@ const Dashboard = () => {
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-gray-600 dark:text-gray-900">
                             {stat.label}
                           </p>
-                          <p className="text-xl font-semibold text-gray-800 dark:text-white">
+                          <p className="text-xl font-semibold text-gray-600 dark:text-gray-900">
                             {stat.format === "number"
                               ? stat.value
                               : formatCurrency(stat.value)}

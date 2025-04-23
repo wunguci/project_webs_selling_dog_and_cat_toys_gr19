@@ -113,22 +113,6 @@ const Login = () => {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (!user) return;
-
-      await axiosInstance.post("/api/users/logout", { userId: user._id });
-      localStorage.removeItem("user");
-      toast.success("Đăng xuất thành công!");
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
-    } catch (err) {
-      console.error("Logout Error:", err.response?.data || err.message);
-      toast.error("Đăng xuất thất bại!");
-    }
-  };
 
   return (
     <>
