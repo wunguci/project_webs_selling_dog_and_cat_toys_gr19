@@ -112,7 +112,8 @@ function DialogProduct({ open, setOpen, product }) {
             <span>Thương hiệu: Khác | Tình trạng: {product.sold === product.stock ? "Hết hàng":"Còn hàng"}</span>
             <div className="bg-brown w-44 text-center p-1 skew-x-[-15deg] ml-1">
               <h2 className="text-2xl text-white font-bold">
-                {new Intl.NumberFormat('vi-VN').format(quantity * product.price)}đ
+                {/* {new Intl.NumberFormat('vi-VN').format(quantity * product.price)}đ */}
+                {new Intl.NumberFormat('vi-VN').format(product.price)}đ
               </h2>
             </div>
             <div className="flex items-center gap-5">

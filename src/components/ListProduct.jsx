@@ -67,7 +67,7 @@ function ListProduct({title, products}) {
     <div className="border-1 border-[#e17100] p-5">
       <div className="flex flex-row justify-between border-b-2 border-[#e17100]">
         <div>
-          <div className="bg-brown w-44 text-center p-1 skew-x-[-15deg] ml-1">
+          <div className="bg-brown w-44 text-center p-1 skew-x-[-15deg] ml-[10px]">
             <h2 className="text-2xl text-white">{title}</h2>
           </div>
         </div>
