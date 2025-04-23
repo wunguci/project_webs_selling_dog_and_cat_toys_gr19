@@ -384,7 +384,7 @@ const UserProfile = () => {
             </div>
             <ul className="mt-6 space-y-2">
               <li>
-                <button
+                <a href="#thong-tin-ca-nhan"
                   onClick={() => handleTabChange("profile")}
                   className={`text-brown-hover cursor-pointer w-full flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg ${
                     activeTab === "profile" ? "bg-blue-50 text-blue-500" : ""
@@ -392,10 +392,10 @@ const UserProfile = () => {
                 >
                   <FaUser className="mr-2" />
                   Thông tin cá nhân
-                </button>
+                </a>
               </li>
               <li>
-                <button
+                <a href="#don-hang-cua-ban"
                   onClick={() => handleTabChange("orders")}
                   className={`text-brown-hover cursor-pointer w-full flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg ${
                     activeTab === "orders" ? "bg-blue-50 text-blue-500" : ""
@@ -403,10 +403,10 @@ const UserProfile = () => {
                 >
                   <FaShoppingBag className="mr-2" />
                   Đơn hàng của bạn
-                </button>
+                </a>
               </li>
               <li>
-                <button
+                <a href="#lich-su-mua-hang"
                   onClick={() => handleTabChange("history")}
                   className={`text-brown-hover cursor-pointer w-full flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg ${
                     activeTab === "history" ? "bg-blue-50 text-blue-500" : ""
@@ -414,7 +414,7 @@ const UserProfile = () => {
                 >
                   <FaHistory className="mr-2" />
                   Lịch sử mua hàng
-                </button>
+                </a>
               </li>
               <li>
                 <button
@@ -430,7 +430,7 @@ const UserProfile = () => {
 
           <div className="md:col-span-4 bg-white shadow-md rounded-lg p-6">
             <div className="flex space-x-4 border-b mb-6">
-              <button
+              <a href="#thong-tin-ca-nhan"
                 onClick={() => handleTabChange("profile")}
                 className={`cursor-pointer py-2 px-4 ${
                   activeTab === "profile"
@@ -439,9 +439,9 @@ const UserProfile = () => {
                 }`}
               >
                 Thông tin cá nhân
-              </button>
-              <button
-                onClick={() => handleTabChange("orders")}
+              </a>
+              <a
+                onClick={() => handleTabChange("orders")} href="#don-hang-cua-ban"
                 className={`cursor-pointer py-2 px-4 ${
                   activeTab === "orders"
                     ? "border-b-2 border-brown text-brown"
@@ -449,8 +449,8 @@ const UserProfile = () => {
                 }`}
               >
                 Đơn hàng của bạn
-              </button>
-              <button
+              </a>
+              <a href="#lich-su-mua-hang"
                 onClick={() => handleTabChange("history")}
                 className={`cursor-pointer py-2 px-4 ${
                   activeTab === "history"
@@ -459,7 +459,7 @@ const UserProfile = () => {
                 }`}
               >
                 Lịch sử mua hàng
-              </button>
+              </a>
             </div>
 
             {activeTab === "profile" && (
@@ -593,7 +593,7 @@ const UserProfile = () => {
               </div>
             )}
             {activeTab === "orders" && (
-              <div>
+              <div id="#don-hang-cua-ban"> 
                 <h1 className="text-2xl font-bold mb-4">Đơn hàng của bạn</h1>
                 {pendingOrders.length === 0 &&
                 processingOrders.length === 0 &&
@@ -858,7 +858,7 @@ const UserProfile = () => {
               </div>
             )}
             {activeTab === "history" && (
-              <div>
+              <div id="#lich-su-mua-hang">
                 <h1 className="text-2xl font-bold mb-4">Lịch sử mua hàng</h1>
                 {deliveredOrders.length === 0 &&
                 completedOrders.length === 0 &&
