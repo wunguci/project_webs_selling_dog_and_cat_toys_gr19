@@ -324,7 +324,7 @@ const Header = () => {
 
   return (
     <header
-      className={`bg-white shadow-md sticky top-0 z-10 transition-all duration-300 ${
+      className={`bg-white shadow-md sticky top-0 z-25 transition-all duration-300 ${
         isScrolled ? "h-[60px] overflow-hidden" : "h-auto"
       }`}
       ref={headerRef}
