@@ -397,7 +397,7 @@ const Dashboard = () => {
                 <select
                   value={timeFilter}
                   onChange={(e) => setTimeFilter(e.target.value)}
-                  className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 cursor-pointer"
                 >
                   <option value="7days">7 ngày qua</option>
                   <option value="30days">30 ngày qua</option>
@@ -408,7 +408,7 @@ const Dashboard = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={handleExportStats}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center cursor-pointer"
                   >
                     <Download size={16} className="mr-2" />
                     Xuất CSV

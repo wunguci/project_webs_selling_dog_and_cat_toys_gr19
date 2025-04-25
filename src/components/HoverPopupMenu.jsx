@@ -13,7 +13,7 @@ const HoverPopupMenu = ({ trigger, options }) => {
       <div className="cursor-pointer">{trigger}</div>
 
       {isHovered && (
-        <div className="hover-popup-menu ">
+        <div className="hover-popup-menu" style={{zIndex: -1}}>
           <ul>
             {options.map((option, index) => (
               <li key={index}>

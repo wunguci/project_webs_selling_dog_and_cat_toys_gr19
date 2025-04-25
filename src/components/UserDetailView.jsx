@@ -32,7 +32,7 @@ const UserDetailView = ({ user, onBack, onEdit }) => {
         <div className="flex items-center space-x-2">
           <button
             onClick={onBack}
-            className="p-2 text-gray-600 hover:text-[#e17100] hover:bg-gray-100 rounded-full cursor-pointer"
+            className="p-2 text-gray-600 hover:text-gray-700 hover:bg-gray-100 rounded-full cursor-pointer"
           >
             <ChevronLeft size={27} />
           </button>
@@ -50,49 +50,49 @@ const UserDetailView = ({ user, onBack, onEdit }) => {
         <div className="md:w-1/3 flex flex-col items-center mb-6 md:mb-0">
           <div className="relative mb-4">
             <UserAvatar src={user.avatar} alt={user.fullName} size="lg" />
-            <button className="absolute bottom-0 right-0 bg-[#e17100] text-white p-1.5 rounded-full shadow-lg hover:bg-[#d06a03] transition cursor-pointer">
+            <button className="absolute bottom-0 right-0 bg-gray-700 text-white p-1.5 rounded-full shadow-lg hover:bg-[#d06a03] transition cursor-pointer">
               <Edit size={16} />
             </button>
           </div>
           <h3 className="text-lg font-semibold text-gray-800">
             {user.fullName}
           </h3>
-          <p className="text-[#e17100] flex items-center mt-1">
+          <p className="text-gray-700 flex items-center mt-1">
             <Mail size={14} className="mr-1" /> {user.email}
           </p>
-          <p className="text-[#e17100] flex items-center mt-1">
+          <p className="text-gray-700 flex items-center mt-1">
             <Phone size={14} className="mr-1" /> {user.phone}
           </p>
         </div>
 
         <div className="md:w-2/3 md:pl-8">
           <div className="bg-gray-50 rounded-xl p-6 mb-6">
-            <h3 className="text-lg font-medium text-[#e17100] mb-4 flex items-center">
-              <User size={18} className="mr-2 text-[#e17100]" />
+            <h3 className="text-lg font-medium text-gray-700 mb-4 flex items-center">
+              <User size={18} className="mr-2 text-gray-700" />
               Thông tin cơ bản
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1">
-                <p className="text-sm text-[#e17100]">Họ và tên</p>
+                <p className="text-sm text-gray-700">Họ và tên</p>
                 <p className="font-medium text-gray-800">{user.fullName}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-sm text-[#e17100]">Ngày sinh</p>
+                <p className="text-sm text-gray-700">Ngày sinh</p>
                 <p className="font-medium text-gray-800 flex items-center">
-                  <Calendar size={14} className="mr-1 text-[#e17100]" />{" "}
+                  <Calendar size={14} className="mr-1 text-gray-700" />{" "}
                   {formatDate(user.birthDate)}
                 </p>
               </div>
               <div className="space-y-1">
-                <p className="text-sm text-[#e17100]">Giới tính</p>
+                <p className="text-sm text-gray-700">Giới tính</p>
                 <p className="font-medium text-gray-800">
                   {user.gender == true ? "Nam" : "Nữ"}
                 </p>
               </div>
               <div className="space-y-1">
-                <p className="text-sm text-[#e17100]">Vai trò</p>
+                <p className="text-sm text-gray-700">Vai trò</p>
                 <p className="font-medium text-gray-800 flex items-center">
-                  <ShieldCheck size={14} className="mr-1 text-[#e17100]" />{" "}
+                  <ShieldCheck size={14} className="mr-1 text-gray-700" />{" "}
                   {user.role == "user" ? "Người dùng" : "Quản trị viên"}
                 </p>
               </div>
@@ -101,20 +101,20 @@ const UserDetailView = ({ user, onBack, onEdit }) => {
 
           <div className="bg-gray-50 rounded-xl p-6">
             <h3 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
-              <MapPin size={18} className="mr-2 text-[#e17100]" />
+              <MapPin size={18} className="mr-2 text-gray-700" />
               Thông tin liên hệ
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1">
-                <p className="text-sm text-[#e17100]">Email</p>
+                <p className="text-sm text-gray-700">Email</p>
                 <p className="font-medium text-gray-800">{user.email}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-sm text-[#e17100]">Số điện thoại</p>
+                <p className="text-sm text-gray-700">Số điện thoại</p>
                 <p className="font-medium text-gray-800">{user.phone}</p>
               </div>
               <div className="col-span-2 space-y-1">
-                <p className="text-sm text-[#e17100]">Địa chỉ</p>
+                <p className="text-sm text-gray-700">Địa chỉ</p>
                 <p className="font-medium text-gray-800">{user.address}</p>
               </div>
             </div>
@@ -123,7 +123,7 @@ const UserDetailView = ({ user, onBack, onEdit }) => {
           <div className="mt-8">
             <button
               onClick={() => onEdit(user)}
-              className="bg-[#e17100] text-white px-6 py-2.5 rounded-lg hover:bg-[#d06a03] transition flex items-center justify-center shadow-sm cursor-pointer"
+              className="bg-blue-700 text-white px-6 py-2.5 rounded-lg hover:bg-blue-800 transition flex items-center justify-center shadow-sm cursor-pointer"
             >
               <Edit size={16} className="mr-2" />
               Cập nhật thông tin
