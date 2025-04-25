@@ -10,10 +10,8 @@ const HoverPopupMenu = ({ trigger, options }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Trigger element */}
       <div className="cursor-pointer">{trigger}</div>
 
-      {/* Popup menu */}
       {isHovered && (
         <div className="hover-popup-menu ">
           <ul>

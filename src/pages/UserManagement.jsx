@@ -355,7 +355,7 @@ const UserManagement = () => {
               ) : currentView === "list" ? (
                 <>
                   <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
-                    <div className="text-lg font-medium text-gray-800 dark:text-gray-100">
+                    <div className="text-lg font-medium text-gray-800 dark:text-gray-700">
                       {filteredUsers.length >= 0
                         ? `${filteredUsers.length} ${
                             filteredUsers.length === 1 ? "người dùng" : "người dùng"
@@ -363,7 +363,7 @@ const UserManagement = () => {
                         : "Đang tải danh sách người dùng..."}
                     </div>
                     {!isSearching && (
-                      <div className="text-sm text-gray-500 dark:text-gray-300">
+                      <div className="text-sm text-gray-400 dark:text-gray-700">
                         Trang {currentPage} / {totalPages}
                       </div>
                     )}

@@ -25,7 +25,7 @@ const PopupSearch = ({
   };
 
   return (
-    <div className="popup-search absolute top-full left-0 w-full mt-1 bg-white shadow-lg rounded-md z-50 border border-gray-200 max-h-80 overflow-y-auto popup-search-container">
+    <div className="popup-search absolute top-full left-0 w-full mt-1 bg-white shadow-lg rounded-md border border-gray-200 max-h-80 overflow-y-auto popup-search-container">
       {hasResults ? (
         <div className="p-2">
           <h3 className="text-sm font-medium text-gray-500 mb-2 px-2">
@@ -103,7 +103,6 @@ const PopupSearch = ({
             </div>
           )}
 
-          {/* Chỉ hiển thị khi không có cả kết quả lẫn lịch sử */}
           {!hasResults && !hasHistory && (
             <div className="p-4 text-center text-gray-500">
               {searchResults === null
