@@ -10,7 +10,7 @@ const ActionButton = ({ icon: Icon, onClick, color }) => {
   return (
     <button
       onClick={onClick}
-      className={`p-2 rounded-full transition-colors ${
+      className={`cursor-pointer p-2 rounded-full transition-colors ${
         colorStyles[color] || colorStyles.gray
       }`}
     >
