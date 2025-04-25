@@ -298,16 +298,6 @@ const Header = () => {
       href: `/userProfile/`,
     },
     {
-      label: "Đơn hàng của bạn",
-      icon: <FaShoppingBag className="mr-2" />,
-      href: "/userProfile",
-    },
-    {
-      label: "Lịch sử mua hàng",
-      icon: <FaHistory className="mr-2" />,
-      href: "/userProfile",
-    },
-    {
       label: "Đăng xuất",
       icon: <FaSignOutAlt className="mr-2" />,
       onClick: handleLogout,
@@ -324,16 +314,6 @@ const Header = () => {
       label: "Quản lý người dùng",
       icon: <RiAdminFill className="mr-2" />,
       href: `/user-management`,
-    },
-    {
-      label: "Đơn hàng của bạn",
-      icon: <FaShoppingBag className="mr-2" />,
-      href: "/userProfile",
-    },
-    {
-      label: "Lịch sử mua hàng",
-      icon: <FaHistory className="mr-2" />,
-      href: "/userProfile",
     },
     {
       label: "Đăng xuất",
