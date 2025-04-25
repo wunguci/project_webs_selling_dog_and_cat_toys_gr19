@@ -70,7 +70,7 @@ const Modal = ({ isOpen, onClose, title, size = "md", children }) => {
           </div>
 
           {/* Body */}
-          <div className="px-4 py-5 sm:p-6 max-h-[80vh] overflow-y-auto">
+          <div className="px-4 max-h-[80vh] overflow-y-auto">
             {children}
           </div>
         </div>
