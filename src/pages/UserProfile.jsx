@@ -166,12 +166,10 @@ const UserProfile = () => {
     try {
       const userData = JSON.parse(localStorage.getItem("user"));
       if (userData && userData._id) {
-        // Gọi API logout
         await axiosInstance.post("/api/users/logout", { userId: userData._id });
         toast.success("Đăng xuất thành công!");
       }
 
-      // Xóa dữ liệu localStorage và chuyển hướng
       localStorage.removeItem("user");
       setTimeout(() => {
         navigate("/");
@@ -432,42 +430,6 @@ const UserProfile = () => {
           </div>
 
           <div className="md:col-span-4 bg-white shadow-md rounded-lg p-6">
-            <div className="flex space-x-4 border-b mb-6">
-              <a
-                href="#thong-tin-ca-nhan"
-                onClick={() => handleTabChange("profile")}
-                className={`cursor-pointer py-2 px-4 ${
-                  activeTab === "profile"
-                    ? "border-b-2 border-brown text-brown"
-                    : "text-gray-500"
-                }`}
-              >
-                Thông tin cá nhân
-              </a>
-              <a
-                onClick={() => handleTabChange("orders")}
-                href="#don-hang-cua-ban"
-                className={`cursor-pointer py-2 px-4 ${
-                  activeTab === "orders"
-                    ? "border-b-2 border-brown text-brown"
-                    : "text-gray-500"
-                }`}
-              >
-                Đơn hàng của bạn
-              </a>
-              <a
-                href="#lich-su-mua-hang"
-                onClick={() => handleTabChange("history")}
-                className={`cursor-pointer py-2 px-4 ${
-                  activeTab === "history"
-                    ? "border-b-2 border-brown text-brown"
-                    : "text-gray-500"
-                }`}
-              >
-                Lịch sử mua hàng
-              </a>
-            </div>
-
             {activeTab === "profile" && (
               <div>
                 <h1 className="text-2xl font-bold mb-4">Thông tin cá nhân</h1>
