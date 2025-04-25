@@ -1125,6 +1125,7 @@ const UserProfile = () => {
               <Modal
                 isOpen={showOrderModal}
                 onClose={() => setShowOrderModal(false)}
+                size="lg"
               >
                 <div className="p-6">
                   <h2 className="flex gap-5 justify-center text-2xl font-bold mb-6 text-gray-800 text-center border-b pb-4">
@@ -1173,7 +1174,7 @@ const UserProfile = () => {
                             <span className="font-medium text-gray-800">
                               {item.product_id.name}
                             </span>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-gray-700">
                               {item.quantity} x{" "}
                               {item.product_id.price.toLocaleString()} VNĐ
                             </span>
@@ -1181,8 +1182,8 @@ const UserProfile = () => {
                         ))}
                       </ul>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">
+                    <div className="flex justify-between items-center mt-4">
+                      <p className="text-xl font-medium text-gray-500">
                         Tổng tiền:
                       </p>
                       <p className="text-xl font-bold text-brown">
@@ -1190,10 +1191,10 @@ const UserProfile = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="mt-8 flex justify-center">
+                  <div className="mt-9 flex justify-end">
                     <button
                       onClick={() => setShowOrderModal(false)}
-                      className="bg-gradient-to-r from-red-500 to-red-700 text-white py-3 px-6 rounded-lg hover:from-red-600 hover:to-red-800 shadow-md transition-transform transform hover:scale-105"
+                      className="bg-gradient-to-r from-[#e17100] to-[#e17100] text-white py-3 px-6 rounded-lg hover:from-[#e17100] hover:to-[#b75e05] shadow-md transition-transform transform hover:scale-105 cursor-pointer"
                     >
                       Đóng
                     </button>
