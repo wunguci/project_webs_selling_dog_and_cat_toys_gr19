@@ -11,25 +11,25 @@ import {
 
 const router = express.Router();
 
-// Tạo đơn hàng mới
+// tạo đơn hàng mới
 router.post("/", createOrder);
 
-// Lấy tất cả đơn hàng
+// lấy tất cả đơn hàng
 router.get("/", getOrders);
 
-// Lấy thống kê đơn hàng
+// lấy thống kê đơn hàng
 router.get("/stats", getOrderStats);
 
-// Lấy đơn hàng gần đây
+// lấy đơn hàng gần đây
 router.get("/recent", getRecentOrders);
 
-// Lấy đơn hàng theo ID
+// lấy đơn hàng theo ID
 router.get("/:id", getOrderById);
 
-// Cập nhật đơn hàng
+// cập nhật đơn hàng
 router.put("/:id", updateOrder);
 
-// Xóa đơn hàng
+// xóa đơn hàng
 router.delete("/:id", deleteOrder);
 
 export default router;
