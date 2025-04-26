@@ -64,6 +64,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, currentUser }) => {
       icon: <Home size={18} className="mr-3" />,
     },
     {
+      path: "/order-management",
+      label: "Order Management",
+      icon: <Home size={18} className="mr-3" />,
+    },
+    {
       path: "/user-management",
       label: "User Management",
       icon: <Users size={18} className="mr-3" />,

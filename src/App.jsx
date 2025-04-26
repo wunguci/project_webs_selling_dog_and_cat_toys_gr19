@@ -20,6 +20,7 @@ import Category from "./pages/Category";
 import { CartProvider } from "./context/CartContext";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
+import OrderManagement from "./pages/OrderManagement";
 import SmoothScrollContainer from "./layout/SmoothScrollContainer";
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
             <Route path="/user-management" element={<UserManagement />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/order-management" element={<OrderManagement />} />
           </Routes>
         </CartProvider>
       </BrowserRouter>
