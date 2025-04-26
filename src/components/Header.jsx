@@ -23,7 +23,7 @@ import PopupSearch from "./PopupSearch";
 import axios from "axios";
 import CartButton from "./CartButton";
 import { useCart } from "../context/CartContext";
-import { toast } from "react-toastify"; // Thêm toast để thông báo
+import { toast } from "react-toastify";
 
 const Header = () => {
   const { fetchCart } = useCart();
@@ -372,6 +372,7 @@ const Header = () => {
               <div
                 className="flex items-center w-full max-w-md lg:max-w-lg relative"
                 ref={searchRef}
+                style={{ position: "relative" }}
               >
                 <input
                   type="text"
@@ -390,15 +391,6 @@ const Header = () => {
                     <FaSearch className="text-lg" />
                   </button>
                 </Link>
-                {showPopupSearch && (
-                  <PopupSearch
-                    searchResults={searchResults}
-                    searchHistory={searchHistory}
-                    onSearch={handleSearchResultClick}
-                    onHistoryItemClick={handleHistoryItemClick}
-                    onClearHistory={handleClearHistory}
-                  />
-                )}
               </div>
 
               {/* user */}
@@ -542,6 +534,16 @@ const Header = () => {
           </div>
         </nav>
       </div>
+
+      {showPopupSearch && (
+        <PopupSearch
+          searchResults={searchResults}
+          searchHistory={searchHistory}
+          onSearch={handleSearchResultClick}
+          onHistoryItemClick={handleHistoryItemClick}
+          onClearHistory={handleClearHistory}
+        />
+      )}
 
       {/* overlay */}
       {menuOpen && (
