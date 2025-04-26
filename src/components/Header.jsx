@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { IoMdMenu, IoIosClose } from "react-icons/io";
 import { RiMenu3Fill, RiAdminFill } from "react-icons/ri";
+import { MdDashboardCustomize } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import PopupMenu from "./PopupMenu";
 import HoverPopupMenu from "./HoverPopupMenu";
@@ -310,6 +311,12 @@ const Header = () => {
       icon: <FaUser className="mr-2" />,
       href: `/userProfile/`,
     },
+    {
+      label: "Thống kê",
+      icon: <MdDashboardCustomize className="mr-2" />,
+      href: `/dashboard/`,
+    },
+
     {
       label: "Quản lý người dùng",
       icon: <RiAdminFill className="mr-2" />,

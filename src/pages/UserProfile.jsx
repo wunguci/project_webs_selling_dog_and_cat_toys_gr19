@@ -1152,14 +1152,15 @@ const UserProfile = () => {
                         {selectedOrder.total_price.toLocaleString()} VNĐ
                       </p>
                     </div>
-                  </div>
-                  <div className="mt-9 flex justify-end">
-                    <button
-                      onClick={() => setShowOrderModal(false)}
-                      className="bg-gradient-to-r from-[#e17100] to-[#e17100] text-white py-3 px-6 rounded-lg hover:from-[#e17100] hover:to-[#b75e05] shadow-md transition-transform transform hover:scale-105 cursor-pointer"
-                    >
-                      Đóng
-                    </button>
+
+                    <div className="mt-6 flex justify-end">
+                      <button
+                        onClick={() => setShowOrderModal(false)}
+                        className="bg-gradient-to-r from-[#e17100] to-[#e17100] text-white py-3 px-6 rounded-lg hover:from-[#e17100] hover:to-[#b75e05] shadow-md transition-transform transform hover:scale-105 cursor-pointer"
+                      >
+                        Đóng
+                      </button>
+                    </div>
                   </div>
                 </div>
               </Modal>

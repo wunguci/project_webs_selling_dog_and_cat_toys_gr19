@@ -26,12 +26,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, currentUser }) => {
     try {
       const userData = JSON.parse(localStorage.getItem("user"));
       if (userData && userData._id) {
-        // Gọi API logout
         await axiosInstance.post("/api/users/logout", { userId: userData._id });
         toast.success("Đăng xuất thành công!");
       }
 
-      // Xóa dữ liệu localStorage và chuyển hướng
       localStorage.removeItem("user");
       setTimeout(() => {
         setIsLoggingOut(false);
