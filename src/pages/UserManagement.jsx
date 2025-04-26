@@ -256,6 +256,7 @@ const UserManagement = () => {
           currentUser={currentUser}
         />
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
+          <h1 className="text-2xl font-bold text-gray-800">User Management</h1>
           <div className="max-w-7xl mx-auto">
             {currentView === "list" && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "./component.scss";
 import { FaShoppingBag, FaClock, FaTrash } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 const PopupSearch = ({
   searchRef,
@@ -13,6 +14,67 @@ const PopupSearch = ({
   const navigate = useNavigate();
   const hasResults = searchResults && searchResults.length > 0;
   const hasHistory = searchHistory && searchHistory.length > 0;
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [activeSection, setActiveSection] = useState(
+     hasResults ? "results" : "history"
+  );
+
+  useEffect(() => {
+    setSelectedIndex(-1);
+    setActiveSection(hasResults ? "results" : "history");
+  }, [searchResults, searchHistory, hasResults]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!hasResults && !hasHistory) return;
+
+      const items = activeSection === "results" ? searchResults : searchHistory;
+      const maxIndex = items.length - 1;
+
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          setSelectedIndex((prev) => (prev < maxIndex ? prev + 1 : 0));
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : maxIndex));
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (selectedIndex >= 0 && selectedIndex <= maxIndex) {
+            if (activeSection === "results") {
+              handleProductClick(searchResults[selectedIndex]);
+            } else {
+              onHistoryItemClick(searchHistory[selectedIndex]);
+            }
+          }
+          break;
+        case "Tab":
+          if (hasResults && hasHistory) {
+            e.preventDefault();
+            setActiveSection((prev) =>
+              prev === "results" ? "history" : "results"
+            );
+            setSelectedIndex(-1);
+          }
+          break;
+        default:
+          break;
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [
+    hasResults,
+    hasHistory,
+    selectedIndex,
+    activeSection,
+    searchResults,
+    searchHistory,
+  ]);
+
 
   const handleProductClick = (result) => {
     if (result.slug) {
@@ -39,10 +101,18 @@ const PopupSearch = ({
             {searchResults.map((result, index) => (
               <li
                 key={`result-${index}`}
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
+                  activeSection === "results" && selectedIndex === index
+                    ? "bg-gray-200"
+                    : ""
+                }`}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleProductClick(result);
+                }}
+                onMouseEnter={() => {
+                  setActiveSection("results");
+                  setSelectedIndex(index);
                 }}
               >
                 <div className="flex items-center">
@@ -96,8 +166,16 @@ const PopupSearch = ({
                 {searchHistory.map((item, index) => (
                   <li
                     key={`history-${index}`}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                    className={`px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center ${
+                      activeSection === "history" && selectedIndex === index
+                        ? "bg-gray-200"
+                        : ""
+                    }`}
                     onClick={() => onHistoryItemClick(item)}
+                    onMouseEnter={() => {
+                      setActiveSection("history");
+                      setSelectedIndex(index);
+                    }}
                   >
                     <FaClock className="text-gray-400 mr-2" />
                     <span className="text-gray-700">{item}</span>
@@ -107,7 +185,6 @@ const PopupSearch = ({
             </div>
           )}
 
-          {/* Chỉ hiển thị khi không có cả kết quả lẫn lịch sử */}
           {!hasResults && !hasHistory && (
             <div className="p-4 text-center text-gray-500">
               {searchResults === null
