@@ -19,6 +19,7 @@ const CheckOut = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const { cartItems, clearCart } = useCart();
+  const [user, setUser] = useState(null);
   const subtotal = cartItems.reduce(
     (total, item) => total + (item.product_id?.price || 0) * item.quantity,
     0
@@ -41,6 +42,22 @@ const CheckOut = () => {
     district: "",
     couponCode: "",
   });
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if (userData) {
+      setUser(userData);
+      setFormData((prevState) => ({
+        ...prevState,
+        fullName: userData.fullName || "",
+        email: userData.email || "",
+        phone: userData.phone || "",
+      }));
+    } else {
+      toast.error("Vui lòng đăng nhập để đặt hàng.");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const shippingRates = {
     "Miền Nam": 10000,
@@ -112,28 +129,6 @@ const CheckOut = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Kiểm tra họ tên
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Vui lòng nhập họ và tên.";
-    }
-
-    // Kiểm tra email
-    if (!formData.email.trim()) {
-      newErrors.email = "Vui lòng nhập email.";
-    } else if (
-      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)
-    ) {
-      newErrors.email = "Email không hợp lệ.";
-    }
-
-    // Kiểm tra số điện thoại
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Vui lòng nhập số điện thoại.";
-    } else if (!/^\d{10}$/.test(formData.phone)) {
-      newErrors.phone = "Số điện thoại không hợp lệ (cần đúng 10 số).";
-    }
-
-    // Kiểm tra địa chỉ nếu giao hàng tận nơi
     if (deliveryOption === "delivery") {
       if (!formData.address.trim()) {
         newErrors.address = "Vui lòng nhập địa chỉ giao hàng.";
@@ -143,7 +138,6 @@ const CheckOut = () => {
         newErrors.province = "Vui lòng chọn tỉnh/thành phố.";
       }
     } else {
-      // Kiểm tra nếu là nhận tại cửa hàng
       if (!formData.province) {
         newErrors.province = "Vui lòng chọn chi nhánh nhận hàng.";
       }
@@ -184,7 +178,6 @@ const CheckOut = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      const user = JSON.parse(localStorage.getItem("user"));
       if (!user) {
         toast.error("Vui lòng đăng nhập để đặt hàng.");
         navigate("/login");
@@ -221,7 +214,8 @@ const CheckOut = () => {
           render: "Đặt hàng thành công!",
           type: "success",
           isLoading: false,
-          autoClose: 3000,
+          autoClose: 5000,
+          closeButton: true,
         });
 
         // clear all cart
@@ -245,8 +239,9 @@ const CheckOut = () => {
         setSelectedMethod("cod");
         setErrors({});
 
-        // move -> tab orders
-        navigate("/userProfile?tab=orders");
+        setTimeout(() => {
+          navigate("/userProfile#don-hang-cua-ban");
+        }, 2000);
       } catch (error) {
         console.error("Error submitting order:", error);
         toast.error(
@@ -291,11 +286,9 @@ const CheckOut = () => {
                 <input
                   type="text"
                   name="fullName"
-                  placeholder="Họ và tên"
-                  className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full border rounded p-3 focus:outline-none  bg-gray-100 opacity-70  cursor-not-allowed"
                   value={formData.fullName}
-                  onChange={handleInputChange}
-                  required
+                  readOnly
                 />
                 <p className="text-red-500 text-xs italic">{errors.fullName}</p>
               </div>
@@ -306,10 +299,9 @@ const CheckOut = () => {
                     type="email"
                     name="email"
                     placeholder="Email"
-                    className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full border rounded p-3 focus:outline-none  bg-gray-100 opacity-70  cursor-not-allowed"
                     value={formData.email}
-                    onChange={handleInputChange}
-                    required
+                    readOnly
                   />
                   <p className="text-red-500 text-xs italic">{errors.email}</p>
                 </div>
@@ -318,18 +310,15 @@ const CheckOut = () => {
                     type="tel"
                     name="phone"
                     placeholder="Số điện thoại"
-                    className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full border rounded p-3 focus:outline-none  bg-gray-100 opacity-70  cursor-not-allowed"
                     value={formData.phone}
-                    onChange={handleInputChange}
-                    required
+                    readOnly
                   />
                   <p className="text-red-500 text-xs italic">{errors.phone}</p>
                 </div>
               </div>
 
-              {/* Delivery Options */}
               <div className="mb-4">
-                {/* Delivery option */}
                 <div
                   className={`border ${
                     deliveryOption === "delivery"
@@ -358,7 +347,6 @@ const CheckOut = () => {
                   </div>
                 </div>
 
-                {/* Pickup option */}
                 <div
                   className={`border ${
                     deliveryOption === "pickup"
@@ -388,9 +376,7 @@ const CheckOut = () => {
                 </div>
               </div>
 
-              {/* Conditional display based on delivery option */}
               {deliveryOption === "delivery" ? (
-                // Delivery Address fields
                 <div className="mb-6">
                   <div className="mb-4">
                     <input
@@ -562,14 +548,6 @@ const CheckOut = () => {
               />
               <img src={bankCard} alt="Bank" width="30" />
               <span>Chuyển khoản qua ngân hàng</span>
-            </div>
-
-            <div className="flex justify-between items-center mt-8">
-              <span>
-                <a href="/cart" className="checkout-link">
-                  Giỏ hàng
-                </a>
-              </span>
             </div>
           </div>
           {/* Right Checkout */}
