@@ -148,7 +148,7 @@ const Dashboard = () => {
   // Chart configurations
   const textColor = isDarkTheme
     ? getCSSVariable("--text-white") : getCSSVariable("--text-color");
-  const secondaryTextColor = isDarkTheme ? "#ccc" : "#666"; 
+  const secondaryTextColor = isDarkTheme ? "#666" : "#999"; 
 
   const barChartOptions = {
     chart: {
@@ -191,7 +191,7 @@ const Dashboard = () => {
       align: "center",
       style: {
         fontSize: "16px",
-        color: textColor, // Màu tiêu đề
+        color: isDarkTheme ? "#666" : "#999", // Màu tiêu đề
       },
     },
     dataLabels: { enabled: false },
@@ -200,7 +200,7 @@ const Dashboard = () => {
         fontSize: "12px",
         color: "#fff",
       },
-      theme: "dark", 
+      theme: "dark",
       y: {
         formatter: (val) => formatCurrency(val),
       },
@@ -210,7 +210,7 @@ const Dashboard = () => {
       align: "center",
       verticalAlign: "middle",
       style: {
-        color: secondaryTextColor, 
+        color: secondaryTextColor,
         fontSize: "14px",
       },
     },
@@ -397,7 +397,7 @@ const Dashboard = () => {
                 <select
                   value={timeFilter}
                   onChange={(e) => setTimeFilter(e.target.value)}
-                  className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 cursor-pointer"
                 >
                   <option value="7days">7 ngày qua</option>
                   <option value="30days">30 ngày qua</option>
@@ -408,7 +408,7 @@ const Dashboard = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={handleExportStats}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center cursor-pointer"
                   >
                     <Download size={16} className="mr-2" />
                     Xuất CSV
@@ -488,10 +488,10 @@ const Dashboard = () => {
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-gray-600 dark:text-gray-900">
                             {stat.label}
                           </p>
-                          <p className="text-xl font-semibold text-gray-800 dark:text-white">
+                          <p className="text-xl font-semibold text-gray-600 dark:text-gray-900">
                             {stat.format === "number"
                               ? stat.value
                               : formatCurrency(stat.value)}

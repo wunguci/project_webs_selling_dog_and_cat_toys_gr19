@@ -92,7 +92,7 @@ const Register = () => {
           phone,
           email,
         }
-      );
+      ); 
 
       if (checkDuplicateResponse.data.duplicateEmail) {
         setErrors({ email: "Email đã tồn tại." });

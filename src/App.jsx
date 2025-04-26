@@ -20,6 +20,7 @@ import Category from "./pages/Category";
 import { CartProvider } from "./context/CartContext";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
+import SmoothScrollContainer from "./layout/SmoothScrollContainer";
 
 function App() {
   const dispatch = useDispatch();
@@ -41,28 +42,30 @@ function App() {
   }, [dispatch])
 
   return (
-    <BrowserRouter>
-      <ToastContainer />
-      <CartProvider>
-        <Routes>
-          <Route path="*" element={<NotFoundPage />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/product/:slug" element={<ProductDetail />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/cart" element={<CartShop />} />
-          <Route path="/checkout" element={<CheckOut />} />
-          <Route path="/userProfile" element={<UserProfile />} />
-          <Route path="/blogs/news" element={<News />} />
-          <Route path="/blogs/news/:slug" element={<NewsDetail />} />
-          <Route path="/categories/:slug" element={<Category />} />
-          <Route path="/user-management" element={<UserManagement />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/settings" element={<Settings />} />
-        </Routes>
-      </CartProvider>
-    </BrowserRouter>
+    <SmoothScrollContainer>
+      <BrowserRouter>
+        <ToastContainer />
+        <CartProvider>
+          <Routes>
+            <Route path="*" element={<NotFoundPage />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/product/:slug" element={<ProductDetail />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/cart" element={<CartShop />} />
+            <Route path="/checkout" element={<CheckOut />} />
+            <Route path="/userProfile" element={<UserProfile />} />
+            <Route path="/blogs/news" element={<News />} />
+            <Route path="/blogs/news/:slug" element={<NewsDetail />} />
+            <Route path="/categories/:slug" element={<Category />} />
+            <Route path="/user-management" element={<UserManagement />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
+        </CartProvider>
+      </BrowserRouter>
+    </SmoothScrollContainer>
   );
 }
 

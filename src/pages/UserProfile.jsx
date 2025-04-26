@@ -166,12 +166,10 @@ const UserProfile = () => {
     try {
       const userData = JSON.parse(localStorage.getItem("user"));
       if (userData && userData._id) {
-        // Gọi API logout
         await axiosInstance.post("/api/users/logout", { userId: userData._id });
         toast.success("Đăng xuất thành công!");
       }
 
-      // Xóa dữ liệu localStorage và chuyển hướng
       localStorage.removeItem("user");
       setTimeout(() => {
         navigate("/");
@@ -432,42 +430,6 @@ const UserProfile = () => {
           </div>
 
           <div className="md:col-span-4 bg-white shadow-md rounded-lg p-6">
-            <div className="flex space-x-4 border-b mb-6">
-              <a
-                href="#thong-tin-ca-nhan"
-                onClick={() => handleTabChange("profile")}
-                className={`cursor-pointer py-2 px-4 ${
-                  activeTab === "profile"
-                    ? "border-b-2 border-brown text-brown"
-                    : "text-gray-500"
-                }`}
-              >
-                Thông tin cá nhân
-              </a>
-              <a
-                onClick={() => handleTabChange("orders")}
-                href="#don-hang-cua-ban"
-                className={`cursor-pointer py-2 px-4 ${
-                  activeTab === "orders"
-                    ? "border-b-2 border-brown text-brown"
-                    : "text-gray-500"
-                }`}
-              >
-                Đơn hàng của bạn
-              </a>
-              <a
-                href="#lich-su-mua-hang"
-                onClick={() => handleTabChange("history")}
-                className={`cursor-pointer py-2 px-4 ${
-                  activeTab === "history"
-                    ? "border-b-2 border-brown text-brown"
-                    : "text-gray-500"
-                }`}
-              >
-                Lịch sử mua hàng
-              </a>
-            </div>
-
             {activeTab === "profile" && (
               <div>
                 <h1 className="text-2xl font-bold mb-4">Thông tin cá nhân</h1>
@@ -599,7 +561,7 @@ const UserProfile = () => {
               </div>
             )}
             {activeTab === "orders" && (
-              <div id="#don-hang-cua-ban"> 
+              <div id="#don-hang-cua-ban">
                 <h1 className="text-2xl font-bold mb-4">Đơn hàng của bạn</h1>
                 {pendingOrders.length === 0 &&
                 processingOrders.length === 0 &&
@@ -1122,7 +1084,11 @@ const UserProfile = () => {
             )}
 
             {showOrderModal && selectedOrder && (
-              <Modal onClose={() => setShowOrderModal(false)}>
+              <Modal
+                isOpen={showOrderModal}
+                onClose={() => setShowOrderModal(false)}
+                size="lg"
+              >
                 <div className="p-6">
                   <h2 className="flex gap-5 justify-center text-2xl font-bold mb-6 text-gray-800 text-center border-b pb-4">
                     <FaCartPlus className="w-10 h-10" />
@@ -1170,7 +1136,7 @@ const UserProfile = () => {
                             <span className="font-medium text-gray-800">
                               {item.product_id.name}
                             </span>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-gray-700">
                               {item.quantity} x{" "}
                               {item.product_id.price.toLocaleString()} VNĐ
                             </span>
@@ -1178,8 +1144,8 @@ const UserProfile = () => {
                         ))}
                       </ul>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">
+                    <div className="flex justify-between items-center mt-4">
+                      <p className="text-xl font-medium text-gray-500">
                         Tổng tiền:
                       </p>
                       <p className="text-xl font-bold text-brown">
@@ -1187,10 +1153,10 @@ const UserProfile = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="mt-8 flex justify-center">
+                  <div className="mt-9 flex justify-end">
                     <button
                       onClick={() => setShowOrderModal(false)}
-                      className="bg-gradient-to-r from-red-500 to-red-700 text-white py-3 px-6 rounded-lg hover:from-red-600 hover:to-red-800 shadow-md transition-transform transform hover:scale-105"
+                      className="bg-gradient-to-r from-[#e17100] to-[#e17100] text-white py-3 px-6 rounded-lg hover:from-[#e17100] hover:to-[#b75e05] shadow-md transition-transform transform hover:scale-105 cursor-pointer"
                     >
                       Đóng
                     </button>

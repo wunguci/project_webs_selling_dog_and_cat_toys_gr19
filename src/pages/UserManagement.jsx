@@ -355,15 +355,17 @@ const UserManagement = () => {
               ) : currentView === "list" ? (
                 <>
                   <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
-                    <div className="text-lg font-medium text-gray-800 dark:text-gray-100">
+                    <div className="text-lg font-medium text-gray-800 dark:text-gray-700">
                       {filteredUsers.length >= 0
                         ? `${filteredUsers.length} ${
-                            filteredUsers.length === 1 ? "người dùng" : "người dùng"
+                            filteredUsers.length === 1
+                              ? "người dùng"
+                              : "người dùng"
                           } được tìm thấy`
                         : "Đang tải danh sách người dùng..."}
                     </div>
                     {!isSearching && (
-                      <div className="text-sm text-gray-500 dark:text-gray-300">
+                      <div className="text-sm text-gray-400 dark:text-gray-700">
                         Trang {currentPage} / {totalPages}
                       </div>
                     )}
@@ -408,7 +410,7 @@ const UserManagement = () => {
                           <button
                             onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 1}
-                            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg disabled:opacity-50 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100"
+                            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg disabled:opacity-50 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 cursor-pointer"
                           >
                             Trước
                           </button>
@@ -423,7 +425,7 @@ const UserManagement = () => {
                                 className={`px-3 py-1 rounded-lg ${
                                   currentPage === page
                                     ? "bg-blue-600 text-white dark:bg-blue-700"
-                                    : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100"
+                                    : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 cursor-pointer"
                                 }`}
                               >
                                 {page}
@@ -433,7 +435,7 @@ const UserManagement = () => {
                           <button
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === totalPages}
-                            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg disabled:opacity-50 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100"
+                            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg disabled:opacity-50 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 cursor-pointer"
                           >
                             Tiếp
                           </button>

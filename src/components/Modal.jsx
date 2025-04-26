@@ -15,30 +15,28 @@ const Modal = ({ isOpen, onClose, title, size = "md", children }) => {
   if (!isOpen) return null;
 
   const sizeClasses = {
-    sm: "max-w-md", // Tăng từ max-w-sm (384px) lên max-w-md (448px)
-    md: "max-w-lg", // Tăng từ max-w-md (448px) lên max-w-lg (512px)
-    lg: "max-w-3xl", // Tăng từ max-w-2xl (672px) lên max-w-3xl (768px)
-    xl: "max-w-5xl", // Tăng từ max-w-4xl (896px) lên max-w-5xl (1024px)
+    sm: "max-w-md", 
+    md: "max-w-lg",
+    lg: "max-w-3xl", 
+    xl: "max-w-5xl", 
   };
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        {/* Overlay */}
         <div
           className="fixed inset-0 bg-gray-500 opacity-75 transition-opacity"
           aria-hidden="true"
           onClick={onClose}
         />
 
-        {/* Modal Content */}
         <div
           className={`inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:w-full ${sizeClasses[size]}`}
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"
         >
-          {/* Header */}
+          {/* header */}
           <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 border-b border-gray-200">
             <div className="flex items-center justify-between">
               <h3
@@ -69,8 +67,8 @@ const Modal = ({ isOpen, onClose, title, size = "md", children }) => {
             </div>
           </div>
 
-          {/* Body */}
-          <div className="px-4 py-5 sm:p-6 max-h-[80vh] overflow-y-auto">
+          {/* body */}
+          <div className="py-2 px-4 max-h-[80vh] overflow-y-auto">
             {children}
           </div>
         </div>

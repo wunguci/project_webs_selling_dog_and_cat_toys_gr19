@@ -23,11 +23,10 @@ import PopupSearch from "./PopupSearch";
 import axios from "axios";
 import CartButton from "./CartButton";
 import { useCart } from "../context/CartContext";
-import { toast } from "react-toastify"; // Thêm toast để thông báo
+import { toast } from "react-toastify";
 
 const Header = () => {
   const { fetchCart } = useCart();
-
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -47,6 +46,21 @@ const Header = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchHistory, setSearchHistory] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const headerRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []); 
 
   useEffect(() => {
     const handleResize = () => {
@@ -190,31 +204,28 @@ const Header = () => {
     };
   }, []);
 
-  // Đăng xuất với cập nhật trạng thái trong backend
+
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
       const userData = JSON.parse(localStorage.getItem("user"));
       if (userData && userData._id) {
-        // Gọi API để cập nhật trạng thái
         await axiosInstance.post("/api/users/logout", { userId: userData._id });
       }
 
-      // Xóa dữ liệu localStorage và reset state
       localStorage.removeItem("user");
       setUser({ name: "", avatar: "", role: "", id: "" });
       setLoggedIn(false);
       setIsAdmin(false);
 
-      // Chuyển hướng sau khi đăng xuất
       setTimeout(() => {
-        toast.success("Đăng xuất thành công!"); // Thông báo thành công
+        toast.success("Đăng xuất thành công!"); 
         navigate("/");
         setIsLoggingOut(false);
-      }, 2000);
+      }, 700);
     } catch (err) {
       console.error("Logout Error:", err.response?.data || err.message);
-      toast.error("Đăng xuất thất bại. Vui lòng thử lại!"); // Thông báo lỗi
+      toast.error("Đăng xuất thất bại. Vui lòng thử lại!");
       setIsLoggingOut(false);
     }
   };
@@ -287,16 +298,6 @@ const Header = () => {
       href: `/userProfile/`,
     },
     {
-      label: "Đơn hàng của bạn",
-      icon: <FaShoppingBag className="mr-2" />,
-      href: "/userProfile",
-    },
-    {
-      label: "Lịch sử mua hàng",
-      icon: <FaHistory className="mr-2" />,
-      href: "/userProfile",
-    },
-    {
       label: "Đăng xuất",
       icon: <FaSignOutAlt className="mr-2" />,
       onClick: handleLogout,
@@ -315,16 +316,6 @@ const Header = () => {
       href: `/user-management`,
     },
     {
-      label: "Đơn hàng của bạn",
-      icon: <FaShoppingBag className="mr-2" />,
-      href: "/userProfile",
-    },
-    {
-      label: "Lịch sử mua hàng",
-      icon: <FaHistory className="mr-2" />,
-      href: "/userProfile",
-    },
-    {
       label: "Đăng xuất",
       icon: <FaSignOutAlt className="mr-2" />,
       onClick: handleLogout,
@@ -332,138 +323,227 @@ const Header = () => {
   ];
 
   return (
-    <header className="bg-white shadow-md">
+    <header
+      className={`bg-white shadow-md sticky top-0 z-25 transition-all duration-300 ${
+        isScrolled ? "h-[60px] overflow-hidden" : "h-auto"
+      }`}
+      ref={headerRef}
+    >
       <LoadingOverlay isVisible={isLoggingOut} />
-      <div className="container mx-auto flex flex-wrap items-center justify-evenly py-2 px-4 md:px-8 lg:px-16">
-        {/* logo */}
-        <div className="flex items-center space-x-3">
-          <Link to="/">
-            <img
-              src={logo}
-              alt="Logo Pet Shop"
-              className="h-17 w-17 object-cover"
-            />
-          </Link>
-          <div>
-            <h1 className="text-xl font-bold text-gray-800">
-              PET STATION SHOP
-            </h1>
-            <p className="text-sm text-brown mx-4">The happy store for pet</p>
-          </div>
-        </div>
-
-        {/* mobile menu button & cart */}
-        <div className="flex items-center space-x-4 md:hidden ml-auto">
-          <CartButton idUser={user.id} />
-          <button
-            className="md:hidden text-gray-700 focus:outline-none ml-auto cursor-pointer relative"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            <RiMenu3Fill className="text-2xl" />
-          </button>
-        </div>
-
-        {/* search bar & links */}
-        {!isMobile && (
-          <>
-            <div
-              className="flex items-center w-full max-w-md lg:max-w-lg relative"
-              ref={searchRef}
-            >
-              <input
-                type="text"
-                placeholder="Nhập từ khóa tìm kiếm"
-                className="w-full px-4 py-2 border-brown rounded-l-full focus:outline-none"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyDown={handleSearchKeyDown}
-                onFocus={() => setShowPopupSearch(true)}
+      <div
+        className={`transition-all duration-300 ${
+          isScrolled
+            ? "-translate-y-full opacity-0"
+            : "translate-y-0 opacity-100"
+        }`}
+      >
+        <div className="container mx-auto flex flex-wrap items-center justify-evenly py-2 px-4 md:px-8 lg:px-16">
+          {/* logo */}
+          <div className="flex items-center space-x-3">
+            <Link to="/">
+              <img
+                src={logo}
+                alt="Logo Pet Shop"
+                className="h-17 w-17 object-cover"
               />
-              <Link to="/search" className="">
-                <button
-                  className="bg-brown px-4 py-2 text-white rounded-full focus:outline-none w-14 h-13 relative -left-4 flex items-center justify-center cursor-pointer"
-                  onClick={() => handleSearch(searchTerm)}
-                >
-                  <FaSearch className="text-lg" />
-                </button>
-              </Link>
-              {showPopupSearch && (
-                <PopupSearch
-                  searchResults={searchResults}
-                  searchHistory={searchHistory}
-                  onSearch={handleSearchResultClick}
-                  onHistoryItemClick={handleHistoryItemClick}
-                  onClearHistory={handleClearHistory}
+            </Link>
+            <div>
+              <h1 className="text-xl font-bold text-gray-800">
+                PET STATION SHOP
+              </h1>
+              <p className="text-sm text-brown mx-4">The happy store for pet</p>
+            </div>
+          </div>
+
+          {/* mobile menu button & cart */}
+          <div className="flex items-center space-x-4 md:hidden ml-auto">
+            <CartButton idUser={user.id} />
+            <button
+              className="md:hidden text-gray-700 focus:outline-none ml-auto cursor-pointer relative"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <RiMenu3Fill className="text-2xl" />
+            </button>
+          </div>
+
+          {/* search bar & links */}
+          {!isMobile && (
+            <>
+              <div
+                className="flex items-center w-full max-w-md lg:max-w-lg relative"
+                ref={searchRef}
+                style={{ position: "relative" }}
+              >
+                <input
+                  type="text"
+                  placeholder="Nhập từ khóa tìm kiếm"
+                  className="w-full px-4 py-2 border-brown rounded-l-full focus:outline-none"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={handleSearchKeyDown}
+                  onFocus={() => setShowPopupSearch(true)}
                 />
-              )}
+                <Link to="/search" className="">
+                  <button
+                    className="bg-brown px-4 py-2 text-white rounded-full focus:outline-none w-14 h-13 relative -left-4 flex items-center justify-center cursor-pointer"
+                    onClick={() => handleSearch(searchTerm)}
+                  >
+                    <FaSearch className="text-lg" />
+                  </button>
+                </Link>
+              </div>
+
+              {/* user */}
+              <div className="flex items-center space-x-4 cursor-pointer">
+                {loggedIn ? (
+                  isAdmin ? (
+                    <PopupMenu
+                      trigger={
+                        <div className="flex items-center space-x-2 cursor-pointer">
+                          <img
+                            src={user.avatar}
+                            alt="User avatar"
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                          <span
+                            className="text-gray-700 text-sm font-medium text-brown-hover"
+                            style={{ fontSize: "1.1rem" }}
+                          >
+                            {user.name}
+                          </span>
+                        </div>
+                      }
+                      options={menuOptionsAdmin}
+                      menuType="menuOptionsUser"
+                    />
+                  ) : (
+                    <PopupMenu
+                      trigger={
+                        <div className="flex items-center space-x-2 cursor-pointer">
+                          <img
+                            src={user.avatar}
+                            alt="User avatar"
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                          <span
+                            className="text-gray-700 text-sm font-medium text-brown-hover"
+                            style={{ fontSize: "1.1rem" }}
+                          >
+                            {user.name}
+                          </span>
+                        </div>
+                      }
+                      options={menuOptionsUser}
+                      menuType="menuOptionsUser"
+                    />
+                  )
+                ) : (
+                  <>
+                    <Link
+                      to="/register"
+                      className="text-gray-700 text-sm text-brown-hover"
+                    >
+                      ĐĂNG KÝ
+                    </Link>
+                    <span className="text-brown mb-1">|</span>
+                    <Link
+                      to="/login"
+                      className="text-gray-700 text-sm text-brown-hover"
+                    >
+                      ĐĂNG NHẬP
+                    </Link>
+                  </>
+                )}
+                <CartButton idUser={user.id} />
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div
+        className={`transition-all duration-300 ${
+          isScrolled ? "fixed top-0 left-0 right-0 bg-white shadow-md" : ""
+        }`}
+      >
+        {/* nav bar */}
+        <nav className={`border-none ${isMobile ? "hidden" : ""}`}>
+          <div className="container mx-auto flex flex-wrap items-center justify-evenly px-4 py-2 lg:px-16">
+            <div className="relative group">
+              <PopupMenu
+                trigger={
+                  <button className="flex items-center space-x-3 bg-brown w-65 h-12 text-white px-5 rounded-lg focus:outline-none cursor-pointer">
+                    <IoMdMenu className="text-2xl" />
+                    <span className="font-semibold text-2sm">
+                      DANH MỤC SẢN PHẨM
+                    </span>
+                  </button>
+                }
+                options={menuOptionsCategories}
+                menuType="menuOptionsCategories"
+              />
             </div>
 
-            {/* user */}
-            <div className="flex items-center space-x-4 cursor-pointer">
-              {loggedIn ? (
-                isAdmin ? (
-                  <PopupMenu
-                    trigger={
-                      <div className="flex items-center space-x-2 cursor-pointer">
-                        <img
-                          src={user.avatar}
-                          alt="User avatar"
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
-                        <span
-                          className="text-gray-700 text-sm font-medium text-brown-hover"
-                          style={{ fontSize: "1.1rem" }}
-                        >
-                          {user.name}
-                        </span>
-                      </div>
-                    }
-                    options={menuOptionsAdmin}
-                    menuType="menuOptionsUser"
-                  />
-                ) : (
-                  <PopupMenu
-                    trigger={
-                      <div className="flex items-center space-x-2 cursor-pointer">
-                        <img
-                          src={user.avatar}
-                          alt="User avatar"
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
-                        <span
-                          className="text-gray-700 text-sm font-medium text-brown-hover"
-                          style={{ fontSize: "1.1rem" }}
-                        >
-                          {user.name}
-                        </span>
-                      </div>
-                    }
-                    options={menuOptionsUser}
-                    menuType="menuOptionsUser"
-                  />
-                )
-              ) : (
-                <>
-                  <Link
-                    to="/register"
-                    className="text-gray-700 text-sm text-brown-hover"
+            <div className="hidden lg:flex space-x-8">
+              <HoverPopupMenu
+                trigger={
+                  <a
+                    href="#"
+                    className="text-gray-700 flex items-center text-brown-hover"
                   >
-                    ĐĂNG KÝ
-                  </Link>
-                  <span className="text-brown mb-1">|</span>
-                  <Link
-                    to="/login"
-                    className="text-gray-700 text-sm text-brown-hover"
+                    SHOP CHO CÚN
+                    <FaCaretDown className="ml-2 text-lg " />
+                  </a>
+                }
+                options={menuOptionsCategoriesDog}
+                menuType="menuOptionsDog"
+              />
+
+              <HoverPopupMenu
+                trigger={
+                  <a
+                    href="#"
+                    className="text-gray-700 flex items-center text-brown-hover"
                   >
-                    ĐĂNG NHẬP
-                  </Link>
-                </>
-              )}
-              <CartButton idUser={user.id} />
+                    SHOP CHO MÈO
+                    <FaCaretDown className="ml-2 text-lg" />
+                  </a>
+                }
+                options={menuOptionsCategoriesCat}
+                menuType="menuOptionsCat"
+              />
+
+              <a href="#" className="text-gray-700 text-brown-hover">
+                KHUYẾN MÃI
+              </a>
+              <a href="/blogs/news" className="text-gray-700 text-brown-hover">
+                TIN TỨC
+              </a>
             </div>
-          </>
-        )}
+
+            <div className="flex items-center space-x-2 mt-4 lg:mt-0">
+              <FaPhone className="text-lg text-brown" />
+              <span className="font-medium">
+                Hotline:
+                <span className="text-red text-brown-hover cursor-pointer">
+                  {" "}
+                  0915020903
+                </span>
+              </span>
+            </div>
+          </div>
+        </nav>
       </div>
+
+      {showPopupSearch && (
+        <PopupSearch
+          searchResults={searchResults}
+          searchHistory={searchHistory}
+          onSearch={handleSearchResultClick}
+          onHistoryItemClick={handleHistoryItemClick}
+          onClearHistory={handleClearHistory}
+        />
+      )}
 
       {/* overlay */}
       {menuOpen && (
@@ -589,74 +669,6 @@ const Header = () => {
           </li>
         </ul>
       </div>
-
-      {/* Navigation Bar */}
-      <nav className={`border-none ${isMobile ? "hidden" : ""}`}>
-        <div className="container mx-auto flex flex-wrap items-center justify-evenly px-4 py-2 lg:px-16">
-          <div className="relative group">
-            <PopupMenu
-              trigger={
-                <button className="flex items-center space-x-3 bg-brown w-65 h-12 text-white px-5 rounded-lg focus:outline-none cursor-pointer">
-                  <IoMdMenu className="text-2xl" />
-                  <span className="font-semibold text-2sm">
-                    DANH MỤC SẢN PHẨM
-                  </span>
-                </button>
-              }
-              options={menuOptionsCategories}
-              menuType="menuOptionsCategories"
-            />
-          </div>
-
-          <div className="hidden lg:flex space-x-8">
-            <HoverPopupMenu
-              trigger={
-                <a
-                  href="#"
-                  className="text-gray-700 flex items-center text-brown-hover"
-                >
-                  SHOP CHO CÚN
-                  <FaCaretDown className="ml-2 text-lg " />
-                </a>
-              }
-              options={menuOptionsCategoriesDog}
-              menuType="menuOptionsDog"
-            />
-
-            <HoverPopupMenu
-              trigger={
-                <a
-                  href="#"
-                  className="text-gray-700 flex items-center text-brown-hover"
-                >
-                  SHOP CHO MÈO
-                  <FaCaretDown className="ml-2 text-lg" />
-                </a>
-              }
-              options={menuOptionsCategoriesCat}
-              menuType="menuOptionsCat"
-            />
-
-            <a href="#" className="text-gray-700 text-brown-hover">
-              KHUYẾN MÃI
-            </a>
-            <a href="/blogs/news" className="text-gray-700 text-brown-hover">
-              TIN TỨC
-            </a>
-          </div>
-
-          <div className="flex items-center space-x-2 mt-4 lg:mt-0">
-            <FaPhone className="text-lg text-brown" />
-            <span className="font-medium">
-              Hotline:
-              <span className="text-red text-brown-hover cursor-pointer">
-                {" "}
-                0915020903
-              </span>
-            </span>
-          </div>
-        </div>
-      </nav>
     </header>
   );
 };
