@@ -519,13 +519,12 @@ const Header = () => {
                 options={menuOptionsCategoriesCat}
                 menuType="menuOptionsCat"
               />
-
-              <a href="#" className="text-gray-700 text-brown-hover">
-                KHUYẾN MÃI
-              </a>
               <a href="/blogs/news" className="text-gray-700 text-brown-hover">
                 TIN TỨC
               </a>
+              <Link to="/contactus" className="text-gray-700 text-brown-hover">
+                VỀ CHÚNG TÔI
+              </Link>
             </div>
 
             <div className="flex items-center space-x-2 mt-4 lg:mt-0">
@@ -660,18 +659,18 @@ const Header = () => {
           </li>
           <li className="py-1">
             <Link
-              href="#"
-              className="block text-gray-700 text-sm text-brown-hover"
-            >
-              KHUYẾN MÃI
-            </Link>
-          </li>
-          <li className="py-1">
-            <Link
               href="/blogs/news"
               className="block text-gray-700 text-sm text-brown-hover"
             >
               TIN TỨC
+            </Link>
+          </li>
+          <li className="py-1">
+            <Link
+              href="/contactus"
+              className="block text-gray-700 text-sm text-brown-hover"
+            >
+              VỀ CHÚNG TÔI
             </Link>
           </li>
         </ul>
