@@ -1,4 +1,5 @@
 import { Home, Users, Settings, LogOut, Bell } from "lucide-react";
+import { FaBell } from "react-icons/fa";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { RiGalleryView2 } from "react-icons/ri";
 import { MdOutlineInventory2 } from "react-icons/md";
@@ -154,11 +155,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, currentUser }) => {
                     </p>
                   </div>
                 </div>
-                <button className="relative notification-btn">
-                  <Bell size={18} />
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                <button className="relative notification-btn cursor-pointer">
+                  <FaBell size={18} />
+                  {/* <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                     3
-                  </span>
+                  </span> */}
                 </button>
               </div>
               <div className="mt-4 flex items-center justify-between">

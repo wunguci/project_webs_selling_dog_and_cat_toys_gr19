@@ -19,7 +19,7 @@ const TopNavigation = ({ setMobileSidebarOpen, currentUser }) => {
           </button>
         </div>
         <div className="flex items-center space-x-4">
-          <button className="p-2 text-gray-500 hover:text-gray-700">
+          <button className="p-2 text-gray-500 hover:text-gray-700 cursor-pointer">
             <FaBell size={20} />
           </button>
           <div className="flex items-center">
