@@ -21,5 +21,4 @@ router.get('/:slug', getProductByName);
 router.delete('/:id', deleteProduct);
 router.post("/filterPrice", filterProductsByPrice)
 
-
 export default router;

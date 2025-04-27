@@ -21,6 +21,7 @@ import { CartProvider } from "./context/CartContext";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import OrderManagement from "./pages/OrderManagement";
+import InventoryManagement from "./pages/InventoryManagement";
 import SmoothScrollContainer from "./layout/SmoothScrollContainer";
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/order-management" element={<OrderManagement />} />
+            <Route path="/inventory-management" element={<InventoryManagement />} />
           </Routes>
         </CartProvider>
       </BrowserRouter>

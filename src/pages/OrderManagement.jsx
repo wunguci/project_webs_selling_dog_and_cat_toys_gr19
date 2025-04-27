@@ -220,7 +220,7 @@ const OrderManagement = () => {
           currentUser={currentUser}
         />
         <main className="container mx-auto px-4 py-8 overflow-y-auto">
-          <h1 className="text-2xl font-bold text-gray-800 mb-8">
+          <h1 className="text-2xl font-bold text-gray-800 mb-3">
             Order Management
           </h1>
 
