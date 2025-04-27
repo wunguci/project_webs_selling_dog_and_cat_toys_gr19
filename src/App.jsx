@@ -23,6 +23,7 @@ import Settings from "./pages/Settings";
 import OrderManagement from "./pages/OrderManagement";
 import InventoryManagement from "./pages/InventoryManagement";
 import SmoothScrollContainer from "./layout/SmoothScrollContainer";
+import ContactUs from "./pages/ContactUs";
 
 function App() {
   const dispatch = useDispatch();
@@ -65,7 +66,11 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/order-management" element={<OrderManagement />} />
-            <Route path="/inventory-management" element={<InventoryManagement />} />
+            <Route
+              path="/inventory-management"
+              element={<InventoryManagement />}
+            />
+            <Route path="/contactus" element={<ContactUs />} />
           </Routes>
         </CartProvider>
       </BrowserRouter>
