@@ -120,7 +120,9 @@ const OrderManagement = () => {
     try {
       const response = await axiosInstance.put(`/api/orders/${orderId}`, {
         status: newStatus,
+        updatedAt: Date.now(),
       });
+  
       setOrders(
         orders.map((order) => (order._id === orderId ? response.data : order))
       );
