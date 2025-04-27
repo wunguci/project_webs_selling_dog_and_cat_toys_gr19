@@ -1,5 +1,7 @@
 import { Home, Users, Settings, LogOut, Bell } from "lucide-react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { RiGalleryView2 } from "react-icons/ri";
+import { MdOutlineInventory2 } from "react-icons/md";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import LoadingOverlay from "../components/LoadingOverlay";
@@ -64,9 +66,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, currentUser }) => {
       icon: <Home size={18} className="mr-3" />,
     },
     {
+      path: "/inventory-management",
+      label: "Inventory Management",
+      icon: <MdOutlineInventory2 size={18} className="mr-3" />,
+    },
+    {
       path: "/order-management",
       label: "Order Management",
-      icon: <Home size={18} className="mr-3" />,
+      icon: <RiGalleryView2 size={18} className="mr-3" />,
     },
     {
       path: "/user-management",
@@ -163,7 +170,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, currentUser }) => {
                   <LogOut size={16} className="mr-2" />
                   Logout
                 </button>
-                <button
+                {/* <button
                   onClick={toggleDarkMode}
                   className="text-sm theme-toggle-btn cursor-pointer"
                 >
@@ -172,7 +179,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, currentUser }) => {
                   ) : (
                     <MdDarkMode size={25} />
                   )}
-                </button>
+                </button> */}
               </div>
             </div>
           )}

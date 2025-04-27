@@ -22,12 +22,12 @@ const productSchema = new mongoose.Schema({
     default: 0,
   },
   images: {
-    type: [String], // Mảng các đường dẫn ảnh
+    type: [String], 
     default: [],
   },
   category_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category', // Tham chiếu đến model Category
+    ref: 'Category', 
     required: true,
   },
   slug: {
