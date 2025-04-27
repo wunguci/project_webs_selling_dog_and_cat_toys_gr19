@@ -256,7 +256,7 @@ const UserManagement = () => {
           currentUser={currentUser}
         />
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          <h1 className="text-2xl font-bold text-gray-800">User Management</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Quản lý người dùng</h1>
           <div className="max-w-7xl mx-auto">
             {currentView === "list" && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -303,7 +303,7 @@ const UserManagement = () => {
                 <div className="flex space-x-3 mt-4 md:mt-0">
                   <button
                     onClick={addNewUser}
-                    className="bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 flex items-center shadow-sm transition-colors"
+                    className="bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 flex items-center shadow-sm transition-colors cursor-pointer"
                   >
                     <UserPlus size={18} className="mr-2" />
                     Thêm người dùng

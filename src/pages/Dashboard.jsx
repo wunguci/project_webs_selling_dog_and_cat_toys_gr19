@@ -540,7 +540,7 @@ const Dashboard = () => {
                       <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                           <thead>
-                            <tr className="text-left text-gray-600 dark:text-gray-600 border-b dark:border-gray-700">
+                            <tr className="text-left text-gray-600 dark:text-gray-600 border-b dark:border-gray-400">
                               <th className="pb-2 px-2">Mã</th>
                               <th className="pb-2 px-2">Khách hàng</th>
                               <th className="pb-2 px-2">Tổng tiền</th>
@@ -552,7 +552,7 @@ const Dashboard = () => {
                             {recentOrders.map((order) => (
                               <tr
                                 key={order.id}
-                                className="border-b dark:border-gray-700"
+                                className="border-b dark:border-gray-400 h-12"
                               >
                                 <td className="py-2 px-2">
                                   {order.id.slice(-6)}
@@ -596,7 +596,7 @@ const Dashboard = () => {
                         {notifications.map((notification, index) => (
                           <li
                             key={index}
-                            className="flex items-start gap-2 text-gray-800 dark:text-gray-600 border-b dark:border-gray-700 pb-2"
+                            className="flex items-start gap-2 text-gray-800 dark:text-gray-600 border-b dark:border-gray-400 pb-2"
                           >
                             {getNotificationIcon(notification.type)}
                             <div>
