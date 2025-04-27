@@ -282,14 +282,14 @@ const Header = () => {
     .filter((category) => category.type === "SHOP CHO MÈO")
     .map((category) => ({
       label: category.name,
-      href: `/categories/${category.slug_type}`,
+      href: `/categories/${category.slug}`,
     }));
 
   const menuOptionsCategoriesDog = categories
     .filter((category) => category.type === "SHOP CHO CÚN")
     .map((category) => ({
       label: category.name,
-      href: `/categories/${category.slug_type}`,
+      href: `/categories/${category.slug}`,
     }));
 
   const menuOptionsUser = [
