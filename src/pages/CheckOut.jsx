@@ -12,7 +12,6 @@ import { CheckCheck, ChevronDown } from "lucide-react";
 
 const CheckOut = () => {
   const [deliveryOption, setDeliveryOption] = useState("delivery");
-  const [showCouponInput, setShowCouponInput] = useState(false);
   const [shippingCost, setShippingCost] = useState(0);
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedMethod, setSelectedMethod] = useState("cod");

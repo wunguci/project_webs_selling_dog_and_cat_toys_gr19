@@ -15,30 +15,6 @@ function Product({ product }) {
   const { addToCart } = useCart();
   const navigate = useNavigate();
 
-  // const handleAddToCart = async (product) => {
-  //   const user = JSON.parse(localStorage.getItem("user"));
-  //   const userId = user?._id;
-  //   if (!userId) {
-  //     alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await axiosInstance.post("/api/carts/add", {
-  //       user_id: userId,
-  //       product_id: product._id,
-  //       quantity: 1,
-  //     });
-
-  //     if (response.status === 201) {
-  //       toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
-  //       onCartUpdate();
-  //     }
-  //   } catch (error) {
-  //     console.error("Lỗi khi thêm vào giỏ hàng:", error);
-  //     alert(error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!");
-  //   }
-  // };
   const user = JSON.parse(localStorage.getItem("user"));
   const handleAddToCart = async () => {
     if (!user?._id) {
@@ -59,16 +35,29 @@ function Product({ product }) {
     setOpenQuantityPopup(true);
   };
 
-  const handleConfirmBuyNow = () => {
+  const handleConfirmBuyNow = async () => {
+    // if (!user?._id) {
+    //   navigate("/login");
+    //   return;
+    // }
+
+    // addToCart(user._id, product._id, quantity);
+
+    // setOpenQuantityPopup(false);
+    // navigate("/checkout");
+
     if (!user?._id) {
       navigate("/login");
       return;
     }
+    const result = await addToCart(user._id, product._id, quantity);
 
-    addToCart(user._id, product._id, quantity);
-
-    setOpenQuantityPopup(false);
-    navigate("/checkout");
+    if (result.success) {
+      setOpenQuantityPopup(false);
+      navigate("/checkout");
+    } else {
+      toast.error(result.message);
+    }
   };
 
   const handleIncreaseQuantity = () => {

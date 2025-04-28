@@ -167,8 +167,6 @@ const ProductDetail = () => {
     } else {
       toast.error(result.message);
     }
-    // dispatch(addToCart({ ...productDetail, cartQuantity: quantity }));
-    // navigate("/checkout");
   };
 
   const user = JSON.parse(localStorage.getItem("user"));

@@ -8,12 +8,12 @@ import { toast } from "react-toastify";
 
 function DialogProduct({ open, setOpen, product }) {
   if (!open) return null;
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   // Tạo mảng images với id duy nhất cho mỗi ảnh
   const imagesWithIds = product.images.map((image, index) => ({
     id: `${product._id}-${index}`, // Tạo id duy nhất bằng product id + index
-    url: image
+    url: image,
   }));
 
   const [selectedImage, setSelectedImage] = useState(imagesWithIds[0].url);
@@ -25,13 +25,13 @@ function DialogProduct({ open, setOpen, product }) {
   };
 
   const { addToCart } = useCart();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
 
   const handleClick = () => {
-    navigate(`/product/${product.slug}`)
+    navigate(`/product/${product.slug}`);
     window.scrollTo(0, 0);
-  }
+  };
 
   const handleDecrease = () => {
     if (quantity > 1) {
@@ -50,12 +50,24 @@ function DialogProduct({ open, setOpen, product }) {
     }
   };
 
-  const handleBuyNow = () => {
-      dispatch(addToCart({ ...product, cartQuantity: quantity }));
+  const handleBuyNow = async () => {
+    // dispatch(addToCart({ ...product, cartQuantity: quantity }));
+    // navigate("/checkout");
+    // window.scrollTo(0, 0);
+
+    if (!user?._id) {
+      navigate("/login");
+      return;
+    }
+    const result = await addToCart(user._id, product._id, quantity);
+
+    if (result.success) {
       navigate("/checkout");
-      window.scrollTo(0, 0);
-    };
-  
+    } else {
+      toast.error(result.message);
+    }
+  };
+
   const user = JSON.parse(localStorage.getItem("user"));
   const handleAddToCart = async () => {
     if (!user?._id) {
@@ -64,7 +76,7 @@ function DialogProduct({ open, setOpen, product }) {
     }
 
     const result = await addToCart(user._id, product._id, quantity);
-    
+
     if (result.success) {
       setOpen(false);
       toast.success(result.message);
@@ -75,10 +87,16 @@ function DialogProduct({ open, setOpen, product }) {
 
   return (
     <div className="fixed inset-0 flex justify-center items-center z-[10000000]">
-      <div className="absolute inset-0 bg-black opacity-50" onClick={() => setOpen(false)}></div>
+      <div
+        className="absolute inset-0 bg-black opacity-50"
+        onClick={() => setOpen(false)}
+      ></div>
 
       <div className="bg-white p-6 rounded-lg shadow-lg w-[900px] relative z-10">
-        <IoIosCloseCircle className="size-6 absolute -top-3 -right-3 text-amber-50" onClick={()=>setOpen(false)}/>
+        <IoIosCloseCircle
+          className="size-6 absolute -top-3 -right-3 text-amber-50"
+          onClick={() => setOpen(false)}
+        />
 
         <div className="flex gap-5">
           <div className="w-1/2 flex flex-col justify-center items-center gap-6">
@@ -94,7 +112,9 @@ function DialogProduct({ open, setOpen, product }) {
                 <div
                   key={image.id}
                   className={`size-16 md:size-20 cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                    selectedImageId === image.id ? "border-amber-500 scale-110" : "border-transparent hover:border-amber-300"
+                    selectedImageId === image.id
+                      ? "border-amber-500 scale-110"
+                      : "border-transparent hover:border-amber-300"
                   }`}
                   onClick={() => handleImageClick(image)}
                 >
@@ -108,12 +128,20 @@ function DialogProduct({ open, setOpen, product }) {
             </div>
           </div>
           <div className="w-1/2 flex flex-col gap-7">
-            <Link to={`/product/${product.slug}`} className="font-bold text-2xl text-[#333] text-brown-hover transition-colors duration-150">{product.name}</Link>
-            <span>Thương hiệu: Khác | Tình trạng: {product.sold === product.stock ? "Hết hàng":"Còn hàng"}</span>
+            <Link
+              to={`/product/${product.slug}`}
+              className="font-bold text-2xl text-[#333] text-brown-hover transition-colors duration-150"
+            >
+              {product.name}
+            </Link>
+            <span>
+              Thương hiệu: Khác | Tình trạng:{" "}
+              {product.sold === product.stock ? "Hết hàng" : "Còn hàng"}
+            </span>
             <div className="bg-brown w-44 text-center p-1 skew-x-[-15deg] ml-1">
               <h2 className="text-2xl text-white font-bold">
                 {/* {new Intl.NumberFormat('vi-VN').format(quantity * product.price)}đ */}
-                {new Intl.NumberFormat('vi-VN').format(product.price)}đ
+                {new Intl.NumberFormat("vi-VN").format(product.price)}đ
               </h2>
             </div>
             <div className="flex items-center gap-5">
@@ -126,7 +154,9 @@ function DialogProduct({ open, setOpen, product }) {
                 >
                   -
                 </button>
-                <span className="px-5 border-x-2 border-gray-300">{quantity}</span>
+                <span className="px-5 border-x-2 border-gray-300">
+                  {quantity}
+                </span>
                 <button
                   className="px-3 py-1 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition-colors duration-200"
                   onClick={handleIncrease}
@@ -135,8 +165,18 @@ function DialogProduct({ open, setOpen, product }) {
                 </button>
               </div>
             </div>
-            <button onClick={()=>handleAddToCart()} className="w-60 border-2 text-white bg-brown hover:bg-white rounded-[5px] hover:border-[#d06a03] py-2 transition-colors duration-200">Thêm vào giỏ hàng</button>
-            <button onClick={()=>handleBuyNow()} className="w-60 border-2 text-white bg-brown hover:bg-white rounded-[5px] hover:border-[#d06a03] py-2 transition-colors duration-200">Mua ngay</button>
+            <button
+              onClick={() => handleAddToCart()}
+              className="w-60 border-2 text-white bg-brown hover:bg-white rounded-[5px] hover:border-[#d06a03] py-2 transition-colors duration-200"
+            >
+              Thêm vào giỏ hàng
+            </button>
+            <button
+              onClick={() => handleBuyNow()}
+              className="w-60 border-2 text-white bg-brown hover:bg-white rounded-[5px] hover:border-[#d06a03] py-2 transition-colors duration-200"
+            >
+              Mua ngay
+            </button>
           </div>
         </div>
       </div>

@@ -23,7 +23,6 @@ const InventoryManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const searchTimeoutRef = useRef(null);
 
-
   const fetchCurrentUser = useCallback(async () => {
     try {
       const userLocal = JSON.parse(localStorage.getItem("user"));
@@ -32,10 +31,7 @@ const InventoryManagement = () => {
       const response = await axiosInstance.get(`api/users/${userLocal._id}`);
       setCurrentUser(response.data);
     } catch (err) {
-      console.error(
-        "Lỗi:",
-        err.response?.data || err.message
-      );
+      console.error("Lỗi:", err.response?.data || err.message);
       setCurrentUser({
         fullName: "Admin User",
         email: "admin@example.com",
@@ -104,7 +100,6 @@ const InventoryManagement = () => {
     }
   };
 
-
   const handleSubmit = async (productData) => {
     try {
       if (currentProduct) {
@@ -126,27 +121,27 @@ const InventoryManagement = () => {
     }
   };
 
-   const handleSearch = useCallback(
-     async (term) => {
-       try {
-         if (term.trim() === "") {
-           fetchProducts();
-           return;
-         }
+  const handleSearch = useCallback(
+    async (term) => {
+      try {
+        if (term.trim() === "") {
+          fetchProducts();
+          return;
+        }
 
-         const response = await axiosInstance.get(`api/products/search`, {
-           params: { query: term },
-         });
-         setProducts(response.data);
-       } catch (err) {
-         console.error("Lỗi khi tìm kiếm sản phẩm:", err);
-         if (err.response?.status !== 400) {
-           toast.error("Lỗi khi tìm kiếm sản phẩm");
-         }
-       }
-     },
-     [fetchProducts]
-   );
+        const response = await axiosInstance.get(`api/products/search`, {
+          params: { query: term },
+        });
+        setProducts(response.data);
+      } catch (err) {
+        console.error("Lỗi khi tìm kiếm sản phẩm:", err);
+        if (err.response?.status !== 400) {
+          toast.error("Lỗi khi tìm kiếm sản phẩm");
+        }
+      }
+    },
+    [fetchProducts]
+  );
 
   useEffect(() => {
     if (searchTimeoutRef.current) {
@@ -163,7 +158,6 @@ const InventoryManagement = () => {
       }
     };
   }, [searchTerm, handleSearch]);
-
 
   const handleFilter = async (categoryId) => {
     if (!categoryId) {
