@@ -75,10 +75,16 @@ function DialogProduct({ open, setOpen, product }) {
 
   return (
     <div className="fixed inset-0 flex justify-center items-center z-[10000000]">
-      <div className="absolute inset-0 bg-black opacity-50" onClick={() => setOpen(false)}></div>
+      <div
+        className="absolute inset-0 bg-black opacity-50"
+        onClick={() => setOpen(false)}
+      ></div>
 
       <div className="bg-white p-6 rounded-lg shadow-lg w-[900px] relative z-10">
-        <IoIosCloseCircle className="size-6 absolute -top-3 -right-3 text-amber-50" onClick={()=>setOpen(false)}/>
+        <IoIosCloseCircle
+          className="size-6 absolute -top-3 -right-3 text-amber-50"
+          onClick={() => setOpen(false)}
+        />
 
         <div className="flex gap-5">
           <div className="w-1/2 flex flex-col justify-center items-center gap-6">
@@ -94,7 +100,9 @@ function DialogProduct({ open, setOpen, product }) {
                 <div
                   key={image.id}
                   className={`size-16 md:size-20 cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                    selectedImageId === image.id ? "border-amber-500 scale-110" : "border-transparent hover:border-amber-300"
+                    selectedImageId === image.id
+                      ? "border-amber-500 scale-110"
+                      : "border-transparent hover:border-amber-300"
                   }`}
                   onClick={() => handleImageClick(image)}
                 >
@@ -107,39 +115,57 @@ function DialogProduct({ open, setOpen, product }) {
               ))}
             </div>
           </div>
-          <div className="w-1/2 flex flex-col justify-between">
-          <div className="flex flex-col gap-7">
-            <Link to={`/product/${product.slug}`} className="font-bold text-2xl text-[#333] text-brown-hover transition-colors duration-150">{product.name}</Link>
-            <span className="opacity-50">Thương hiệu: Khác | Tình trạng: {product.sold === product.stock ? "Hết hàng":"Còn hàng"}</span>
-            <div className="flex items-center gap-5">
-                      <h5 className="font-bold text-[25px] text-red-600">
-                {/* {new Intl.NumberFormat('vi-VN').format(quantity * product.price)}đ */}
-                {new Intl.NumberFormat('vi-VN').format(product.price)}đ
+          <div className="w-1/2 flex flex-col gap-17 justify-center">
+            <div className="flex flex-col gap-7">
+              <Link
+                to={`/product/${product.slug}`}
+                className="font-bold text-2xl text-[#333] text-brown-hover transition-colors duration-150"
+              >
+                {product.name}
+              </Link>
+              <div className="flex items-center gap-5">
+                <h5 className="font-bold text-[25px] text-red-600">
+                  {/* {new Intl.NumberFormat('vi-VN').format(quantity * product.price)}đ */}
+                  {new Intl.NumberFormat("vi-VN").format(product.price)}đ
                 </h5>
+              </div>
+              <div className="flex items-center gap-5">
+                <span className="text-gray-700">Số lượng: </span>
+                <div className="flex items-center w-fit bg-white border border-gray-300 rounded-full shadow-sm">
+                  <button
+                    className="size-10 text-lg font-bold bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={handleDecrease}
+                    disabled={quantity <= 1}
+                  >
+                    -
+                  </button>
+                  <span className="px-6 text-lg font-medium">{quantity}</span>
+                  <button
+                    className="size-10 text-lg font-bold bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition rounded-full"
+                    onClick={handleIncrease}
+                  >
+                    +
+                  </button>
                 </div>
-            <div className="flex items-center gap-5">
-              <span className="text-gray-700">Số lượng: </span>
-              <div className="flex items-center w-fit bg-white border border-gray-300 rounded-full shadow-sm">
-                    <button
-                      className="size-10 text-lg font-bold bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
-                      onClick={handleDecrease}
-                      disabled={quantity <= 1}
-                    >
-                      -
-                    </button>
-                    <span className="px-6 text-lg font-medium">{quantity}</span>
-                    <button
-                      className="size-10 text-lg font-bold bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition rounded-full"
-                      onClick={handleIncrease}
-                    >
-                      +
-                    </button>
-                  </div>
+              </div>
+              <span className="opacity-50">
+                Thương hiệu: Khác | Tình trạng:{" "}
+                {product.sold === product.stock ? "Hết hàng" : "Còn hàng"}
+              </span>
             </div>
-            </div>
-            <div className="flex gap-5">
-              <button onClick={()=>handleAddToCart()} className="mt-3 mb-2 border-2 border-amber-600 duration-200 transition-colors hover:bg-amber-600 hover:text-white w-full py-2 rounded-[10px] font-medium cursor-pointer">Thêm vào giỏ hàng</button>
-              <button onClick={()=>handleBuyNow()} className="mt-3 mb-2 bg-[#e17100] text-white border-2 border-[#e17100] duration-200 transition-colors hover:bg-white text-brown-hover w-full py-2 rounded-[10px] font-medium cursor-pointer">Mua ngay</button>
+            <div className="flex flex-col w-full justify-center items-center">
+              <button
+                onClick={() => handleAddToCart()}
+                className="mt-3 mb-2 border-2 border-amber-600 duration-200 transition-colors hover:bg-amber-600 hover:text-white w-75 py-2 rounded-[10px] font-medium cursor-pointer"
+              >
+                Thêm vào giỏ hàng
+              </button>
+              <button
+                onClick={() => handleBuyNow()}
+                className="mt-3 mb-2 bg-[#e17100] text-white border-2 border-[#e17100] duration-200 transition-colors hover:bg-white text-brown-hover w-75 py-2 rounded-[10px] font-medium cursor-pointer"
+              >
+                Mua ngay
+              </button>
             </div>
           </div>
         </div>

@@ -119,23 +119,26 @@ function SaleProduct({ productSale }) {
                     </button>
                   </div>
                 </div>
-                <div className="py-3 px-4 flex flex-col gap-1">
+
+                <div className="py-3 px-4 flex flex-col gap-1 h-[170px] justify-between">
                   <Link
                     to={"/product/2"}
                     className="line-clamp-2 hover:text-[#c49a6c] hover:cursor-pointer"
                   >
                     {product.name}
                   </Link>
-                  <span className="text-1xl text-[#c49a6c] text-start">
-                    {product.price.toLocaleString("vi-VN") + "₫"}
-                  </span>
-                  <button
-                    onClick={() => handleBuyNow(product)}
-                    style={{}}
-                    className="mt-3 mb-2 bg-[#e17100] cursor-pointer text-white border-2 border-[#e17100] duration-200 transition-colors hover:bg-white text-brown-hover w-full py-2 rounded-[10px] font-medium mt-2"
-                  >
-                    Mua ngay
-                  </button>
+                  <div>
+                    <span className="text-1xl text-[#c49a6c] text-start">
+                      {product.price.toLocaleString("vi-VN") + "₫"}
+                    </span>
+                    <button
+                      onClick={() => handleBuyNow(product)}
+                      style={{}}
+                      className="mt-3 mb-2 bg-[#e17100] cursor-pointer text-white border-2 border-[#e17100] duration-200 transition-colors hover:bg-white text-brown-hover w-full py-2 rounded-[10px] font-medium mt-2"
+                    >
+                      Mua ngay
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

@@ -175,7 +175,7 @@ const UserProfile = () => {
         navigate("/");
         setLoggedIn(false);
         setIsLoggingOut(false);
-      }, 2000);
+      }, 22000);
     } catch (err) {
       console.error("Logout Error:", err.response?.data || err.message);
       toast.error("Đăng xuất thất bại. Vui lòng thử lại!");
