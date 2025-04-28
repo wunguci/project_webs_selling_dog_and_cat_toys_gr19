@@ -233,8 +233,8 @@ const CheckOut = () => {
         setErrors({});
 
         setTimeout(() => {
-          navigate("/userProfile");
-        }, 2000);
+          navigate("/userProfile#don-hang-cua-ban");
+        }, 1000);
       } catch (error) {
         console.error("Error submitting order:", error);
         toast.error(

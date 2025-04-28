@@ -39,6 +39,9 @@ function Product({ product }) {
   //     alert(error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!");
   //   }
   // };
+
+
+
   const user = JSON.parse(localStorage.getItem("user"));
   const handleAddToCart = async () => {
     if (!user?._id) {
@@ -83,7 +86,9 @@ function Product({ product }) {
 
   return (
     <div>
-      <div className="bg-white shadow-lg rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer block">
+      <div
+        className="bg-white shadow-lg rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer block"
+      >
         <div className="relative group hover:cursor-pointer">
           <Link to={`/product/${product.slug}`}>
             <img
@@ -107,7 +112,7 @@ function Product({ product }) {
             </button>
           </div>
         </div>
-        <div className="py-3 px-4 flex flex-col gap-1 justify-between h-full">
+        <div className="py-3 px-4 flex flex-col gap-1 justify-between h-[170px]">
           <Link
             to={"/product/2"}
             className="line-clamp-2 hover:text-[#c49a6c] hover:cursor-pointer"
@@ -118,7 +123,9 @@ function Product({ product }) {
             <span className="text-1xl text-[#c49a6c] text-start">
               {product.price.toLocaleString("vi-VN") + "₫"}
             </span>
-            <button text-xl font-bold
+            <button
+              text-xl
+              font-bold
               onClick={handleBuyNow}
               style={{}}
               className="mt-3 mb-2 bg-[#e17100] text-white border-2 border-[#e17100] duration-200 transition-colors hover:bg-white text-brown-hover w-full py-2 rounded-[10px] font-medium cursor-pointer"
