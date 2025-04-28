@@ -301,13 +301,13 @@ const UserManagement = () => {
               </div>
               {currentView === "list" && (
                 <div className="flex space-x-3 mt-4 md:mt-0">
-                  <button
+                  {/* <button
                     onClick={addNewUser}
                     className="bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 flex items-center shadow-sm transition-colors cursor-pointer"
                   >
                     <UserPlus size={18} className="mr-2" />
                     Thêm người dùng
-                  </button>
+                  </button> */}
                   <button
                     onClick={exportUsersToCSV}
                     className="bg-gray-600 text-white px-4 py-2.5 rounded-lg hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center shadow-sm transition-colors cursor-pointer"

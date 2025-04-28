@@ -36,7 +36,7 @@ const UserDetailView = ({ user, onBack, onEdit }) => {
           >
             <ChevronLeft size={27} />
           </button>
-          <h2 className="text-xl font-semibold text-[#e17100]">
+          <h2 className="text-xl font-semibold text-gray-700">
             Thông tin cá nhân
           </h2>
         </div>
