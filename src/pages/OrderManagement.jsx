@@ -14,6 +14,7 @@ import OrderFilters from "../components/OrderFilters";
 import OrdersTable from "../components/OrdersTable";
 import OrderDetailsModal from "../components/OrderDetailsModal";
 import Pagination from "../components/Pagination";
+import { toast } from "react-toastify";
 
 const OrderManagement = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -122,7 +123,7 @@ const OrderManagement = () => {
         status: newStatus,
         updatedAt: Date.now(),
       });
-  
+
       setOrders(
         orders.map((order) => (order._id === orderId ? response.data : order))
       );
@@ -137,8 +138,10 @@ const OrderManagement = () => {
       try {
         await axiosInstance.delete(`/api/orders/${orderId}`);
         setOrders(orders.filter((order) => order._id !== orderId));
+        toast.success("Order deleted successfully");
       } catch (error) {
         console.error("Error deleting order:", error);
+        toast.error("Failed to delete order");
       }
     }
   };

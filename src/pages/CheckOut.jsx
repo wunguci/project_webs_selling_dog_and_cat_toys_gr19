@@ -154,15 +154,7 @@ const CheckOut = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  const handleValid = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      console.log("Order submitted:", {
-        ...formData,
-        deliveryOption,
-      });
-    }
-  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -240,7 +232,7 @@ const CheckOut = () => {
         setErrors({});
 
         setTimeout(() => {
-          navigate("/userProfile#don-hang-cua-ban");
+          navigate("/userProfile");
         }, 2000);
       } catch (error) {
         console.error("Error submitting order:", error);
