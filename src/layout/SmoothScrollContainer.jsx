@@ -5,37 +5,39 @@ import { useEffect } from "react";
 const SmoothScrollContainer = ({ children }) => {
   const { scrollYProgress } = useScroll();
 
-  const physics = {
-    damping: 15,
-    mass: 0.1,
-    stiffness: 80,
+  // Sử dụng spring nhẹ hơn để tránh làm giật scroll
+  const springScroll = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
     restDelta: 0.001,
-  };
-
-  const springScroll = useSpring(scrollYProgress, physics);
+  });
 
   useEffect(() => {
     const handleRouteChange = () => {
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'instant' }); // Dùng instant để tránh conflict
     };
     
     window.addEventListener("popstate", handleRouteChange);
-    return () => window.removeEventListener("popstate", handleRouteChange);
+    
+    return () => {
+      window.removeEventListener("popstate", handleRouteChange);
+    };
   }, []);
 
   return (
     <>
+      {/* Progress bar - chỉ hiển thị, không ảnh hưởng đến scroll */}
       <motion.div
         style={{
           position: "fixed",
           top: 0,
           left: 0,
           right: 0,
-          height: "5px",
-          background: "#3b82f6",
+          height: "4px",
+          background: "linear-gradient(to right, #3b82f6, #8b5cf6)",
           transformOrigin: "0%",
           scaleX: springScroll,
-          zIndex: 999,
+          zIndex: 9999,
         }}
       />
       {children}
