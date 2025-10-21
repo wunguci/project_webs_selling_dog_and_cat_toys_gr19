@@ -1,5 +1,38 @@
 @import "tailwindcss";
 
+/* Tối ưu scrolling - loại bỏ scroll-behavior: smooth để tránh conflict */
+html {
+  scroll-behavior: auto;
+}
+
+html, body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
+
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tối ưu cho các trình duyệt webkit */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 .custom-scrollbar-hidden::-webkit-scrollbar {
   display: none; 
 }
