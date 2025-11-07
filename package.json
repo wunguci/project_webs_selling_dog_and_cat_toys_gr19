@@ -15,10 +15,14 @@
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
-    "test:report": "playwright show-report",
-    "test:chrome": "playwright test --project=chromium",
+    "test:chromium": "playwright test --project=chromium",
     "test:firefox": "playwright test --project=firefox",
-    "test:webkit": "playwright test --project=webkit"
+    "test:webkit": "playwright test --project=webkit",
+    "test:mobile": "playwright test --project='Mobile Chrome'",
+    "test:cart": "playwright test cart-operations",
+    "test:report": "playwright show-report",
+    "test:trace": "playwright test --trace=on",
+    "codegen": "playwright codegen http://localhost:5173"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
