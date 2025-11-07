@@ -6,7 +6,7 @@ import productRoutes from "./routes/productRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
-import settingRoutes from "./routes/settingRoutes.js"; 
+import settingRoutes from "./routes/settingRoutes.js";
 import dashboadRoutes from "./routes/dashboardRoutes.js";
 import dotenv from "dotenv";
 
@@ -18,7 +18,8 @@ const PORT = process.env.VITE_PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "50mb" })); // Tăng giới hạn cho base64 images
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // Connect to MongoDB
 mongoose

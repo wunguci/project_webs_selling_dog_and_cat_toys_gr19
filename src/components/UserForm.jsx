@@ -11,6 +11,7 @@ const UserForm = ({ userData, onSubmit, onCancel }) => {
       phone: "",
       address: "",
       avatar: "",
+      password: "123456", // Mật khẩu mặc định cho user mới
     }
   );
 
@@ -43,6 +44,7 @@ const UserForm = ({ userData, onSubmit, onCancel }) => {
         phone: "",
         address: "",
         avatar: "",
+        password: "123456", // Mật khẩu mặc định cho user mới
       });
     }
   }, [userData]);
@@ -64,11 +66,54 @@ const UserForm = ({ userData, onSubmit, onCancel }) => {
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Kiểm tra kích thước file (giới hạn 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Ảnh quá lớn! Vui lòng chọn ảnh nhỏ hơn 5MB.");
+        return;
+      }
+
+      // Kiểm tra loại file
+      if (!file.type.startsWith("image/")) {
+        alert("Vui lòng chọn file ảnh hợp lệ!");
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result;
-        setFormData({ ...formData, avatar: base64String });
-        setAvatarPreview(base64String); // Hiển thị ảnh mới chọn
+
+        // Nếu ảnh quá lớn, nén lại
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+
+          // Resize nếu ảnh quá lớn (max 800px)
+          const maxSize = 800;
+          if (width > maxSize || height > maxSize) {
+            if (width > height) {
+              height = (height / width) * maxSize;
+              width = maxSize;
+            } else {
+              width = (width / height) * maxSize;
+              height = maxSize;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Chuyển về base64 với chất lượng 0.7
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+
+          setFormData({ ...formData, avatar: compressedBase64 });
+          setAvatarPreview(compressedBase64);
+        };
+        img.src = base64String;
       };
       reader.readAsDataURL(file);
     }
@@ -138,6 +183,7 @@ const UserForm = ({ userData, onSubmit, onCancel }) => {
           options={[
             { value: "Nam", label: "Nam" },
             { value: "Nữ", label: "Nữ" },
+            { value: "Khác", label: "Khác" },
           ]}
         />
 
@@ -162,6 +208,25 @@ const UserForm = ({ userData, onSubmit, onCancel }) => {
           value={formData.address}
           onChange={handleInputChange}
         />
+
+        {/* Hiển thị trường password chỉ khi thêm user mới */}
+        {!userData && (
+          <div className="col-span-1 md:col-span-2">
+            <FormField
+              label="Mật khẩu"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="Mật khẩu mặc định: 123456"
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              Mật khẩu mặc định là:{" "}
+              <span className="font-semibold">123456</span>. Người dùng có thể
+              đổi mật khẩu sau khi đăng nhập.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end space-x-3 pt-4">

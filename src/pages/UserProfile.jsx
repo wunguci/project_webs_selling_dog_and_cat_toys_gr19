@@ -471,14 +471,15 @@ const UserProfile = () => {
                       onChange={(e) =>
                         setUser({
                           ...user,
-                          gender: e.target.value === "male" ? true : false,
+                          gender: e.target.value,
                         })
                       }
                       className="flex-1 p-2 border rounded-lg"
                     >
                       <option value="">-- Chọn giới tính --</option>
-                      <option value="male">Nam</option>
-                      <option value="female">Nữ</option>
+                      <option value="Nam">Nam</option>
+                      <option value="Nữ">Nữ</option>
+                      <option value="Khác">Khác</option>
                     </select>
                     <FaEdit className="ml-2 text-gray-500 cursor-pointer" />
                   </div>

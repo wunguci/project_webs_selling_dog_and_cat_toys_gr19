@@ -1,73 +1,79 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Trang đăng nhập - Login Page", () => {
+  // Chạy trước mỗi test
   test.beforeEach(async ({ page }) => {
-    // Điều hướng đến trang đăng nhập trước mỗi test
     await page.goto("/login");
-    // Chờ trang load hoàn tất
     await page.waitForLoadState("networkidle");
   });
 
-  test.describe("Kiểm tra chức năng đăng nhập", () => {
-    test("Kiểm tra đăng nhập với tài khoản không tồn tại", async ({
-      page,
-    }) => {
-      // Nhập thông tin tài khoản không tồn tại
-      await page.locator('input[name="phone"]').fill("0999999999");
-      await page.locator('input[name="password"]').fill("wrong123");
-      await page.locator('button[type="submit"]').click();
+  // - Đăng nhập thành công
+  test("TC01: Đăng nhập thành công với tài khoản hợp lệ", async ({ page }) => {
+    await page.fill('input[name="phone"]', "0972385999");
+    await page.fill('input[name="password"]', "vutkd23405");
+    await page.click('button[type="submit"]');
 
-      // Chờ response
-      await page.waitForTimeout(2000);
+    // Chờ toast hoặc điều hướng
+    await page.waitForTimeout(2000);
 
-      // Kiểm tra thông báo lỗi
-      const error = page.locator(
-        "text=/Số điện thoại hoặc mật khẩu không chính xác/i, .bg-red-100"
-      );
-      await expect(error.first()).toBeVisible({ timeout: 5000 });
-    });
+    // Kiểm tra về trang chủ
+    await page.waitForURL("/", { timeout: 3000 });
+  });
 
-    test("Kiểm tra đăng nhập với mật khẩu sai", async ({ page }) => {
-      // Nhập thông tin với mật khẩu sai
-      await page.locator('input[name="phone"]').fill("0123456789");
-      await page.locator('input[name="password"]').fill("wrongpass123");
-      await page.locator('button[type="submit"]').click();
+  //Đăng nhập thất bại
+  test("TC02: Đăng nhập thất bại với thông tin sai", async ({ page }) => {
+    await page.fill('input[name="phone"]', "0000000000");
+    await page.fill('input[name="password"]', "sai");
+    await page.click('button[type="submit"]');
 
-      // Chờ response
-      await page.waitForTimeout(2000);
+    await page.waitForTimeout(1500);
 
-      // Kiểm tra thông báo lỗi
-      const error = page.locator(
-        "text=/Số điện thoại hoặc mật khẩu không chính xác/i, .bg-red-100"
-      );
-      await expect(error.first()).toBeVisible({ timeout: 5000 });
-    });
+    // mong muốn: vẫn ở trang /login
+    await expect(page).toHaveURL(/\/login$/);
+  });
 
-    test("Kiểm tra input phone có thể nhập", async ({ page }) => {
-      const phoneInput = page.locator('input[name="phone"]');
-      await phoneInput.fill("0123456789");
-      await expect(phoneInput).toHaveValue("0123456789");
-    });
+  //- Validation form
+  test("TC03: Kiểm tra validation - trường trống và số điện thoại không hợp lệ", async ({
+    page,
+  }) => {
+    // Không nhập gì
+    await page.click('button[type="submit"]');
 
-    test("Kiểm tra input password có thể nhập", async ({ page }) => {
-      const passwordInput = page.locator('input[name="password"]');
-      await passwordInput.fill("123456a");
-      await expect(passwordInput).toHaveValue("123456a");
-    });
+    await expect(
+      page.getByText("Số điện thoại không được để trống.")
+    ).toBeVisible();
+    await expect(page.getByText("Mật khẩu không được để trống.")).toBeVisible();
 
-    test("Kiểm tra xóa lỗi khi người dùng nhập lại", async ({
-      page,
-    }) => {
-      // Trigger lỗi
-      await page.locator('button[type="submit"]').click();
-      await page.waitForTimeout(500);
+    // Số điện thoại sai định dạng
+    await page.fill('input[name="phone"]', "abc123");
+    await page.fill('input[name="password"]', "123456a");
+    await page.click('button[type="submit"]');
 
-      // Nhập lại số điện thoại
-      await page.locator('input[name="phone"]').fill("0123456789");
+    await expect(page.getByText("Số điện thoại không hợp lệ.")).toBeVisible();
+  });
 
-      // Lỗi số điện thoại phải biến mất
-      const error = page.locator("text=/Số điện thoại không được để trống/i");
-      await expect(error).toBeHidden({ timeout: 2000 });
-    });
+  // - Hiển thị / Ẩn mật khẩu
+  test("TC04: Hiển thị/ẩn mật khẩu khi click icon mắt", async ({ page }) => {
+    const passwordInput = page.locator('input[name="password"]');
+    const toggleBtn = page.locator('[data-testid="toggle-password"]');
+
+    await passwordInput.fill("123456a");
+    await expect(passwordInput).toHaveAttribute("type", "password");
+    await toggleBtn.click();
+    await expect(passwordInput).toHaveAttribute("type", "text");
+    await toggleBtn.click();
+    await expect(passwordInput).toHaveAttribute("type", "password");
+  });
+
+  //- Kiểm tra chuyển hướng
+  test("TC05: Chuyển hướng về trang chủ sau khi đăng nhập thành công", async ({
+    page,
+  }) => {
+    await page.fill('input[name="phone"]', "0123456789");
+    await page.fill('input[name="password"]', "12345a");
+    await page.click('button[type="submit"]');
+
+    await page.waitForTimeout(2000);
+    await page.waitForURL("/", { timeout: 3000 });
   });
 });
