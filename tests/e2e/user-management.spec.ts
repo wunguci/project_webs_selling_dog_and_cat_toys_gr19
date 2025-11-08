@@ -156,8 +156,7 @@ test.describe("Quản lý người dùng - User Management", () => {
         email: `testuser${timestamp}@example.com`,
         phone: `09${timestamp.toString().slice(-8)}`,
         address: "123 Test Street, District 1, Ho Chi Minh City",
-        birthDate: "1995-06-15",
-        gender: "Nam",
+        birthDate: "1995-06-15"
       };
 
       // Điền thông tin

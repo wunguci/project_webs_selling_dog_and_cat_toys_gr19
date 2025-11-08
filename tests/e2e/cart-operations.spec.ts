@@ -248,7 +248,7 @@ test.describe("Giỏ hàng - Cart Operations", () => {
 
       // Clear và nhập số mới
       await quantityInput.clear();
-      await quantityInput.fill("5");
+      await quantityInput.fill("-5");
       await quantityInput.press("Tab"); // Trigger blur
       await page.waitForTimeout(2000);
 
