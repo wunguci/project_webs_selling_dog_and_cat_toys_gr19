@@ -136,7 +136,7 @@ test.describe("Homepage UI Test", () => {
   test("TC05: Hiển thị sản phẩm theo categories (Shop cho chó, Shop cho mèo)", async ({
     page,
   }) => {
-    const sections = [{ name: "Shop cho cún" }, { name: "Shop cho mèo" }];
+    const sections = [{ name: "Shop cho cúnffffff" }, { name: "Shop cho mèo" }];
     for (const section of sections) {
       const block = page.locator("div.p-5", { hasText: section.name });
 

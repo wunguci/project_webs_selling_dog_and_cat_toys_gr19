@@ -17,7 +17,7 @@ test.describe("Trang đăng nhập - Login Page", () => {
     await page.waitForTimeout(2000);
 
     // Kiểm tra về trang chủ
-    await page.waitForURL("/", { timeout: 3000 });
+    await expect(page).toHaveURL(/\/$/);
   });
 
   //Đăng nhập thất bại
@@ -74,6 +74,6 @@ test.describe("Trang đăng nhập - Login Page", () => {
     await page.click('button[type="submit"]');
 
     await page.waitForTimeout(2000);
-    await page.waitForURL("/", { timeout: 3000 });
+    await expect(page).toHaveURL(/\/$/);
   });
 });

@@ -61,7 +61,9 @@ test.describe("User Profile - Complete Test Suite", () => {
       await expect(page.locator('label:has-text("Ngày sinh")')).toBeVisible();
       await expect(page.locator('label:has-text("Giới tính")')).toBeVisible();
       await expect(page.locator('label:has-text("Email")')).toBeVisible();
-      await expect(page.locator('label:has-text("Số điện thoại")')).toBeVisible();
+      await expect(
+        page.locator('label:has-text("Số điện thoại")')
+      ).toBeVisible();
       await expect(page.locator('label:has-text("Địa chỉ")')).toBeVisible();
 
       // Verify inputs có thể tương tác
@@ -89,7 +91,7 @@ test.describe("User Profile - Complete Test Suite", () => {
       await page.waitForTimeout(500);
 
       const timestamp = Date.now();
-      
+
       // Họ và tên
       const fullNameInput = page
         .locator('div:has(> label:has-text("Họ và tên"))')
@@ -137,7 +139,9 @@ test.describe("User Profile - Complete Test Suite", () => {
       await addressInput.fill("123 Đường ABC, Quận 1, TP.HCM");
 
       // Click nút cập nhật
-      const updateButton = page.locator('button:has-text("Cập nhật thông tin")');
+      const updateButton = page.locator(
+        'button:has-text("Cập nhật thông tin")'
+      );
       await expect(updateButton).toBeVisible();
       await updateButton.click();
       await page.waitForTimeout(2000);
@@ -175,7 +179,9 @@ test.describe("User Profile - Complete Test Suite", () => {
       await page.locator('a:has-text("Đơn hàng của bạn")').click();
       await page.waitForTimeout(500);
 
-      const emptyMessage = page.locator('p:has-text("Bạn chưa có đơn hàng nào đang xử lý.")');
+      const emptyMessage = page.locator(
+        'p:has-text("Bạn chưa có đơn hàng nào đang xử lý.")'
+      );
       const shopButton = page.locator('a:has-text("Mua sắm ngay")');
 
       const hasEmptyMessage = await emptyMessage.isVisible().catch(() => false);
@@ -192,17 +198,29 @@ test.describe("User Profile - Complete Test Suite", () => {
       await page.waitForTimeout(500);
 
       const pendingSection = page.locator('h2:has-text("Chờ xử lý")');
-      const hasPendingOrders = await pendingSection.isVisible().catch(() => false);
+      const hasPendingOrders = await pendingSection
+        .isVisible()
+        .catch(() => false);
 
       if (hasPendingOrders) {
         await expect(pendingSection).toBeVisible();
 
         // Verify table headers
-        await expect(page.locator('th:has-text("Mã đơn hàng")').first()).toBeVisible();
-        await expect(page.locator('th:has-text("Ngày đặt")').first()).toBeVisible();
-        await expect(page.locator('th:has-text("Tổng tiền")').first()).toBeVisible();
-        await expect(page.locator('th:has-text("Trạng thái")').first()).toBeVisible();
-        await expect(page.locator('th:has-text("Thao tác")').first()).toBeVisible();
+        await expect(
+          page.locator('th:has-text("Mã đơn hàng")').first()
+        ).toBeVisible();
+        await expect(
+          page.locator('th:has-text("Ngày đặt")').first()
+        ).toBeVisible();
+        await expect(
+          page.locator('th:has-text("Tổng tiền")').first()
+        ).toBeVisible();
+        await expect(
+          page.locator('th:has-text("Trạng thái")').first()
+        ).toBeVisible();
+        await expect(
+          page.locator('th:has-text("Thao tác")').first()
+        ).toBeVisible();
 
         const rows = page.locator("tbody tr").first();
         await expect(rows).toBeVisible();
@@ -215,7 +233,9 @@ test.describe("User Profile - Complete Test Suite", () => {
       await page.waitForTimeout(500);
 
       const processingSection = page.locator('h2:has-text("Đang xử lý")');
-      const hasProcessingOrders = await processingSection.isVisible().catch(() => false);
+      const hasProcessingOrders = await processingSection
+        .isVisible()
+        .catch(() => false);
 
       if (hasProcessingOrders) {
         await expect(processingSection).toBeVisible();
@@ -229,13 +249,17 @@ test.describe("User Profile - Complete Test Suite", () => {
       }
     });
 
-    test("TC09 - Hiển thị danh sách đơn hàng đang giao hàng", async ({ page }) => {
+    test("TC09 - Hiển thị danh sách đơn hàng đang giao hàng", async ({
+      page,
+    }) => {
       // Click vào tab Đơn hàng của bạn
       await page.locator('a:has-text("Đơn hàng của bạn")').click();
       await page.waitForTimeout(500);
 
       const shippingSection = page.locator('h2:has-text("Đang giao hàng")');
-      const hasShippingOrders = await shippingSection.isVisible().catch(() => false);
+      const hasShippingOrders = await shippingSection
+        .isVisible()
+        .catch(() => false);
 
       if (hasShippingOrders) {
         await expect(shippingSection).toBeVisible();
@@ -286,7 +310,9 @@ test.describe("User Profile - Complete Test Suite", () => {
       await page.waitForTimeout(500);
 
       const pendingSection = page.locator('h2:has-text("Chờ xử lý")');
-      const hasPendingOrders = await pendingSection.isVisible().catch(() => false);
+      const hasPendingOrders = await pendingSection
+        .isVisible()
+        .catch(() => false);
 
       if (hasPendingOrders) {
         const cancelButton = pendingSection
@@ -297,7 +323,9 @@ test.describe("User Profile - Complete Test Suite", () => {
 
         // Setup dialog handler
         page.on("dialog", async (dialog) => {
-          expect(dialog.message()).toContain("Bạn có chắc chắn muốn hủy đơn hàng này?");
+          expect(dialog.message()).toContain(
+            "Bạn có chắc chắn muốn hủy đơn hàng này?"
+          );
           await dialog.accept();
         });
 
@@ -306,34 +334,44 @@ test.describe("User Profile - Complete Test Suite", () => {
       }
     });
 
-    test("TC12 - Không hiển thị nút hủy ở đơn đang xử lý/đang giao", async ({ page }) => {
+    test("TC12 - Không hiển thị nút hủy ở đơn đang xử lý/đang giao", async ({
+      page,
+    }) => {
       // Click vào tab Đơn hàng của bạn
       await page.locator('a:has-text("Đơn hàng của bạn")').click();
       await page.waitForTimeout(500);
 
       // Kiểm tra section "Đang xử lý"
       const processingSection = page.locator('h2:has-text("Đang xử lý")');
-      const hasProcessingOrders = await processingSection.isVisible().catch(() => false);
+      const hasProcessingOrders = await processingSection
+        .isVisible()
+        .catch(() => false);
 
       if (hasProcessingOrders) {
         const cancelButton = processingSection
           .locator("..")
           .locator('button[title="Hủy đơn hàng"]')
           .first();
-        const hasCancelButton = await cancelButton.isVisible().catch(() => false);
+        const hasCancelButton = await cancelButton
+          .isVisible()
+          .catch(() => false);
         expect(hasCancelButton).toBe(false);
       }
 
       // Kiểm tra section "Đang giao hàng"
       const shippingSection = page.locator('h2:has-text("Đang giao hàng")');
-      const hasShippingOrders = await shippingSection.isVisible().catch(() => false);
+      const hasShippingOrders = await shippingSection
+        .isVisible()
+        .catch(() => false);
 
       if (hasShippingOrders) {
         const cancelButton = shippingSection
           .locator("..")
           .locator('button[title="Hủy đơn hàng"]')
           .first();
-        const hasCancelButton = await cancelButton.isVisible().catch(() => false);
+        const hasCancelButton = await cancelButton
+          .isVisible()
+          .catch(() => false);
         expect(hasCancelButton).toBe(false);
       }
     });
@@ -343,7 +381,9 @@ test.describe("User Profile - Complete Test Suite", () => {
       await page.locator('a:has-text("Đơn hàng của bạn")').click();
       await page.waitForTimeout(500);
 
-      const downloadButton = page.locator('button[title="Tải hóa đơn"]').first();
+      const downloadButton = page
+        .locator('button[title="Tải hóa đơn"]')
+        .first();
       const hasOrders = await downloadButton.isVisible().catch(() => false);
 
       if (hasOrders) {
@@ -352,7 +392,7 @@ test.describe("User Profile - Complete Test Suite", () => {
 
         const download = await downloadPromise;
         expect(download).toBeTruthy();
-        
+
         const fileName = download.suggestedFilename();
         expect(fileName).toBeTruthy();
       }
@@ -392,7 +432,9 @@ test.describe("User Profile - Complete Test Suite", () => {
       await page.locator('a:has-text("Đơn hàng của bạn")').click();
       await page.waitForTimeout(500);
 
-      const emptyMessage = page.locator('p:has-text("Bạn chưa có đơn hàng nào đang xử lý.")');
+      const emptyMessage = page.locator(
+        'p:has-text("Bạn chưa có đơn hàng nào đang xử lý.")'
+      );
       const hasEmptyMessage = await emptyMessage.isVisible().catch(() => false);
 
       if (hasEmptyMessage) {
@@ -433,12 +475,16 @@ test.describe("User Profile - Complete Test Suite", () => {
       await expect(heading).toBeVisible();
     });
 
-    test("TC18 - Hiển thị thông báo khi chưa có đơn hoàn thành", async ({ page }) => {
+    test("TC18 - Hiển thị thông báo khi chưa có đơn hoàn thành", async ({
+      page,
+    }) => {
       // Click vào tab Lịch sử mua hàng
       await page.locator('a:has-text("Lịch sử mua hàng")').click();
       await page.waitForTimeout(500);
 
-      const emptyMessage = page.locator('p:has-text("Bạn chưa có đơn hàng nào đã hoàn thành.")');
+      const emptyMessage = page.locator(
+        'p:has-text("Bạn chưa có đơn hàng nào đã hoàn thành.")'
+      );
       const hasEmptyMessage = await emptyMessage.isVisible().catch(() => false);
 
       if (hasEmptyMessage) {
@@ -452,17 +498,29 @@ test.describe("User Profile - Complete Test Suite", () => {
       await page.waitForTimeout(500);
 
       const deliveredSection = page.locator('h2:has-text("Đã giao hàng")');
-      const hasDeliveredOrders = await deliveredSection.isVisible().catch(() => false);
+      const hasDeliveredOrders = await deliveredSection
+        .isVisible()
+        .catch(() => false);
 
       if (hasDeliveredOrders) {
         await expect(deliveredSection).toBeVisible();
 
         // Verify table headers
-        await expect(page.locator('th:has-text("Mã đơn hàng")').first()).toBeVisible();
-        await expect(page.locator('th:has-text("Ngày đặt")').first()).toBeVisible();
-        await expect(page.locator('th:has-text("Ngày hoàn thành")').first()).toBeVisible();
-        await expect(page.locator('th:has-text("Tổng tiền")').first()).toBeVisible();
-        await expect(page.locator('th:has-text("Trạng thái")').first()).toBeVisible();
+        await expect(
+          page.locator('th:has-text("Mã đơn hàng")').first()
+        ).toBeVisible();
+        await expect(
+          page.locator('th:has-text("Ngày đặt")').first()
+        ).toBeVisible();
+        await expect(
+          page.locator('th:has-text("Ngày hoàn thành")').first()
+        ).toBeVisible();
+        await expect(
+          page.locator('th:has-text("Tổng tiền")').first()
+        ).toBeVisible();
+        await expect(
+          page.locator('th:has-text("Trạng thái")').first()
+        ).toBeVisible();
 
         const rows = deliveredSection.locator("..").locator("tbody tr");
         const rowCount = await rows.count();
@@ -476,7 +534,9 @@ test.describe("User Profile - Complete Test Suite", () => {
       await page.waitForTimeout(500);
 
       const completedSection = page.locator('h2:has-text("Hoàn tất")');
-      const hasCompletedOrders = await completedSection.isVisible().catch(() => false);
+      const hasCompletedOrders = await completedSection
+        .isVisible()
+        .catch(() => false);
 
       if (hasCompletedOrders) {
         await expect(completedSection).toBeVisible();
@@ -496,13 +556,17 @@ test.describe("User Profile - Complete Test Suite", () => {
       await page.waitForTimeout(500);
 
       const canceledSection = page.locator('h2:has-text("Đã hủy")');
-      const hasCanceledOrders = await canceledSection.isVisible().catch(() => false);
+      const hasCanceledOrders = await canceledSection
+        .isVisible()
+        .catch(() => false);
 
       if (hasCanceledOrders) {
         await expect(canceledSection).toBeVisible();
 
         // Verify table headers
-        await expect(page.locator('th:has-text("Ngày hủy")').first()).toBeVisible();
+        await expect(
+          page.locator('th:has-text("Ngày hủy")').first()
+        ).toBeVisible();
 
         const table = canceledSection.locator("..").locator("table").first();
         await expect(table).toBeVisible();
@@ -540,7 +604,9 @@ test.describe("User Profile - Complete Test Suite", () => {
       await page.locator('a:has-text("Lịch sử mua hàng")').click();
       await page.waitForTimeout(500);
 
-      const downloadButton = page.locator('button[title="Tải hóa đơn"]').first();
+      const downloadButton = page
+        .locator('button[title="Tải hóa đơn"]')
+        .first();
       const hasOrders = await downloadButton.isVisible().catch(() => false);
 
       if (hasOrders) {
@@ -552,20 +618,26 @@ test.describe("User Profile - Complete Test Suite", () => {
       }
     });
 
-    test("TC24 - Không hiển thị nút tải hóa đơn cho đơn đã hủy", async ({ page }) => {
+    test("TC24 - Không hiển thị nút tải hóa đơn cho đơn đã hủy", async ({
+      page,
+    }) => {
       // Click vào tab Lịch sử mua hàng
       await page.locator('a:has-text("Lịch sử mua hàng")').click();
       await page.waitForTimeout(500);
 
       const canceledSection = page.locator('h2:has-text("Đã hủy")');
-      const hasCanceledOrders = await canceledSection.isVisible().catch(() => false);
+      const hasCanceledOrders = await canceledSection
+        .isVisible()
+        .catch(() => false);
 
       if (hasCanceledOrders) {
         const downloadButton = canceledSection
           .locator("..")
           .locator('button[title="Tải hóa đơn"]')
           .first();
-        const hasDownloadButton = await downloadButton.isVisible().catch(() => false);
+        const hasDownloadButton = await downloadButton
+          .isVisible()
+          .catch(() => false);
 
         // Đơn đã hủy không có nút tải hóa đơn
         expect(hasDownloadButton).toBe(false);
